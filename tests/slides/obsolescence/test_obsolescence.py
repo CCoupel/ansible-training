@@ -273,9 +273,12 @@ class TestMoyenne(SlidesCase):
     def test_issue_24_paquets_el5_6_7(self):
         self.absent(r"<=\s*['\"]?[567]\b|\bEL\s*[567]\b|Vault-", slides=[197])
         self.present(r"ansible\.builtin\.package", [197, 101])
-        self.absent(r"\bntpd?\b|\bdeltarpm\b|\bgpm\b", slides=[101, 202])
+        # `ntp` reste légitime comme NOM DE TAG ou de play (« tags: ntp », « - name: NTP », slide 202) :
+        # seuls le paquet/service (ntp en liste ou name: ntp en minuscule, ntpd), deltarpm et gpm sont interdits.
+        self.absent(r"\bntpd\b|\bdeltarpm\b|\bgpm\b|(?-i:name\s*:\s*ntp\s*$|^\s*-\s*ntp\s*$)", slides=[101, 202])
         self.present(r"\bchrony", [101, 202])
-        self.absent(r"^\s*Tags\s*:|\bblock\.\s*:", slides=[202])
+        self.absent(r"^\s*Tags\s*:|\bblock\.\s*:", slides=[202], flags=re.M,
+                    why="(clé « Tags: » capitalisée, sensible à la casse ; « tags: » est correct)")
 
     def test_issue_25_sorties_python2(self):
         self.absent(r"(?<![A-Za-z0-9_])u'", scope="both")
