@@ -30,9 +30,9 @@ Support de formation Ansible générique : audit et correction de 38 constats d'
 - **Galaxy et Molecule** : mise à jour des versions de collections, option `lint:` supprimée (ansible-lint indépendant), `verifier: name: ansible`, callbacks actualisés avec méthodes `v2_*`, driver podman + UBI9, `molecule init scenario` (#12, #17, #26, #27, #28, #32)
 - **Callbacks et plugins** : correction des signatures de callbacks `v2_*`, ajout de `callbacks_enabled`, retrait de callback `yaml` (non fourni par ansible-core 2.20) (#12, #32)
 - **Liens documentation** : migration vers nouvelles URL `docs.ansible.com/projects/ansible/latest/`, vérification et correction de 32+ hyperliens de modules/collections, arborescence mise à jour (`playbook_guide`, `inventory_guide`) (#29, #30, #31)
-- **Inventaire dynamique et intégrations** : mise à jour des sources d'inventaire actuelles (AWS EC2, Azure, GCP, OpenStack, Kubernetes, Proxmox), intégration ManageIQ conservée et marquée comme « legacy » (#21, #35, #37)
-- **Sorties d'exemple** : renouvellement des sorties avec ansible-core 2.20 (suppression de préfixes `u'`), exemple de `profile_tasks` callback réellement exécuté, anonymisation des chemins et hôtes, bannière SSH générique (#25, #40, #46, #187)
-- **Comportements Ansible** : clarification de `never`/`always`/`tagged` (valeurs spéciales de `--tags`, non tags de tâche), avertissement sur `host_key_checking = False` (protection MITM), démonstration de `become: true` (#41, #43, #117, #212)
+- **Inventaire dynamique et intégrations** : mise à jour des sources d'inventaire actuelles (AWS EC2, Azure, GCP, OpenStack, oVirt, Proxmox, Netbox), intégration ManageIQ conservée et marquée comme « legacy » (#21, #35, #37)
+- **Sorties d'exemple** : renouvellement des sorties avec ansible-core 2.20 (suppression de préfixes `u'`), exemple de `profile_tasks` callback réellement exécuté, anonymisation des chemins et hôtes, bannière SSH générique (slide 187) (#25, #40, #46)
+- **Comportements Ansible** : clarification de `never`/`always`/`tagged` (valeurs spéciales de `--tags`, non tags de tâche) (slides 117), avertissement sur `host_key_checking = False` (protection MITM) (slide 212), démonstration de `become: true` (#41, #43)
 - **Notes d'intervenant** : suppression de notes génériques obsolètes, conservation du contenu pédagogique (#47, #48)
 - **Version et clôture** : slide 2 mise à jour avec version v0.1.1, date de livraison, mention des versions de référence (#38)
 

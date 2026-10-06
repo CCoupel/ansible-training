@@ -4,7 +4,7 @@ Support de cours de formation Ansible (PPTX), version générique sans référen
 
 ## Contenu
 
-Le support couvre l'automatisation avec Ansible en 223 diapositives :
+Le support couvre l'automatisation avec Ansible en 223 slides :
 
 - **Fondamentaux** : concepts, architecture, inventaire, variables, playbooks
 - **Modules et tâches** : modules intégrés, FQCN, gestion de packages, services
@@ -13,7 +13,7 @@ Le support couvre l'automatisation avec Ansible en 223 diapositives :
 - **Outils avancés** : Molecule, callbacks, vault, inventaire dynamique
 - **Intégrations** : AWX/automation controller, exemples d'orchestration
 
-Chaque diaporama inclut des notes pédagogiques et des exemples de code réutilisables.
+Chaque slide inclut des notes pédagogiques et des exemples de code réutilisables.
 
 ## Versions de Référence
 
@@ -22,7 +22,7 @@ Le support est aligné sur :
 - **ansible-core** : 2.20 or later
 - **Python** (nœud de contrôle) : 3.12 or later
 
-Ces versions sont affichées sur la page de titre (diapositif 2) et peuvent être consultées dans le fichier `.claude/project-config.json` (clé `reference_version`).
+Ces versions sont affichées sur la slide 2 et peuvent être consultées dans le fichier `.claude/project-config.json` (clé `reference_version`).
 
 ## Tests
 
@@ -43,7 +43,7 @@ python3 tests/slides/check_pptx.py "Ansible Training.pptx"
 
 Les tests incluent :
 
-- **Validité** : archive ZIP valide, `[Content_Types].xml` en première position, 223 diapositives
+- **Validité** : archive ZIP valide, `[Content_Types].xml` en première position, 223 slides
 - **Obsolescence** : absence de termes dépassés, versions correctes, syntaxe Ansible valide
 - **Anti-fuite** : scan des métadonnées XML et des images pour empêcher la fuite de termes interdits
 

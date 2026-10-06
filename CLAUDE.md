@@ -226,7 +226,7 @@ gh workflow run release.yml -f tag=v0.1.0
 2. **Contrôles** :
    - Validité du PPTX : archive ZIP bien formée, `[Content_Types].xml` en première position
    - Anti-fuite : scan des métadonnées XML et images via `check_pptx.py`, utilise le secret `LEAK_PATTERNS` (regex des termes sensibles)
-   - Version slide 2 : vérification que la diapositif 2 affiche la version correspondant au tag
+   - Version slide 2 : vérification que la slide 2 affiche la version correspondant au tag
 3. **Publication** : création/mise à jour de la release GitHub avec l'asset `Ansible-Training-vX.Y.Z.pptx`
 4. **Release notes** : extraction du CHANGELOG.md si présent, sinon génération automatique
 
@@ -262,7 +262,7 @@ La slide 2 affiche obligatoirement :
 - **Date de livraison** : JJ/MM/AAAA
 - **Versions de référence** : « Référence : ansible-core 2.20 » (lues dans `reference_version` de `.claude/project-config.json`)
 
-Le workflow valide que la version affichée correspond au tag avant publication.
+Le workflow valide que la version affichée sur la slide 2 correspond au tag avant publication.
 
 ### Extensibilité (v0.2.0)
 
