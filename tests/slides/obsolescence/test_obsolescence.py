@@ -87,6 +87,28 @@ def _texts(scope, slides=None):
     return out
 
 
+_QUOTED_VALUE = re.compile(r"^\s*(?:-\s+)?(?:[A-Za-z_][\w.]*\s*:\s+)?(['\"])(.*)$")
+
+
+def quote_unbalanced(line):
+    """Vrai si la valeur (ou l'élément de liste) commence par un type de guillemet droit, n'est
+    JAMAIS refermée par ce même type et se termine par l'AUTRE type (ex. `'{{ item }}"`).
+    Ne comptent pas : les guillemets de l'autre type à l'intérieur d'une chaîne correctement fermée
+    (`'<FilesMatch ".php">'`, slide 200), ni les clés JSON entre guillemets (`"type": 'str',`)."""
+    m = _QUOTED_VALUE.match(line)
+    if not m:
+        return False
+    opening, rest = m.group(1), m.group(2)
+    if opening == "'":
+        closed = re.search(r"'(?!')", rest.replace("''", "\0\0")) is not None
+    else:
+        closed = re.search(r'(?<!\\)"', rest) is not None
+    if closed:
+        return False
+    other = '"' if opening == "'" else "'"
+    return rest.rstrip().rstrip(",}]) ").rstrip().endswith(other)
+
+
 LOTS_FILE = Path(__file__).with_name("lots_faits.json")
 
 
@@ -172,17 +194,27 @@ class TestTransverse(SlidesCase):
 
     def test_extension_balanced_quotes_in_code(self):
         """Une valeur ouverte avec un type de guillemet droit doit être fermée par le même
-        (ex. `name: '{{ item }}"` = YAML invalide, slide 216)."""
-        code = re.compile(r"^\s*(?:-\s+)?[A-Za-z_][\w.]*\s*:\s|^\s*[$#]\s|\{\{|\}\}")
-        mixed = re.compile(
-            r"(?<![\w'\"])'[^'\"\n]*\"\s*[,}\])]*\s*$|(?<![\w'\"])\"[^'\"\n]*'\s*[,}\])]*\s*$"
-        )
+        (ex. `name: '{{ item }}"` = YAML invalide, slide 216). Les guillemets de l'autre type
+        À L'INTÉRIEUR de la chaîne sont valides (`'<FilesMatch ".php">'`, slide 200)."""
         bad = set()
         for s in DECK.slides:
             for line in s.text.split("\n"):
-                if code.search(line) and mixed.search(line):
+                if quote_unbalanced(line):
                     bad.add(s.number)
         self.assertEqual(sorted(bad), [], "guillemets droits mal appariés dans du code, slides %s" % sorted(bad))
+
+    def test_balanced_quotes_detector_cases(self):
+        """Test piégé du détecteur : il attrape le cas réel de la slide 216 et laisse passer le YAML valide."""
+        for line in ("name: '{{ item }}\"", "  - name: \"{{ item }}'", "- '{{ item }}\"", "msg: 'abc\" ]"):
+            self.assertTrue(quote_unbalanced(line), line)
+        for line in (
+            "search_string: '<FilesMatch \".php[45]?$\">'",   # slide 200 : \" dans '...'
+            "msg: \"it's fine\"",                            # ' dans \"...\"
+            "name: \"{{ item }}\"", "name: '{{ item }}'",
+            "when: ansible_facts['distribution'] == 'CentOS'", "msg: say hello",
+            "items: ['a', 'b']",
+        ):
+            self.assertFalse(quote_unbalanced(line), line)
 
 
 class TestHaute(SlidesCase):
