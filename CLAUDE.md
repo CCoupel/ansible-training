@@ -158,7 +158,7 @@ test-writer, code-reviewer, qa, doc-updater, deployer, security
 **Règle absolue** : toute information, décision ou validation attendue de l'utilisateur est posée
 **via l'outil `AskUserQuestion`** — jamais en texte dans le chat (pas de liste numérotée, pas de « OUI/NON »,
 pas de `[O/n]`, pas de « dis-moi »). Ça vaut aussi pour les questions remontées par un teammate
-(`BLOQUE` / `BLOCKED` / `FAILED` / `BESOIN CADRAGE`).
+(`BLOQUE` / `FAILED` — format unique `[NOM] BLOQUE` + `Questions:`, `TEAMMATES_PROTOCOL.md`).
 
 Chaîne : les teammates ne parlent jamais à l'utilisateur — ils t'envoient leurs questions et options
 (`SendMessage` vers `main`), **tu les convertis en `AskUserQuestion`**, puis tu leur renvoies les réponses

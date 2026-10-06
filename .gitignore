@@ -65,3 +65,4 @@ build/
 
 # Fichiers de verrou LibreOffice
 .~lock.*#
+.claude/worktrees/
