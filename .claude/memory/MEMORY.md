@@ -1,6 +1,6 @@
 # MEMORY.md — Ansible Training Project
 
-**Dernière mise à jour** : 2026-10-06 17:35  
+**Dernière mise à jour** : 2026-10-06 17:38  
 **Projet** : Ansible Training  
 **Team** : ansible-training-team
 
@@ -10,57 +10,56 @@
 
 | Paramètre | Valeur |
 |-----------|--------|
-| Version | `0.1.0` |
+| Version (PROD) | `0.1.0` |
+| Version (DEV) | `0.1.1.a` (démarrage cycle v0.1.1) |
 | Environnement | PROD |
-| Branche | `main` (merge après release) |
-| Deployments | PROD = publication du dépôt public (main + tag v0.1.0) |
-| CI/CD | Aucune CI configurée |
+| Branche active | `main` (branche par défaut) |
+| Branches actives | Aucune branche de travail (cycle v0.1.0 fermé) |
+| Prochaine branche | `milestone/v0.1.1` (créée au démarrage du cycle v0.1.1) |
+| Deployments | PROD = release publique (main + tag v0.1.0) |
+| Release | https://github.com/CCoupel/ansible-training/releases/tag/v0.1.0 |
+| CI/CD | Aucune CI configurée (prévu v0.1.1 : #49) |
 
 ---
 
-## Travail en Cours
+## Cycle v0.1.0 — Clôture
 
-### PPTX — Ansible Training (version générique)
+### ✅ v0.1.0 LIVRÉE EN PROD
 
-**Statut** : En développement  
-**Responsable** : dev-slides  
+**Release** : https://github.com/CCoupel/ansible-training/releases/tag/v0.1.0  
+**Tag** : `v0.1.0` (annoté, commit `dafc2f1`)  
+**Branche** : `main` (branche par défaut du dépôt)  
 
-**Tâches** :
-- ✅ Création de 'Ansible Training.pptx' (version générique) initiée
-- ✅ **Références à l'organisation d'origine supprimées** :
-  - Fonds de slide
-  - Pieds de page
-  - Domaines (références internes)
-  - Namespaces
-  - Métadonnées (properties, auteur, etc.)
-  - Miniature supprimée
-  - custom.xml (classification) retiré
-  - Zone de classification du master supprimée
-  - Vestiges d'images retirés
-- ✅ **Contrôles manuels PPTX** : VALIDÉS par l'utilisateur (16:39)
-  - Ouverture PowerPoint (vérification fonctionnelle) ✅
-  - 19 WMF (slides 5, 6, 8, 9) ✅
-  - Rendu layouts 3/7/8 ✅
-  - Fond de carte ✅
+**Étapes complétées** :
+- ✅ PPTX anonymisé (hôtes, IP, identifiants, chemins, proxy, liens supprimés)
+- ✅ Contrôles manuels validés (16:39)
+- ✅ Audit d'obsolescence complété (39 constats)
+- ✅ Historique git nettoyé (force-push, branches supprimées)
+- ✅ Dépôt public livré (main + tag v0.1.0)
 
-**Contrainte critique** : Aucune référence à l'organisation d'origine dans la version générique diffusable.
+**État des branches** :
+- ❌ `milestone/v0.1.0` : SUPPRIMÉE (locale et distante) après fusion sur main
+- ✅ `main` : branche par défaut, contient la release v0.1.0
+- 📋 `milestone/v0.1.1` : sera créée au démarrage du cycle v0.1.1
 
 ---
 
 ## Roadmap / Milestones
 
-### v0.1.0 (✅ TERMINÉ — LIVRÉ EN PROD)
+### v0.1.0 (✅ TERMINÉ — LIVRÉ EN PROD — 2026-10-06 17:38)
 **Support générique Ansible — PPTX anonymisé**
-- Support de formation en PowerPoint
-- Version générique diffusable (aucune référence à l'organisation d'origine)
-- **Anonymisation effectuée** : hôtes, IP, identifiants de démo, chemins, proxy, liens remplacés
+- ✅ Support de formation en PowerPoint
+- ✅ Version générique diffusable (aucune référence à l'organisation d'origine)
+- ✅ **Anonymisation effectuée** : hôtes, IP, identifiants de démo, chemins, proxy, liens remplacés
   - Slides anonymisées : 40, 54, 75-76, 97-98, 110, 174, 187
   - Auteur conservé (décision utilisateur)
   - 19 WMF validés par l'utilisateur
-- **Dépôt GitHub public** : `CCoupel/ansible-training`
-  - Branche `main` + tag `v0.1.0` (déploiement PROD)
+- ✅ **Dépôt GitHub public** : `CCoupel/ansible-training`
+  - Branche `main` (branche par défaut)
+  - Tag `v0.1.0` annoté (commit `dafc2f1`)
+  - Release: https://github.com/CCoupel/ansible-training/releases/tag/v0.1.0
   - Historique reécrit (--force-with-lease) — décision utilisateur
-- **Sauvegarde** : `Ansible Training.orig.pptx` (non versionné — ignoré par git)
+  - Branche `milestone/v0.1.0` supprimée (locale et distante)
 
 ### v0.2.0 (À VENIR)
 **Format multi-canal : PowerPoint + HTML ludique**
@@ -97,10 +96,10 @@
 
 | # | Version | Statut | Issues | Objectif |
 |---|---------|--------|--------|----------|
-| #3 | v0.1.0 | ✅ FERMÉ | #1, #2 | Support PPTX générique (LIVRÉ) |
-| #4 | v0.1.1 | À VENIR | #10-#48 (38 issues) | Correctifs de contenu |
-| #1 | v0.2.0 | À VENIR | #3-#5 | Format multi-canal (PPTX + HTML) |
-| #2 | v0.3.0 | À VENIR | #6-#9, #19 | Module Event-Driven Ansible |
+| #3 | v0.1.0 | ✅ FERMÉ | #1, #2 (2 issues) | Support PPTX générique (LIVRÉ) |
+| #4 | v0.1.1 | OUVERT | #10-#48, #49 (39 issues) | Correctifs contenu + CI PowerPoint |
+| #1 | v0.2.0 | OUVERT | #3-#5 (3 issues) | Format multi-canal (PPTX + HTML) |
+| #2 | v0.3.0 | OUVERT | #6-#9, #19 (5 issues) | Module Event-Driven Ansible |
 
 ### Issues Traquées
 
@@ -108,8 +107,9 @@
 - #1 — ✅ Contrôle manuel final du PPTX (FERMÉE)
 - #2 — ✅ Audit d'obsolescence Ansible/AWX (FERMÉE — 39 constats reportés)
 
-**v0.1.1 (CORRECTIFS CONTENU)** :
+**v0.1.1 (CORRECTIFS CONTENU + CI)** :
 - #10-#48 — 38 issues de contenu obsolète / à améliorer (voir audit d'obsolescence)
+- #49 — **La CI doit publier le PowerPoint dans la release** (GitHub Actions sur tag vX.Y.Z, asset PPTX versionné, scan anti-fuite XML dézippés avant publication, extension HTML prévu v0.2.0, rattrapage v0.1.0 via workflow_dispatch)
 
 **v0.2.0** :
 - #3 — Architecture HTML
@@ -148,6 +148,27 @@
 **Décision utilisateur** : les fichiers suivants restent tels quels
 
 - `docs/HOMOGENEISATION-OPENSHIFT.md` (origine inconnue, projet source openshift-course) — aucune intégration planifiée
+
+---
+
+## Historique des Décisions de Session
+
+### Validées par l'utilisateur
+1. **Anonymisation PPTX** : supprimer hôtes, IP, identifiants, chemins, proxy, liens
+   - Auteur conservé (décision)
+   - Validation manuelle screenshots (16:39)
+   - 19 WMF validés
+2. **Réécriture d'historique** : force-push protégé (--force-with-lease)
+   - Commits `f2ea50c` et `a27b4e1` supprimés
+   - Branche de sauvegarde `backup/pre-rewrite` supprimée
+   - Reflog local conservé
+3. **Publication** : main + tag v0.1.0 publiés sur GitHub
+4. **Fichiers non suivis** : `docs/HOMOGENEISATION-OPENSHIFT.md` laissé tel quel (origine inconnue)
+
+### Impactant les Sessions Futures
+1. **Prochaine branche** : `milestone/v0.1.1` créée depuis main au démarrage du cycle
+2. **Version de dev** : `0.1.1.a` au démarrage du cycle v0.1.1
+3. **CI** : à implémenter en v0.1.1 (#49)
 
 ---
 
@@ -242,7 +263,7 @@ Voir `CLAUDE.md` :
 
 ## Checklists de Démarrage Session
 
-### ✅ v0.1.0 — Fait au 06-10-2026 (15:43 - 17:35)
+### ✅ v0.1.0 — Clôture au 06-10-2026 (15:43 - 17:38)
 - [x] Projet init (template v3.10.0)
 - [x] Équipe configurée (infra retiré, marketing-release ajouté)
 - [x] Agents permanents déclarés
@@ -253,20 +274,28 @@ Voir `CLAUDE.md` :
 - [x] PPTX créé et anonymisé (références à l'organisation d'origine supprimées)
 - [x] Contrôles manuels PPTX validés (16:39)
 - [x] Dépôt GitHub `CCoupel/ansible-training` créé
-- [x] Branche `milestone/v0.1.0` poussée
+- [x] Branche `milestone/v0.1.0` poussée puis SUPPRIMÉE
 - [x] Milestones GitHub créés (v0.1.0, v0.1.1, v0.2.0, v0.3.0)
-- [x] Issues créées et assignées (#1-#9, #10-#48 d'audit)
-- [x] Historique git reécrit (f2ea50c, a27b4e1 supprimés)
+- [x] Issues créées et assignées (#1-#9, #10-#48 d'audit, #49 CI)
+- [x] Historique git reécrit (f2ea50c, a27b4e1 supprimés, backup supprimée)
 - [x] Audit d'obsolescence terminé (39 constats → issues #10-#48)
-- [x] v0.1.0 LIVRÉE EN PROD (main + tag v0.1.0)
-- [x] Milestones v0.1.0 & v0.1.1 fermés
+- [x] v0.1.0 LIVRÉE EN PROD (release GitHub, main + tag v0.1.0)
+- [x] Milestone v0.1.0 fermé
 - [x] Issues #1 & #2 fermées
 
-### 🔄 À Faire (Next Sessions)
-- [ ] Tester le routage des compagnons (`/feature`, `/bugfix`)
-- [ ] Traiter v0.1.1 : 38 issues de contenu (correctifs)
-- [ ] Lancer v0.2.0 : architecture HTML + version multi-canal
-- [ ] Lancer v0.3.0 : module Event-Driven Ansible
+### 🔄 Prochaine Session — Cycle v0.1.1 (Priorités)
+1. **Tester le routage des compagnons** (`/feature`, `/bugfix`)
+2. **Créer branche** `milestone/v0.1.1` depuis main
+3. **Traiter v0.1.1 (39 issues)** :
+   - Priorité haute : issues H1-H9 + #49 (CI PowerPoint)
+   - Priorité moyenne : issues d'audit restantes (#10-#48)
+4. **Vérifications manuelles** :
+   - Blocs `!vault` (slides S139/141/198)
+   - IP `192.168.x.x` (S18, 25-27, 141) — gardées comme exemples
+5. **Décisions de contenu** :
+   - Trier `docs/HOMOGENEISATION-OPENSHIFT.md` (origin unknown, non intégré)
+6. **Archivage git** : f2ea50c accessible par SHA côté GitHub (purge possible via support)
+7. **Sécurité** : vérifier les identifiants de démo (s'ils sont réels, changer les mots de passe)
 
 ---
 
@@ -283,7 +312,7 @@ Voir `CLAUDE.md` :
 
 ---
 
-## Notes Session (v0.1.0)
+## Notes Session (v0.1.0 — 2026-10-06)
 
 - **15:37** : Projet init (template v3.10.0) ; équipe reconfigurée (infra retiré, marketing-release ajouté)
 - **15:43** : Agents compagnons créés ; dev-slides enregistré
@@ -294,9 +323,31 @@ Voir `CLAUDE.md` :
 - **17:15** : Anonymisation PPTX complétée (hôtes, IP, identifiants, chemins, proxy, liens)
 - **17:25** : Audit d'obsolescence terminé (39 constats → issues #10-#48 v0.1.1)
 - **17:30** : Historique git reécrit (--force-with-lease, f2ea50c/a27b4e1 supprimés)
-- **17:35** : v0.1.0 LIVRÉE EN PROD (main + tag v0.1.0) ; MEMORY.md finalisée
+- **17:35** : v0.1.0 LIVRÉE EN PROD (release GitHub, main + tag v0.1.0)
+- **17:38** : Clôture de session — MEMORY.md finalisée
+
+### Résumé Exécutif
+- **Durée** : ~2 heures (15:37 - 17:38)
+- **Déliverables** : v0.1.0 publiquement disponible, 39 issues v0.1.1 identifiées, équipe testée
+- **État du dépôt** : main stable, branche milestone/v0.1.0 supprimée, reflog local conservé
 - **Adresse de retour** : team-lead (protocole project-spécifique)
 
 ---
 
-**Statut global** : ✅ v0.1.0 LIVRÉE EN PROD — Dépôt public, 38 correctifs de contenu identifiés (v0.1.1), v0.2.0 (HTML) et v0.3.0 (EDA) à venir
+---
+
+## Statut Global
+
+**✅ SESSION v0.1.0 COMPLÉTÉE**
+
+- Version PROD : `0.1.0` publiée (https://github.com/CCoupel/ansible-training/releases/tag/v0.1.0)
+- Dépôt public : stable, branche par défaut `main`
+- Cycle actif : Aucun (v0.1.0 fermée)
+- Prochaine branche : `milestone/v0.1.1` (au démarrage du cycle)
+- Pipeline v0.1.1 : 39 issues ouvertes (audit + CI)
+- Pipeline v0.2.0 : 3 issues (HTML)
+- Pipeline v0.3.0 : 5 issues (EDA)
+
+**Équipe opérationnelle** : tous les agents testés et validés  
+**Adresse de retour** : team-lead (projet-spécifique)  
+**Prochaine action** : démarrer cycle v0.1.1
