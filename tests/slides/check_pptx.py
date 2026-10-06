@@ -25,11 +25,14 @@ Contrôles de validité (code ERREUR V<n>) :
   V1 fichier illisible / non zip     V2 archive corrompue (testzip)
   V3 [Content_Types].xml pas en premier   V4 nombre de slides inattendu
   V5 slides masquées inattendues     V6 XML mal formé
+  V0 erreur interne (en CI : sans trace ni donnée)
+V4/V5 : valeurs lues dans tests/slides/expected.json (voir load_expected).
 
 Stdlib uniquement.
 """
 
 import ipaddress
+import json
 import os
 import re
 import struct
@@ -41,10 +44,31 @@ import xml.etree.ElementTree as ET
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from pptx_reader import Deck, paragraphs_of, attribute_values, external_targets  # noqa: E402
 
-EXPECTED_SLIDES = int(os.environ.get("EXPECTED_SLIDES", "223"))
-EXPECTED_HIDDEN = [
-    int(x) for x in os.environ.get("EXPECTED_HIDDEN", "193,210,217").split(",") if x.strip()
-]
+DEFAULT_EXPECTED_SLIDES = 223
+DEFAULT_EXPECTED_HIDDEN = [193, 210, 217]
+EXPECTED_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "expected.json")
+
+
+def load_expected():
+    """(nombre de slides, slides masquées) attendus.
+
+    Priorité : variables d'environnement EXPECTED_SLIDES / EXPECTED_HIDDEN, puis le fichier versionné
+    tests/slides/expected.json, puis les valeurs par défaut ci-dessus. Tout changement légitime du
+    deck (slide ajoutée ou retirée, slide masquée déplacée, ajout du HTML en v0.2.0) se fait dans
+    expected.json — jamais en contournant le contrôle dans le workflow de release.
+    """
+    slides, hidden = DEFAULT_EXPECTED_SLIDES, list(DEFAULT_EXPECTED_HIDDEN)
+    if os.path.isfile(EXPECTED_FILE):
+        with open(EXPECTED_FILE, encoding="utf-8") as fh:
+            data = json.load(fh)
+        slides = int(data.get("slides", slides))
+        hidden = [int(x) for x in data.get("hidden", hidden)]
+    if "EXPECTED_SLIDES" in os.environ:
+        slides = int(os.environ["EXPECTED_SLIDES"])
+    if "EXPECTED_HIDDEN" in os.environ:
+        hidden = [int(x) for x in os.environ["EXPECTED_HIDDEN"].split(",") if x.strip()]
+    return slides, hidden
+
 
 # Plages IP autorisées (décision utilisateur) : exemples éducatifs en 192.168.0.0/16 (slide 141
 # comprise), documentation RFC 5737, loopback et DNS public d'exemple. Toute autre IP est une
@@ -75,7 +99,8 @@ ALLOWED_DOMAINS = (
 )
 
 # TLD « organisationnels » recherchés (volontairement restreint : le deck contient des FQCN
-# de collections et des noms de fichiers qui ressemblent à des noms de domaine).
+# de collections et des noms de fichiers qui ressemblent à des noms de domaine). Limite assumée :
+# .cloud, .dev, .app, .co... ne sont pas vus par G6 ; le secret LEAK_PATTERNS couvre l'organisation.
 _TLDS = "com|net|org|io|fr|eu|local|lan|corp|internal|intra|edu|gov|de|uk"
 RE_DOMAIN = re.compile(r"(?<![\w.-])((?:[a-z0-9-]+\.)+(?:%s))(?![\w-])" % _TLDS, re.I)
 RE_IPV4 = re.compile(r"(?<![\d.])((?:\d{1,3}\.){3}\d{1,3})(?!\d)(?!\.\d)")
@@ -122,10 +147,20 @@ def load_leak_patterns(report):
 
 
 def ip_allowed(text):
+    """Vrai si `text` est une IP autorisée ou n'est pas une IPv4 (octet > 255 : numéro de version...).
+
+    Les octets sont normalisés par int() : « 010.001.001.001 » (zéros initiaux, rejeté par
+    ipaddress) est testé comme 10.1.1.1 au lieu d'échapper au contrôle.
+    Limites assumées : IPv6 non scanné ; IP privées d'une organisation comprises dans les plages
+    autorisées (192.168.0.0/16) non détectées.
+    """
     try:
-        ip = ipaddress.ip_address(text)
+        octets = [int(o) for o in text.split(".")]
+        if len(octets) != 4 or any(o > 255 for o in octets):
+            return True
+        ip = ipaddress.ip_address(".".join(str(o) for o in octets))
     except ValueError:
-        return True  # octet > 255 : pas une IP (numéro de version...)
+        return True
     return any(ip in net for net in ALLOWED_IP_NETS)
 
 
@@ -268,12 +303,13 @@ def scan_archive(path, report):
         report.error("V6", "présentation illisible (ppt/presentation.xml)")
         return
     with deck.zip:
+        expected_slides, expected_hidden = load_expected()
         n = len(deck.slides)
-        if n != EXPECTED_SLIDES:
-            report.error("V4", "%d slides, %d attendues" % (n, EXPECTED_SLIDES))
+        if n != expected_slides:
+            report.error("V4", "%d slides, %d attendues" % (n, expected_slides))
         hidden = deck.hidden_numbers()
-        if hidden != EXPECTED_HIDDEN:
-            report.error("V5", "slides masquées %s, attendues %s" % (hidden, EXPECTED_HIDDEN))
+        if hidden != expected_hidden:
+            report.error("V5", "slides masquées %s, attendues %s" % (hidden, expected_hidden))
 
 
 def main(argv):
@@ -307,5 +343,16 @@ def main(argv):
     return 0
 
 
+def safe_main(argv):
+    """En CI, une exception interne devient `ERREUR V0` sans trace ni donnée (logs publics)."""
+    try:
+        return main(argv)
+    except Exception:
+        if os.environ.get("CI", "").strip().lower() != "true":
+            raise
+        print("ERREUR V0: erreur interne (détails masqués)")
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(safe_main(sys.argv))

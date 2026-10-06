@@ -168,6 +168,39 @@ class TestExitCodesAndValidity(CheckCase):
         self.assertIn("V5", out)
 
 
+class TestExpectedFileAndInternalErrors(CheckCase):
+    def test_expected_json_gives_slide_count_and_hidden_slides(self):
+        import json
+        sys.path.insert(0, str(SCRIPT.parent))
+        import check_pptx
+        data = json.loads((SCRIPT.parent / "expected.json").read_text(encoding="utf-8"))
+        saved = {k: os.environ.pop(k, None) for k in ("EXPECTED_SLIDES", "EXPECTED_HIDDEN")}
+        try:
+            self.assertEqual(check_pptx.load_expected(), (data["slides"], data["hidden"]))
+            self.assertEqual((data["slides"], data["hidden"]), (223, [193, 210, 217]))
+            os.environ["EXPECTED_SLIDES"] = "7"
+            self.assertEqual(check_pptx.load_expected()[0], 7, "la variable d'environnement doit primer")
+        finally:
+            os.environ.pop("EXPECTED_SLIDES", None)
+            for k, v in saved.items():
+                if v is not None:
+                    os.environ[k] = v
+
+    def test_internal_error_in_ci_prints_V0_without_trace_or_data(self):
+        make_pptx(self.pptx)
+        rc, out, err = self.run_check(leak=FAKE_TERM, ci="true", expected_slides="valeur-non-numerique")
+        self.assertEqual(rc, 1)
+        self.assertIn("ERREUR V0", out)
+        self.assertNotIn("Traceback", out + err)
+        self.assertNotIn("valeur-non-numerique", out + err)
+
+    def test_internal_error_outside_ci_keeps_the_traceback(self):
+        make_pptx(self.pptx)
+        rc, _, err = self.run_check(leak=FAKE_TERM, expected_slides="valeur-non-numerique")
+        self.assertNotEqual(rc, 0)
+        self.assertIn("Traceback", err)
+
+
 class TestGenericPatterns(CheckCase):
     def test_msip_label_in_metadata_G1(self):
         make_pptx(self.pptx, extra_parts={"docProps/app.xml": "<Properties><x>MSIP_Label_1234</x></Properties>"})
@@ -202,6 +235,12 @@ class TestGenericPatterns(CheckCase):
         self.assertEqual(rc, 1)
         self.assertIn("ppt/slides/slide1.xml: motif G5", out)
         self.assertNotIn("10.20.30.40", out)
+
+    def test_ip_with_leading_zeros_is_normalized_G5(self):
+        make_pptx(self.pptx, slides=[{"paras": [para("server 010.001.001.001")]}])
+        rc, out, _ = self.run_check(leak=FAKE_TERM)
+        self.assertEqual(rc, 1)
+        self.assertIn("motif G5", out)
 
     def test_foreign_domain_G6_and_whitelist(self):
         make_pptx(self.pptx, slides=[{"paras": [para("see https://docs.ansible.com/ and node1.example.com")]}])
