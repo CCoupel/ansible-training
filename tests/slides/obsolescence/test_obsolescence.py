@@ -121,9 +121,15 @@ class TestTransverse(SlidesCase):
         code = re.compile(
             r"^\s*(?:-\s+)?[A-Za-z_][\w.]*\s*:\s|^\s*[$#]\s|\{\{|\}\}|\w\s*=\s*[“”‘’]|[“”‘’]\s*[\]),]"
         )
+        # Ligne d'AIDE d'une option (« -t <TYPE>, --type <TYPE> : Choose … “module” », slide 150,
+        # sortie d'ansible-doc) : prose d'aide, pas du code à copier. Critère étroit (option +
+        # placeholder <X> + « : » de description) pour ne pas exclure les vraies lignes de commande.
+        option_help = re.compile(r"^\s*-{1,2}[A-Za-z][^\n]*<[A-Za-z_]+>[^\n]*\s:\s")
         bad = set()
         for s in DECK.slides:
             for line in s.text.split("\n"):
+                if option_help.search(line):
+                    continue
                 if code.search(line) and quote.search(line):
                     bad.add(s.number)
         self.assertEqual(sorted(bad), [], "guillemets typographiques dans du code, slides %s" % sorted(bad))
@@ -150,7 +156,9 @@ class TestHaute(SlidesCase):
         self.present_any(r"\bjammy\b|\bnoble\b", [221])
 
     def test_issue_12_python3(self):
-        self.absent(r"\bprint\s+[\"“”']", scope="both")
+        # print Python 2 en minuscule, sensible à la casse : « Print “...” » (étape de logigramme,
+        # slide 133) est de la prose.
+        self.absent(r"\bprint\s+[\"“”']", scope="both", flags=re.M)
         self.present(r"import\s+socket", [179])
         self.present(r"BUFFER_SIZE\s*=", [179])
 
