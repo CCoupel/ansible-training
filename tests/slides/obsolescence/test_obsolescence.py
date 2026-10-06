@@ -347,7 +347,8 @@ class TestMoyenne(SlidesCase):
         self.present(r"ansible\.builtin\.include_vars", [65])
 
     def test_issue_37_cloudforms_manageiq_fin_de_vie(self):
-        self.present(r"end\s+of\s+life|legacy|fin\s+de\s+vie", [28, 160, 217, 219])
+        # Décision actée : « legacy integration example » (pas de date de fin de vie officielle sourcée).
+        self.present(r"end\s+of\s+life|legacy|fin\s+de\s+vie", [28, 159, 160, 217, 219])
         self.absent(r"\bCCO\b", slides=[159, 160], scope="both")
 
 
