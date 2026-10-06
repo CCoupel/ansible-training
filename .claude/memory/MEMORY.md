@@ -1,6 +1,6 @@
 # MEMORY.md — Ansible Training Project
 
-**Dernière mise à jour** : 2026-10-06 15:45  
+**Dernière mise à jour** : 2026-10-06 16:45  
 **Projet** : Ansible Training  
 **Team** : ansible-training-team
 
@@ -36,11 +36,11 @@
   - custom.xml (classification) retiré
   - Zone de classification du master supprimée
   - Vestiges d'images retirés
-- 🔄 **Vérification manuelle des captures d'écran & contrôles restants** : EN ATTENTE
-  - Ouverture PowerPoint (vérification fonctionnelle)
-  - 19 WMF à contrôler (slides 5, 6, 8, 9)
-  - Rendu layouts 3/7/8 à valider
-  - Fond de carte à vérifier
+- ✅ **Contrôles manuels PPTX** : VALIDÉS par l'utilisateur (16:39)
+  - Ouverture PowerPoint (vérification fonctionnelle) ✅
+  - 19 WMF (slides 5, 6, 8, 9) ✅
+  - Rendu layouts 3/7/8 ✅
+  - Fond de carte ✅
 
 **Contrainte critique** : Aucune référence à l'organisation d'origine dans la version générique diffusable.
 
@@ -52,7 +52,10 @@
 **Support générique Ansible — PPTX sans références internes**
 - Support de formation en PowerPoint
 - Version générique diffusable (aucune référence à l'organisation d'origine)
-- Dépôt GitHub public créé : `CCoupel/ansible-training` (actuellement vide, aucun push)
+- **Dépôt GitHub public** : `CCoupel/ansible-training`
+  - Branche `milestone/v0.1.0` poussée (tête: `f2ea50c`)
+  - Pas de branche `main` distante (créée au déploiement PROD)
+  - Pas de tags
 - **Sauvegarde** : `Ansible Training.orig.pptx` (non versionné — ignoré par git)
 
 ### v0.2.0 (À VENIR)
@@ -67,6 +70,45 @@
 **Nouveau module : Event-Driven Ansible**
 - Extension du curriculum avec le module EDA
 - Support du format multi-canal (PowerPoint + HTML)
+
+---
+
+## Dépôt & Commits
+
+### Historique des Commits
+
+| SHA | Type | Message | Taille | Détails |
+|-----|------|---------|--------|---------|
+| `fd9435b` | chore | Configuration projet et agents | — | Initialisation template |
+| `675af4b` | docs | Documentation et plan de tests | — | Architecture et stratégie de test |
+| `f2ea50c` | docs(slides) | PPTX générique | 2.4 MB | SHA256: `5cb8c7d1...` |
+
+**Branche distante** : `origin/milestone/v0.1.0` → tête `f2ea50c`
+
+### Milestones GitHub
+
+| # | Version | Statut | Objectif |
+|---|---------|--------|----------|
+| #3 | v0.1.0 | EN COURS | Support PPTX générique |
+| #1 | v0.2.0 | À VENIR | Format multi-canal (PPTX + HTML) |
+| #2 | v0.3.0 | À VENIR | Module Event-Driven Ansible |
+
+### Issues Traquées
+
+**v0.1.0** :
+- #1 — Contrôle manuel final du PPTX (Validation utilisateur effectuée, issue **non fermée** en attente de décision)
+- #2 — Audit d'obsolescence Ansible/AWX
+
+**v0.2.0** :
+- #3 — Architecture HTML
+- #4 — Version HTML du support
+- #5 — PPTX + HTML à chaque version (exigence permanente)
+
+**v0.3.0** :
+- #6 — Plan EDA
+- #7 — Slides EDA
+- #8 — HTML EDA
+- #9 — Rulebooks et lab TP
 
 ---
 
@@ -101,7 +143,9 @@
 ### 4. Gestion des Fichiers — Ignoration & Archivage
 - **Sauvegarde d'origine** : `Ansible Training.orig.pptx` (archivé localement, non versionné)
 - **Mémoire interne** : `.remember/` ignoré par git (logs privés de session)
-- `.gitignore` configuré pour exclure ces fichiers
+- **Fichiers verrouillés** : `.~lock.*#` ignoré (PowerPoint verrous temporaires)
+- **Templates & synchro** : `*.template.md` et `TEMPLATE_claude/` ignorés par git (gérés par synchro du template)
+- `.gitignore` configuré avec ces règles
 
 ---
 
@@ -137,20 +181,26 @@ Voir `CLAUDE.md` :
 
 ## Checklists de Démarrage Session
 
-### ✅ Fait au 06-10-2026 15:43
+### ✅ Fait au 06-10-2026 (15:43 - 16:45)
 - [x] Projet init (template v3.10.0)
-- [x] Équipe configurée
+- [x] Équipe configurée (infra retiré, marketing-release ajouté)
 - [x] Agents permanents déclarés
 - [x] Agent dev-slides créé et enregistré
 - [x] Compagnons créés (cdp.md, implementation-planner.md, teamleader.md)
 - [x] CLAUDE.md rédigé avec conventions
-- [x] `.gitignore` créé
+- [x] `.gitignore` créé (avec .~lock.*#, *.template.md, TEMPLATE_claude/)
+- [x] PPTX générique créé (références à l'organisation d'origine supprimées)
+- [x] Contrôles manuels PPTX validés (16:39)
+- [x] Dépôt GitHub `CCoupel/ansible-training` créé
+- [x] Branche `milestone/v0.1.0` poussée
+- [x] Milestones GitHub créés (v0.1.0, v0.2.0, v0.3.0)
+- [x] Issues créées et assignées aux milestones (#1-#9)
 
 ### 🔄 À Faire (Next Session)
 - [ ] Tester le routage des compagnons (`/feature`, `/bugfix`)
-- [ ] Finaliser & vérifier PPTX (suppression des références + screenshots)
-- [ ] Première phase de contenu (slides structure)
-- [ ] Première release v0.1.0
+- [ ] Fermer #1 après validation déploiement (en attente de décision)
+- [ ] Démarrer v0.1.0 → Release candidate
+- [ ] Lancer v0.2.0 (architecture HTML)
 
 ---
 
@@ -169,9 +219,13 @@ Voir `CLAUDE.md` :
 
 ## Notes Session
 
-- **15:37** : Projet init avec template v3.10.0 ; équipe reconfigurée
+- **15:37** : Projet init avec template v3.10.0 ; équipe reconfigurée (infra retiré, marketing-release ajouté)
 - **15:43** : Agents compagnons créés ; dev-slides enregistré ; routage en attente de test
 - **15:43** : MEMORY.md créé par doc-updater (initial)
+- **15:45** : MEMORY.md mis à jour (roadmap, milestones)
+- **16:39** : Contrôles manuels PPTX validés par l'utilisateur (ouverture, WMF, layouts, fond de carte)
+- **16:45** : Sauvegarde .orig archivée ; nettoyage métadonnées complété ; milestones et issues GitHub créés ; branche `milestone/v0.1.0` poussée (tête f2ea50c) ; MEMORY.md finalisée
+- **Adresse de retour** : team-lead (protocole project-spécifique)
 
 ---
 
