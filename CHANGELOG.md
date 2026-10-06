@@ -32,7 +32,7 @@ Support de formation Ansible générique : audit et correction de 38 constats d'
 - **Liens documentation** : migration vers nouvelles URL `docs.ansible.com/projects/ansible/latest/`, vérification et correction de 32+ hyperliens de modules/collections, arborescence mise à jour (`playbook_guide`, `inventory_guide`) (#29, #30, #31)
 - **Inventaire dynamique et intégrations** : mise à jour des sources d'inventaire actuelles (AWS EC2, Azure, GCP, OpenStack, oVirt, Proxmox, Netbox), intégration ManageIQ conservée et marquée comme « legacy » (#21, #35, #37)
 - **Sorties d'exemple** : renouvellement des sorties avec ansible-core 2.20 (suppression de préfixes `u'`), exemple de `profile_tasks` callback réellement exécuté, anonymisation des chemins et hôtes, bannière SSH générique (slide 187) (#25, #40, #46)
-- **Comportements Ansible** : clarification de `never`/`always`/`tagged` (valeurs spéciales de `--tags`, non tags de tâche) (slides 117), avertissement sur `host_key_checking = False` (protection MITM) (slide 212), démonstration de `become: true` (#41, #43)
+- **Comportements Ansible** : clarification de `never`/`always`/`tagged` (valeurs spéciales de `--tags`, non tags de tâche) (slide 117), avertissement sur `host_key_checking = False` (protection MITM) (slide 212), démonstration de `become: true` (#41, #43)
 - **Notes d'intervenant** : suppression de notes génériques obsolètes, conservation du contenu pédagogique (#47, #48)
 - **Version et clôture** : slide 2 mise à jour avec version v0.1.1, date de livraison, mention des versions de référence (#38)
 
@@ -40,9 +40,25 @@ Support de formation Ansible générique : audit et correction de 38 constats d'
 
 - Scan anti-fuite bloquant en CI (`check_pptx.py` avec secret `LEAK_PATTERNS`) : prévention de publication accidentelle avec termes sensibles ; sortie masquée pour dépôt public (#49)
 
+### Reprises de la Revue de Code
+
+- **Slides 201, 202** : correction des clés YAML et indentation invalidées par la revue (éléments de la tâche #23)
+- **Slide 145** : correction de clés YAML capitalisées et espaces insécables, harmonisation de la mise en forme
+- **Slide 26** : correction du JSON d'inventaire et de sa mise en forme
+- **Notes 63, 66, 67, 108** : conservation de contenu valide signalé par la revue, notamment pour les exemples de tâches
+- **Slide 219** : harmonisation de la mention « legacy integration example » (ManageIQ)
+- **Slide 145** : paquet `nfs-utils` validé et préservé
+- **Slide 145** : noms de rôles example validés (« configure SSH »)
+
+### Known Issues
+
+- **Slide 47 (hyperliens)** : 3 liens de collections non vérifiés (HTTP 429 des serveurs) : `cisco/dnac`, `cisco/ise`, `cloud/common` — statut à confirmer manuellement ou via la CI
+- **Slides 120, 168, 169, 174** : préfixe `/ansible/latest/` conservé (redirections fonctionnelles, migration vers `/projects/ansible/latest/` à prévoir dans une future issue)
+- **Slide 11** : `dnf install ansible-core` mentionné dans les notes, présence à vérifier sur la doc officielle (absentdu guide d'installation ansible-documentation)
+
 ## [0.1.0] - version initiale
 
-Support Ansible générique : 223 diapositives, anonymisation complète (hosts `*.example.com`, IP `192.0.2.x/RFC 5737`, domaines `example.com`), suppression de métadonnées organisationnelles, audit d'obsolescence lancé.
+Support Ansible générique : 223 slides, anonymisation complète (hosts `*.example.com`, IP `192.0.2.x/RFC 5737`, domaines `example.com`), suppression de métadonnées organisationnelles, audit d'obsolescence lancé.
 
 ---
 

@@ -64,7 +64,7 @@ Le workflow exécute les étapes suivantes :
 2. **Contrôles** :
    - Validité du PPTX (archive, format)
    - Anti-fuite : scan des termes sensibles via le secret `LEAK_PATTERNS`
-   - Vérification que la diapositif 2 affiche la version correcte
+   - Vérification que la slide 2 affiche la version correcte
 3. **Publication** : création/mise à jour de la release GitHub avec l'asset versionné `Ansible-Training-vX.Y.Z.pptx`
 
 ### Prérequis — Secret `LEAK_PATTERNS`
