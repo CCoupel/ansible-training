@@ -1,5 +1,5 @@
 {
   "_comment": "Suivi des lots dev-slides. Un test dont l'issue est dans 'issues' (ou dont le garde-fou est dans 'transverse') DOIT être vert : un échec est une vraie régression (FAIL). Un test absent de ces listes qui échoue est rapporté « skipped : attendu, lot non fait ». Ajouter ici les issues d'un lot dans le commit qui le livre. LOTS_STRICT=1 ignore ce fichier : tout doit être vert (QA finale, avant PUBLISH).",
-  "issues": [10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 26, 27, 28, 32, 33, 34, 36, 39, 40, 44, 45],
+  "issues": [10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 23, 24, 26, 27, 28, 32, 33, 34, 36, 39, 40, 42, 44, 45],
   "transverse": ["reference_version_declared"]
 }
