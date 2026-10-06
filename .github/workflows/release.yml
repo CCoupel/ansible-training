@@ -1,0 +1,128 @@
+name: release
+
+# Publication du support de formation sur la release GitHub du tag vX.Y.Z.
+# - tag poussé (v*.*.*) ou lancement manuel (input `tag`, ex. rattrapage de v0.1.0)
+# - le scan anti-fuite (tests/slides/check_pptx.py) est bloquant : sans secret LEAK_PATTERNS, aucune publication
+# - ne jamais afficher un terme interdit dans les logs (dépôt public)
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag à publier (ex. v0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+      # Artefacts à publier, un par ligne : <fichier source>|<asset>  (${TAG} remplacé à l'exécution).
+      # v0.2.0 : ajouter ici le HTML (ex. `dist/ansible-training-html.zip|Ansible-Training-HTML-${TAG}.zip`)
+      # et le contrôle correspondant dans l'étape « Contrôles ».
+      ARTIFACTS: |
+        Ansible Training.pptx|Ansible-Training-${TAG}.pptx
+    steps:
+      - name: Valider le tag
+        run: |
+          if ! printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Tag invalide (attendu vX.Y.Z)"
+            exit 1
+          fi
+
+      - name: Checkout du tag
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ env.TAG }}
+
+      - name: Vérifier la présence du secret LEAK_PATTERNS
+        env:
+          LEAK_PATTERNS: ${{ secrets.LEAK_PATTERNS }}
+        run: |
+          if [ -z "${LEAK_PATTERNS//[[:space:]]/}" ]; then
+            echo "::error::Secret LEAK_PATTERNS absent ou vide : publication refusée (scan anti-fuite incomplet)"
+            exit 1
+          fi
+
+      - name: Contrôles (validité + anti-fuite)
+        env:
+          LEAK_PATTERNS: ${{ secrets.LEAK_PATTERNS }}
+          CI: 'true'
+        run: |
+          # Sortie de check_pptx.py : fichier XML + numéro de motif, jamais le texte trouvé.
+          while IFS='|' read -r src asset; do
+            [ -z "$src" ] && continue
+            case "$src" in
+              *.pptx) python3 tests/slides/check_pptx.py "$src" ;;
+              *) echo "Pas de contrôle spécifique pour l'artefact (à ajouter)"; exit 1 ;;
+            esac
+          done <<< "$ARTIFACTS"
+
+      - name: Vérifier la version affichée (slide 2)
+        env:
+          LEAK_PATTERNS: ''
+        run: |
+          python3 - <<'PY'
+          import os, re, sys, zipfile
+          tag = os.environ["TAG"]
+          z = zipfile.ZipFile("Ansible Training.pptx")
+          pres = z.read("ppt/presentation.xml").decode("utf8")
+          rels = z.read("ppt/_rels/presentation.xml.rels").decode("utf8")
+          rid = re.findall(r'<p:sldId [^>]*r:id="([^"]+)"', pres)[1]
+          tgt = re.search(r'<Relationship [^>]*Id="%s"[^>]*Target="([^"]+)"' % re.escape(rid), rels)
+          if not tgt:
+              tgt = re.search(r'<Relationship [^>]*Target="([^"]+)"[^>]*Id="%s"' % re.escape(rid), rels)
+          path = "ppt/" + tgt.group(1).lstrip("/").replace("ppt/", "")
+          text = " ".join(re.findall(r"<a:t>([^<]*)</a:t>", z.read(path).decode("utf8")))
+          if tag in text or tag.lstrip("v") in text:
+              print("Version slide 2 : OK")
+          elif tag == "v0.1.0":
+              print("::warning::Slide 2 ne mentionne pas v0.1.0 (rattrapage toléré)")
+          else:
+              print(f"::error::La slide 2 n'affiche pas la version {tag}")
+              sys.exit(1)
+          PY
+
+      - name: Préparer les assets
+        run: |
+          mkdir -p dist-release
+          while IFS='|' read -r src asset; do
+            [ -z "$src" ] && continue
+            asset="${asset//\$\{TAG\}/$TAG}"
+            cp "$src" "dist-release/$asset"
+          done <<< "$ARTIFACTS"
+          ls -1 dist-release
+
+      - name: Créer ou mettre à jour la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist-release/* --clobber --repo "$REPO"
+          else
+            NOTES=""
+            if [ -f CHANGELOG.md ]; then
+              V="${TAG#v}"
+              NOTES=$(awk -v v="$V" '
+                /^## / { if (found) exit; if (index($0, v)) { found=1; next } }
+                found { print }' CHANGELOG.md)
+            fi
+            if [ -n "${NOTES//[[:space:]]/}" ]; then
+              printf '%s\n' "$NOTES" > release-notes.md
+              gh release create "$TAG" dist-release/* --title "$TAG" --notes-file release-notes.md --verify-tag --repo "$REPO"
+            else
+              gh release create "$TAG" dist-release/* --title "$TAG" --generate-notes --verify-tag --repo "$REPO"
+            fi
+          fi
