@@ -194,7 +194,7 @@ class TestGenericPatterns(CheckCase):
         self.assertEqual(rc, 0, out)
 
     def test_foreign_ip_G5_and_allowed_ips(self):
-        make_pptx(self.pptx, slides=[{"paras": [para("host 192.0.2.10 and 127.0.0.1 and 8.8.8.8")]}])
+        make_pptx(self.pptx, slides=[{"paras": [para("host 192.0.2.10, 198.51.100.7, 203.0.113.9, 192.168.1.5, 192.168.200.20, 127.0.0.1 and 8.8.8.8")]}])
         rc, out, _ = self.run_check(leak=FAKE_TERM)
         self.assertEqual(rc, 0, out)
         make_pptx(self.pptx, slides=[{"paras": [para("ansible_host: 10.", "20.30.40")]}])  # IP coupée en 2 runs

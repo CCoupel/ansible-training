@@ -46,19 +46,20 @@ EXPECTED_HIDDEN = [
     int(x) for x in os.environ.get("EXPECTED_HIDDEN", "193,210,217").split(",") if x.strip()
 ]
 
-# Plages IP autorisées : documentation RFC 5737, loopback, wildcard, DNS public d'exemple,
-# et 192.168.1.0/24 (slide 141, laissée en l'état par décision du planner — à retirer
-# de cette liste si la slide est un jour anonymisée en 192.0.2.x).
+# Plages IP autorisées (décision utilisateur) : exemples éducatifs en 192.168.0.0/16 (slide 141
+# comprise), documentation RFC 5737, loopback et DNS public d'exemple. Toute autre IP est une
+# fuite potentielle. 0.0.0.0 (adresse d'écoute générique, présente dans le deck) est tolérée
+# en plus de la liste confirmée.
 ALLOWED_IP_NETS = [
     ipaddress.ip_network(n)
     for n in (
         "192.0.2.0/24",
         "198.51.100.0/24",
         "203.0.113.0/24",
-        "127.0.0.0/8",
+        "127.0.0.1/32",
         "0.0.0.0/32",
         "8.8.8.8/32",
-        "192.168.1.0/24",
+        "192.168.0.0/16",
     )
 ]
 
