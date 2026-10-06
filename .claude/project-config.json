@@ -1,0 +1,61 @@
+{
+  "name": "Ansible Training",
+  "team_name": "ansible-training-team",
+  "org": "",
+  "project": "ansible-training",
+  "description": "Support de cours de formation Ansible (PPTX), version generique sans references a l'organisation d'origine, avec exemples de playbooks/roles et labs de TP",
+  "version": "0.1.0",
+  "initialized_at": "2026-10-06T15:32:13+02:00",
+  "initialized_from": "workshop",
+  "template_version": {
+    "tag": "v3.10.0",
+    "commit": "c620b204c976c789d9039dc14c6958632f804672"
+  },
+  "src_dir": ".",
+  "version_file": "",
+  "stack": {
+    "backend": null,
+    "frontend": null,
+    "mobile": null,
+    "firmware": null,
+    "plugin": null,
+    "database": null
+  },
+  "infrastructure": {
+    "cicd": null,
+    "environments": []
+  },
+  "testing": {
+    "backend": [],
+    "frontend": [],
+    "e2e": [],
+    "components": {},
+    "regression_at_qa": "none",
+    "full_regression_at": "qualif",
+    "coverage_min": 70,
+    "lot_max_tests": 50
+  },
+  "security": {
+    "concerns": []
+  },
+  "commands": {
+    "build": "",
+    "test": "",
+    "lint": "",
+    "audit": "",
+    "typecheck": "",
+    "coverage": "",
+    "test_fast": "",
+    "test_targeted": ""
+  },
+  "docs": {
+    "mockup_dir": "docs/mockup"
+  },
+  "marketing": {
+    "site": "auto"
+  },
+  "agents": {
+    "idle_ttl_minutes": 15,
+    "idle_warning_interval_minutes": 5
+  }
+}
