@@ -287,13 +287,15 @@ Le workflow valide que la version affichée sur la slide 2 correspond au tag ava
 - **PPTX** : `Ansible Training.pptx` → `Ansible-Training-${TAG}.pptx` (inchangé depuis v0.1.1)
 - **HTML** : `build/Ansible-Training-HTML.zip` (généré par `node tools/package.js`) → `Ansible-Training-HTML-${TAG}.zip`
 
-**Configuration du workflow** (`.github/workflows/release.yml`) :
+**Configuration du workflow** (`.github/workflows/release.yml`, à adapter par `deployer` avant v0.2.0) :
 
 ```bash
 ARTIFACTS: |
   Ansible Training.pptx|Ansible-Training-${TAG}.pptx
   build/Ansible-Training-HTML.zip|Ansible-Training-HTML-${TAG}.zip
 ```
+
+**Statut** : cette configuration est une cible pour v0.2.0 et supérieur. Le workflow actuel ne publie que le PPTX. Avant de tagguer v0.2.0, adapter `.github/workflows/release.yml` pour embarquer les deux artefacts et leurs contrôles respectifs.
 
 **Contrôles adaptés par type** :
 
@@ -302,10 +304,10 @@ ARTIFACTS: |
    - Anti-fuite (secret `LEAK_PATTERNS`)
    - Slide 2 affiche la version correspondant au tag
 
-2. **HTML zip** (nouveau en v0.2.0) :
-   - Archive ZIP valide (51 fichiers : index.html, assets/, modules/, tools/, tests/site/, CONVENTIONS.md)
-   - Vérification de `assets/meta.js` contenant la version du tag
-   - Anti-fuite (site + PPTX embarqué + tools)
+2. **HTML zip** (nouveau en v0.2.0, à implémenter par deployer) :
+   - Archive ZIP valide (51 fichiers tracés par git : index.html, assets/, modules/, Ansible Training.pptx)
+   - Vérification de `assets/meta.js` contenant la version du tag (à ajouter au workflow)
+   - Anti-fuite (contenu du zip + PPTX embarqué, à scanner avec secret LEAK_PATTERNS)
 
 **Génération et tests du zip** :
 
@@ -331,7 +333,7 @@ python3 tools/check_links.py --offline
 Avant de tagguer une release v0.2.0 ou supérieure :
 
 ```bash
-# Tests du PPTX (slides 1-223, obsolescence)
+# Tests du PPTX (223 slides totales, y compris slides masquées ; obsolescence)
 LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence
 
 # Tests du site HTML (parité, accessibilité, structure)
@@ -359,6 +361,7 @@ python3 tools/check_links.py  # mode connecté (requête HTTP aux URLs externes)
 **Prérequis avant v0.2.0 et supérieur** :
 
 - Secret `LEAK_PATTERNS` configuré (voir section précédente)
-- Slide 2 du PPTX avec version v0.2.0 (ou vX.Y.Z correspondant au tag)
+- Slide 2 du PPTX : version v0.2.0 déjà présente (commit `0d8552a`) ; confirmer la date de livraison avant chaque tag (actuellement 07/10/2026, provisoire)
+- `.github/workflows/release.yml` : adapter pour publier les deux artefacts (PPTX + HTML zip) avec leurs contrôles respectifs
 - Site HTML testé avec `node` Linux (wrapper Windows donne faux échecs d'environnement)
 - Tous les tests ci-dessus doivent passer avant de poser le tag
