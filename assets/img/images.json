@@ -1,0 +1,294 @@
+{
+  "images": [
+    {
+      "fichier": "s004-1.png",
+      "slide": 4,
+      "slides": [
+        4
+      ],
+      "media_origine": "image9.png",
+      "sha256": "edc940a042e4acc6225c45d912432718d151523b057ce784b384e61be6f06a30",
+      "conversion": "png"
+    },
+    {
+      "fichier": "s005-1.png",
+      "slide": 5,
+      "slides": [
+        5
+      ],
+      "media_origine": "image10.wmf",
+      "sha256": "83b4c5dfd085040e98d497904c6f854d80e66ada565fb2ab15bee55a827db17a",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s005-2.png",
+      "slide": 5,
+      "slides": [
+        5
+      ],
+      "media_origine": "image11.wmf",
+      "sha256": "66a8166646a9d2afc535a95a7b3e4ca59e220337a863514f7f8bb33a173bedc9",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s005-3.png",
+      "slide": 5,
+      "slides": [
+        5
+      ],
+      "media_origine": "image12.wmf",
+      "sha256": "9e4718783eecc2a4c4e8ce2d73959fd57d2b6eff9637763f2d79b58c763322e7",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s005-4.png",
+      "slide": 5,
+      "slides": [
+        5
+      ],
+      "media_origine": "image13.wmf",
+      "sha256": "ce1d87dd89ff1ca678d0c13c0aadad0b44fb1e9fac03dfeb92d2a906811752db",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s005-5.png",
+      "slide": 5,
+      "slides": [
+        5
+      ],
+      "media_origine": "image14.wmf",
+      "sha256": "a42204ae3e4131516598c91adc28474d92ad5b49337482262a273c0cb19749a2",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s005-6.png",
+      "slide": 5,
+      "slides": [
+        5
+      ],
+      "media_origine": "image15.wmf",
+      "sha256": "cb6d44854927c719d6ad0f0db205481a6e25cac4ee946c2a6c2258647667802b",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s006-1.png",
+      "slide": 6,
+      "slides": [
+        6
+      ],
+      "media_origine": "image16.wmf",
+      "sha256": "1c01aa25d20a124f0a5328ecc56dbf9def3d1ab4561b201928c64c0036153012",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s006-2.png",
+      "slide": 6,
+      "slides": [
+        6
+      ],
+      "media_origine": "image17.wmf",
+      "sha256": "345baf84f414c2a3f35bb34224014216b100e8a036d36e0cfdb7631a8c20da6b",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s006-3.png",
+      "slide": 6,
+      "slides": [
+        6
+      ],
+      "media_origine": "image18.wmf",
+      "sha256": "2d5888f5ba83b842db99fdeef631ec4efb08a704d9190bb635d08a89bcc4bc53",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-1.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image19.wmf",
+      "sha256": "93df9a7535a169bff5a01eb0c1c0107fc724c58e1eccdabdb4227a7ce1792b6d",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-2.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image20.wmf",
+      "sha256": "4871e5661fae7459ebf0b81f65c020e22f2eee2cdfd795d5c38ea95efcb1fbeb",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-3.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image21.wmf",
+      "sha256": "4235f075d4ea6ea80cef74c8f69f408e7c5b1e2a7807247e6966c171f2922512",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-4.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image22.wmf",
+      "sha256": "3af15a2fe2ce03ca2cd10a9ae71e31ac265206ec0e7785516182596bdcc68492",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-5.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image23.wmf",
+      "sha256": "ee05b24f1d1c0e3178c78aaf7880c0acec43a9892f093ad8123332fdd37cdcd7",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-6.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image24.wmf",
+      "sha256": "f1ccb8415dbd1efc533c69693e3c91b004b8f21197a8596953da17800b42d802",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-7.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image25.wmf",
+      "sha256": "418a87cb925f6690e5aa60677f03aac0df12885ba3098c56b0db3e2651b0b106",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-8.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image26.wmf",
+      "sha256": "dacfee9e71774cc60b6c1026c0a85d6feb37eb3614823a474cd5244b371605cd",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-9.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image27.wmf",
+      "sha256": "f6fa372086e0ec3ffbd50989c98628978780430bcfba17eedcd6a0b7e86cbfc9",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s008-10.png",
+      "slide": 8,
+      "slides": [
+        8,
+        9
+      ],
+      "media_origine": "image28.wmf",
+      "sha256": "a2fec27f3f490ec2133dd20270f95cc0c47a2c3303424005438b8888d94a7dbd",
+      "conversion": "wmf->png x2 (System.Drawing)"
+    },
+    {
+      "fichier": "s049-1.png",
+      "slide": 49,
+      "slides": [
+        49
+      ],
+      "media_origine": "image29.png",
+      "sha256": "18ba176c842820f28de8833afd03ff2b44c1fe7428bff105bf3a6ba1043b4cd5",
+      "conversion": "png"
+    },
+    {
+      "fichier": "s050-1.png",
+      "slide": 50,
+      "slides": [
+        50
+      ],
+      "media_origine": "image30.png",
+      "sha256": "3b6f04d1826d09266663ff4fe816faf8335d6699650c6847716ac04a6a4ed204",
+      "conversion": "png"
+    },
+    {
+      "fichier": "s051-1.png",
+      "slide": 51,
+      "slides": [
+        51
+      ],
+      "media_origine": "image31.png",
+      "sha256": "b2a8c0bacc5aedf685052d065cfbc29ef1ce6fc89429f1341b3690c239b72e7d",
+      "conversion": "png"
+    },
+    {
+      "fichier": "s051-2.png",
+      "slide": 51,
+      "slides": [
+        51
+      ],
+      "media_origine": "image32.png",
+      "sha256": "2adc665d3d3439ffec789249f6f9691402895d85f61808e7db4e60a5198dbde2",
+      "conversion": "png"
+    },
+    {
+      "fichier": "s052-1.png",
+      "slide": 52,
+      "slides": [
+        52
+      ],
+      "media_origine": "image33.png",
+      "sha256": "d1a3975ef05ae7793967d0fb09e453d53b7b670f7249e067ef1884c12d484045",
+      "conversion": "png"
+    },
+    {
+      "fichier": "s087-1.png",
+      "slide": 87,
+      "slides": [
+        87
+      ],
+      "media_origine": "image34.png",
+      "sha256": "cdf4ba83400511a1405a7089183a52e2aba1565a0443a5f53e26f42b9a728689",
+      "conversion": "png"
+    },
+    {
+      "fichier": "s090-1.png",
+      "slide": 90,
+      "slides": [
+        90
+      ],
+      "media_origine": "image35.png",
+      "sha256": "ebe1e7a469fd921791a7f69a873d90c5fd79dc65ef4a20e515f6bf62fb9e0fa7",
+      "conversion": "png"
+    },
+    {
+      "fichier": "s209-1.png",
+      "slide": 209,
+      "slides": [
+        209
+      ],
+      "media_origine": "image36.png",
+      "sha256": "995099fcf661a3128a90f6827295b15956ed6d22dcf9ea4a9299efd285cef092",
+      "conversion": "png"
+    }
+  ]
+}
