@@ -113,7 +113,7 @@ function checkHtml(file, where, field, text) {
 }
 // Attributs dangereux et liens : valables aussi pour le SVG des diagrammes.
 function checkAttrs(file, where, field, text) {
-  if (/\son[a-z]+\s*=/i.test(text)) err(file, `${where}, champ ${field} : gestionnaire d'événement (on…=) interdit`);
+  if (/<[^>]*\son[a-z]+\s*=/i.test(text)) err(file, `${where}, champ ${field} : gestionnaire d'événement (on…=) interdit`);
   if (/javascript:/i.test(text)) err(file, `${where}, champ ${field} : « javascript: » interdit`);
   if (/<\s*script/i.test(text)) err(file, `${where}, champ ${field} : balise script interdite`);
   for (const a of text.matchAll(/<a\b[^>]*>/gi)) {
@@ -139,6 +139,7 @@ function checkRef(file, where, ref, srcSet) {
 const srcOwner = {}; // n° de slide PPTX → module (doublons inter-modules)
 
 function checkSchema(file, mod) {
+  const errorsBefore = errors;
   const base = path.basename(file);
   const expected = /^m(\d+)/.exec(base);
   if (!/^m\d{2}$/.test(String(mod.id))) err(file, `id "${mod.id}" invalide (attendu mNN)`);
@@ -233,7 +234,7 @@ function checkSchema(file, mod) {
   if (!quizzes) err(file, 'aucun quiz (1 à 3 attendus)');
   else if (quizzes > 3) warn(file, `${quizzes} quiz (3 maximum recommandés)`);
   if (mod.slides.length < 6 || mod.slides.length > 24) warn(file, `${mod.slides.length} slides (6 à 24 attendues)`);
-  console.log(`${errors ? '…' : 'ok '}      ${base} : ${mod.slides.length} slides, ${quizzes} quiz, ${labs} lab`);
+  console.log(`${errors > errorsBefore ? '…' : 'ok '}      ${base} : ${mod.slides.length} slides, ${quizzes} quiz, ${labs} lab`);
   return mod;
 }
 
@@ -312,6 +313,7 @@ if (FR) {
     for (const m of html.matchAll(/data-i18n-attr="([^"]+)"/g)) m[1].split(',').forEach(p => need.add(p.split(':')[1].trim()));
   }
   for (const k of [...need].sort()) if (!(k in FR)) err(i18nFile, `clé "${k}" utilisée mais absente`);
+  for (const k of Object.keys(FR).sort()) if (!need.has(k)) err(i18nFile, `clé "${k}" orpheline (jamais utilisée par engine.js ni index.html) : l'utiliser ou la supprimer`);
 }
 
 // meta.js et index.html
