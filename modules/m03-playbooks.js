@@ -131,12 +131,12 @@ SRV-1                      : ok=3    changed=1    unreachable=0    failed=0    s
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'À quoi sert le champ <code>name</code> d\'une tâche ?',
-        options: ['Il documente la tâche et apparaît dans automation controller / AWX', 'Il est obligatoire et identifie le module appelé', 'Il définit l\'hôte cible de la tâche'], answer: 0,
+        options: ['Il est obligatoire et identifie le module appelé', 'Il définit l\'hôte cible de la tâche', 'Il documente la tâche et apparaît dans automation controller / AWX'], answer: 2,
         explain: 'Les notes de la slide 35 : les champs <code>name</code> sont des commentaires lisibles, facultatifs mais utiles ; ces textes apparaissent aussi dans automation controller / AWX.', ref: [35] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle affirmation sur les <code>include*</code> est exacte ?',
-        options: ['Ils sont traités pendant l\'exécution du playbook et acceptent une boucle', 'Ils sont pré-traités au moment où le playbook est analysé', 'Leurs tâches apparaissent toujours dans la sortie de --list-tasks'], answer: 0,
+        options: ['Leurs tâches apparaissent toujours dans la sortie de --list-tasks', 'Ils sont traités pendant l\'exécution du playbook et acceptent une boucle', 'Ils sont pré-traités au moment où le playbook est analysé'], answer: 1,
         explain: 'Slide 43 : « Include => dynamic » ; une boucle peut être utilisée avec un include, alors que les tâches d\'un include dynamique n\'apparaissent pas dans la sortie de <code>--list-tasks</code>.', ref: [43] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [

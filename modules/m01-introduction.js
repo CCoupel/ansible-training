@@ -90,7 +90,7 @@ PLAY RECAP *********************************************************************
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Pourquoi dit-on qu\'Ansible est « agentless » ?',
-        options: ['Il se connecte avec OpenSSH, WinRM ou PSRP, sans agent à installer ni à mettre à jour', 'Il installe un agent léger sur chaque hôte au premier lancement', 'Il impose un agent uniquement sur les hôtes Windows'], answer: 0,
+        options: ['Il impose un agent uniquement sur les hôtes Windows', 'Il se connecte avec OpenSSH, WinRM ou PSRP, sans agent à installer ni à mettre à jour', 'Il installe un agent léger sur chaque hôte au premier lancement'], answer: 1,
         explain: 'La slide 6 indique « Agentless architecture », « Uses OpenSSH, WinRM & PSRP » et « No agents to exploit or update ».', ref: [6] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
@@ -100,7 +100,7 @@ PLAY RECAP *********************************************************************
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle commande exécute un playbook sur un inventaire donné ?',
-        options: ['ansible-playbook -i &lt;inventaire&gt; &lt;playbook&gt;', 'ansible -i &lt;inventaire&gt; &lt;playbook&gt;', 'pipx install ansible-core -i &lt;inventaire&gt;'], answer: 0,
+        options: ['ansible -i &lt;inventaire&gt; &lt;playbook&gt;', 'pipx install ansible-core -i &lt;inventaire&gt;', 'ansible-playbook -i &lt;inventaire&gt; &lt;playbook&gt;'], answer: 2,
         explain: 'La slide 12 donne <code>ansible-playbook -i &lt;inventaire&gt;</code> suivi des options et du playbook (cf. slide 12).', ref: [12] }
     ] }
   ],

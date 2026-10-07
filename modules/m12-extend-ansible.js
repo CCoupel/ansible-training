@@ -230,12 +230,12 @@ def TCP(IP, PORT) :
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle stratégie d\'exécution est la stratégie par défaut ?',
-        options: ['Linear', 'Free', 'Host-pinned'], answer: 0,
+        options: ['Free', 'Host-pinned', 'Linear'], answer: 2,
         explain: 'Slide 163 : « Linear Strategy: The default strategy where tasks are executed in a linear fashion, one after the other, across all hosts ».', ref: [163] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Que fait <code>run_once</code> ?',
-        options: ['La tâche n\'est exécutée que sur le premier hôte du lot', 'La tâche n\'est exécutée qu\'une fois par jour', 'La tâche est exécutée sur tous les hôtes en parallèle'], answer: 0,
+        options: ['La tâche est exécutée sur tous les hôtes en parallèle', 'La tâche n\'est exécutée que sur le premier hôte du lot', 'La tâche n\'est exécutée qu\'une fois par jour'], answer: 1,
         explain: 'Slide 166 : « Run_Once: The task is run only on the FIRST host of the batch ».', ref: [166] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [

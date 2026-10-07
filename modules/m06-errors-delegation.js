@@ -112,12 +112,12 @@ tasks:
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quel mot-clé exécute un bloc de tâches quel que soit le succès ou l\'échec du bloc principal ?',
-        options: ['always', 'rescue', 'ignore_errors'], answer: 0,
+        options: ['rescue', 'ignore_errors', 'always'], answer: 2,
         explain: 'Slide 69 : « always: A block to execute tasks regardless of success or failure » ; <code>rescue</code> ne s\'exécute que si une erreur survient.', ref: [69] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Que fait <code>delegate_to</code> ?',
-        options: ['Il exécute la tâche sur l\'hôte indiqué à la place de l\'hôte courant', 'Il délègue l\'exécution du playbook à un autre utilisateur', 'Il charge les facts d\'un autre inventaire'], answer: 0,
+        options: ['Il charge les facts d\'un autre inventaire', 'Il exécute la tâche sur l\'hôte indiqué à la place de l\'hôte courant', 'Il délègue l\'exécution du playbook à un autre utilisateur'], answer: 1,
         explain: 'Slide 79 : « The task will be executed ont the server ‘host’ instead of the current one ».', ref: [79] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [

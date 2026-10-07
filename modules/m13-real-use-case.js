@@ -126,7 +126,7 @@ COURSE.add({
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Dans l\'exemple de la slide 188, quel résultat est positionné quand le serveur source n\'est pas joignable en SSH ?',
-        options: ['SRC ERROR', 'DST ERROR', 'PORT CLOSED'], answer: 0,
+        options: ['PORT CLOSED', 'SRC ERROR', 'DST ERROR'], answer: 1,
         explain: 'Dans le bloc <code>rescue</code> de la slide 188, la tâche « SRC not SSHable » positionne <code>result="SRC ERROR"</code>.', ref: [188] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
@@ -136,7 +136,7 @@ COURSE.add({
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Dans la matrice de sortie, quel statut est affiché pour un service privé inaccessible ?',
-        options: ['NO ACCESS with private service', 'PORT CLOSED', 'SRC ERROR'], answer: 0,
+        options: ['PORT CLOSED', 'SRC ERROR', 'NO ACCESS with private service'], answer: 2,
         explain: 'Slide 187 : le premier flux (http, port 2222) a pour statut « NO ACCESS with private service ».', ref: [187] }
     ] }
   ],

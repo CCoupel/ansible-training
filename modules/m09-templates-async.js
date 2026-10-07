@@ -134,12 +134,12 @@ https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_async.
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle syntaxe Jinja permet d\'insérer une variable dans un template ?',
-        options: ['{{ ... }}', '{% ... %}', '{# ... #}'], answer: 0,
+        options: ['{% ... %}', '{# ... #}', '{{ ... }}'], answer: 2,
         explain: 'Slide 121 : « Variables » avec <code>{{ ... }}</code>, « Control Structures » avec <code>{% ... %}</code> et « Comments » avec <code>{# ... #}</code>.', ref: [121] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Dans l\'exemple de la slide 131, que signifient <code>async: 45</code> et <code>poll: 5</code> ?',
-        options: ['La tâche peut durer jusqu\'à 45 secondes et son état est vérifié toutes les 5 secondes', 'La tâche attend 45 secondes puis s\'exécute 5 fois', 'La tâche est limitée à 5 secondes avec 45 tentatives'], answer: 0,
+        options: ['La tâche est limitée à 5 secondes avec 45 tentatives', 'La tâche peut durer jusqu\'à 45 secondes et son état est vérifié toutes les 5 secondes', 'La tâche attend 45 secondes puis s\'exécute 5 fois'], answer: 1,
         explain: 'Le commentaire de la slide 131 précise : « wait for up to 45 sec, poll every 5 sec ».', ref: [131] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [

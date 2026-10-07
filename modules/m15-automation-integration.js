@@ -96,12 +96,12 @@ dependencies: []` }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Où les variables internes d\'un rôle doivent-elles être déclarées ?',
-        options: ['Dans default/main.yml, initialisées à partir des variables externes du rôle', 'Dans l\'inventaire uniquement', 'Sur la ligne de commande avec -e uniquement'], answer: 0,
+        options: ['Dans l\'inventaire uniquement', 'Sur la ligne de commande avec -e uniquement', 'Dans default/main.yml, initialisées à partir des variables externes du rôle'], answer: 2,
         explain: 'Slide 222 : « internal role vars MUST be declared in the default/main.yml and initialized from external role vars ».', ref: [222] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Quel mécanisme la slide 223 recommande-t-elle pour éviter plusieurs exécutions d\'une même tâche ?',
-        options: ['Les handlers', 'ignore_errors', 'Les tags'], answer: 0,
+        options: ['Les tags', 'Les handlers', 'ignore_errors'], answer: 1,
         explain: 'Slide 223 : « Use the handlers to avoid multiple runs of a single tache ».', ref: [223] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [

@@ -137,12 +137,12 @@ Key2=value2` },
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Comment la slide 59 accède-t-elle au premier élément du tableau <code>my_array</code> ?',
-        options: ['{{ my_array[0] }} (ou {{ my_array.0 }})', '{{ my_array(0) }}', '{{ my_array.first }}'], answer: 0,
+        options: ['{{ my_array(0) }}', '{{ my_array.first }}', '{{ my_array[0] }} (ou {{ my_array.0 }})'], answer: 2,
         explain: 'La slide 59 affiche <code>{{ my_array.0 }}</code> et <code>{{ my_array[0] }}</code>.', ref: [59] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Où se placent les facts locaux sur l\'hôte distant ?',
-        options: ['/etc/ansible/facts.d/*.fact', '/etc/ansible/hosts', '/var/lib/ansible/facts'], answer: 0,
+        options: ['/var/lib/ansible/facts', '/etc/ansible/facts.d/*.fact', '/etc/ansible/hosts'], answer: 1,
         explain: 'Slide 65 : « facts in remote host: /etc/ansible/facts.d/*.fact ».', ref: [65] }
     ] }
   ],

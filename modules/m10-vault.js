@@ -72,7 +72,7 @@ Ansible_user=!vault ……` },
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle commande chiffre une valeur pour la placer dans une variable ?',
-        options: ['ansible-vault encrypt_string', 'ansible-vault create', 'ansible-vault edit'], answer: 0,
+        options: ['ansible-vault edit', 'ansible-vault encrypt_string', 'ansible-vault create'], answer: 1,
         explain: 'Slide 139 : <code>ansible-vault encrypt_string</code> stocke une variable chiffrée ; la slide 138 utilise <code>create</code>, <code>edit</code> et <code>encrypt</code> pour des fichiers.', ref: [138, 139] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
@@ -82,7 +82,7 @@ Ansible_user=!vault ……` },
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Que peut chiffrer Ansible Vault ?',
-        options: ['Des fichiers entiers ou des variables précises', 'Uniquement des fichiers entiers', 'Uniquement des mots de passe SSH'], answer: 0,
+        options: ['Uniquement des fichiers entiers', 'Uniquement des mots de passe SSH', 'Des fichiers entiers ou des variables précises'], answer: 2,
         explain: 'Slide 136 : « Flexibility: Encrypt entire files or specific variables within a file ».', ref: [136] }
     ] }
   ],

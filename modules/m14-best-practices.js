@@ -576,12 +576,12 @@ host_key_checking = False` },
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Comment éviter la collecte des facts quand ils ne sont pas nécessaires au play ?',
-        options: ['gather_facts: False', 'gather_facts: true', 'strategy: free'], answer: 0,
+        options: ['gather_facts: true', 'strategy: free', 'gather_facts: False'], answer: 2,
         explain: 'Slide 211 : « If none of these facts are required for the play, it is wise to disable it » avec <code>gather_facts: False</code>.', ref: [211] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Quels outils la slide 204 associe-t-elle au contrôle de la syntaxe et à celui de l\'exécution ?',
-        options: ['yamllint et ansible-lint pour la syntaxe, Molecule pour l\'exécution', 'Molecule pour la syntaxe, yamllint pour l\'exécution', 'ansible-doc pour la syntaxe, ansible-galaxy pour l\'exécution'], answer: 0,
+        options: ['ansible-doc pour la syntaxe, ansible-galaxy pour l\'exécution', 'yamllint et ansible-lint pour la syntaxe, Molecule pour l\'exécution', 'Molecule pour la syntaxe, yamllint pour l\'exécution'], answer: 1,
         explain: 'Slide 204 : la syntaxe et les prérequis sont contrôlés par Lint (yamllint et ansible-lint, lancés séparément) et l\'exécution par Molecule.', ref: [204] }
     ] }
   ],

@@ -166,7 +166,7 @@ Handlers:
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quel filtre fournit une valeur lorsqu\'une variable n\'est pas définie ?',
-        options: ['default', 'mandatory', 'flatten'], answer: 0,
+        options: ['flatten', 'default', 'mandatory'], answer: 1,
         explain: 'Slide 83 : « Handling Undefined Variables: default, mandatory » ; la slide 85 montre <code>default(default_var)</code>, alors que <code>mandatory</code> impose la définition de la variable.', ref: [83, 85] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
@@ -176,7 +176,7 @@ Handlers:
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Quel mot-clé conditionne l\'exécution d\'une tâche ?',
-        options: ['when', 'register', 'notify'], answer: 0,
+        options: ['register', 'notify', 'when'], answer: 2,
         explain: 'Slide 92 : « when: A keyword used to specify conditions for task execution » ; <code>register</code> stocke le résultat d\'une tâche pour l\'utiliser dans une condition.', ref: [92] }
     ] }
   ],

@@ -232,12 +232,12 @@ item=['user3', 'group3']
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Que fait l\'option <code>--skip-tags</code> ?',
-        options: ['Elle ignore les tâches portant le tag indiqué', 'Elle n\'exécute que les tâches portant le tag indiqué', 'Elle supprime le tag des tâches'], answer: 0,
+        options: ['Elle n\'exécute que les tâches portant le tag indiqué', 'Elle supprime le tag des tâches', 'Elle ignore les tâches portant le tag indiqué'], answer: 2,
         explain: 'Slide 116 : « Use the --skip-tags option to skip tasks marked with a specific tag ».', ref: [116] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Quel tag spécial s\'exécute même quand d\'autres tags sont demandés avec --tags ?',
-        options: ['always', 'never', 'tagged'], answer: 0,
+        options: ['tagged', 'always', 'never'], answer: 1,
         explain: 'Slide 117 : les tâches taguées <code>always</code> sont exécutées même quand d\'autres tags sont demandés, sauf avec <code>--skip-tags always</code>.', ref: [117] }
     ] }
   ],

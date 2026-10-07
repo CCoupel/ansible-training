@@ -257,12 +257,12 @@ ansible-galaxy collection publish \\
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Où les rôles Ansible Galaxy sont-ils installés par défaut ?',
-        options: ['~/.ansible/roles', '/etc/ansible/roles', '/usr/share/ansible/roles'], answer: 0,
+        options: ['/etc/ansible/roles', '/usr/share/ansible/roles', '~/.ansible/roles'], answer: 2,
         explain: 'Slide 158 : « By default, Ansible Galaxy roles are installed in the <code>~/.ansible/roles</code> directory ».', ref: [158] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle structure est présentée comme « la manière standard de distribuer et de gérer du contenu Ansible » ?',
-        options: ['Une collection', 'Un playbook', 'Un inventaire'], answer: 0,
+        options: ['Un inventaire', 'Une collection', 'Un playbook'], answer: 1,
         explain: 'Slide 143 : « Ansible Collections: The standard way to distribute and manage Ansible content ».', ref: [143] }
     ] }
   ],

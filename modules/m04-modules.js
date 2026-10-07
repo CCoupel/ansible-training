@@ -78,7 +78,7 @@ COURSE.add({
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quel type de modules est livré avec ansible-core ?',
-        options: ['Les modules intégrés (ansible.builtin)', 'Les modules des collections distribuées par Galaxy', 'Les modules personnalisés écrits par l\'utilisateur'], answer: 0,
+        options: ['Les modules personnalisés écrits par l\'utilisateur', 'Les modules intégrés (ansible.builtin)', 'Les modules des collections distribuées par Galaxy'], answer: 1,
         explain: 'Slide 45 : « Builtin Modules (ansible.builtin): Shipped with ansible-core ».', ref: [45] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
@@ -88,7 +88,7 @@ COURSE.add({
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Dans vi/vim, quelle touche permet de revenir au mode commande ?',
-        options: ['ESC', 'i', 'dd'], answer: 0,
+        options: ['i', 'dd', 'ESC'], answer: 2,
         explain: 'Slide 53 : « ESC: return to command mode » ; <code>i</code> insère du texte et <code>dd</code> supprime une ligne.', ref: [53] }
     ] }
   ],
