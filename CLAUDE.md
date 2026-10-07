@@ -282,12 +282,12 @@ Le workflow valide que la version affichée sur la slide 2 correspond au tag ava
 
 ### Extensibilité (v0.2.0)
 
-À partir de v0.2.0, le workflow publie deux artefacts en parallèle :
+À partir de v0.2.0, le workflow publie deux artefacts en parallèle (commit 43c826e) :
 
 - **PPTX** : `Ansible Training.pptx` → `Ansible-Training-${TAG}.pptx` (inchangé depuis v0.1.1)
 - **HTML** : `build/Ansible-Training-HTML.zip` (généré par `node tools/package.js`) → `Ansible-Training-HTML-${TAG}.zip`
 
-**Configuration du workflow** (`.github/workflows/release.yml`, à adapter par `deployer` avant v0.2.0) :
+**Configuration du workflow** (`.github/workflows/release.yml`, adapté pour v0.2.0) :
 
 ```bash
 ARTIFACTS: |
@@ -295,40 +295,66 @@ ARTIFACTS: |
   build/Ansible-Training-HTML.zip|Ansible-Training-HTML-${TAG}.zip
 ```
 
-**Statut** : cette configuration est une cible pour v0.2.0 et supérieur. Le workflow actuel ne publie que le PPTX. Avant de tagguer v0.2.0, adapter `.github/workflows/release.yml` pour embarquer les deux artefacts et leurs contrôles respectifs.
+**Contrôles réels (CI)** : bloquants, exécutés avant publication :
 
-**Contrôles adaptés par type** :
+1. **Préalables** (après checkout du tag) :
+   - Tag sur `main` (garde-fou `merge-base --is-ancestor`)
+   - Secret `LEAK_PATTERNS` configuré (publication refusée sans lui)
 
-1. **PPTX** (existant) :
-   - Archive ZIP valide
-   - Anti-fuite (secret `LEAK_PATTERNS`)
-   - Slide 2 affiche la version correspondant au tag
+2. **Environnement & dépendances** :
+   - Node 22 (SHA épinglé `49933ea…`)
+   - Python 3.12 (SHA épinglé `a26af69…`)
 
-2. **HTML zip** (nouveau en v0.2.0, à implémenter par deployer) :
-   - Archive ZIP valide (51 fichiers tracés par git : index.html, assets/, modules/, Ansible Training.pptx)
-   - Vérification de `assets/meta.js` contenant la version du tag (à ajouter au workflow)
-   - Anti-fuite (contenu du zip + PPTX embarqué, à scanner avec secret LEAK_PATTERNS)
+3. **Tests bloquants** (échec = arrêt) :
+   - `PARITY_STRICT=1 python3 -m unittest discover -s tests/site` (131 tests, `RELEASE_TAG=$TAG` active version check slide 2)
+   - `LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence` (42 tests, validité du PPTX et versions)
+   - `node tools/validate.js` (structure HTML/SVG/quiz)
+   - `node tools/sync-meta.js --check --version "${TAG#v}"` (meta.js contient la bonne version, pas de réécriture)
 
-**Génération et tests du zip** :
+4. **Artefacts** :
+   - PPTX (`tests/slides/check_pptx.py`, anti-fuite avec `LEAK_PATTERNS`) + slide 2 affiche version du tag
+   - **Zip HTML** (51 fichiers) :
+     - Validité : `unzip -t` (archive OK)
+     - Contenu : présence de `index.html`, `assets/meta.js`, `Ansible Training.pptx` à la racine
+     - PPTX embarqué identique au PPTX du tag (`cmp`)
+     - `assets/meta.js` contient `"version": "X.Y.Z"` du tag (grep)
+     - Anti-fuite site : `tests/site/check_site.py --dir <extraction> --require-secret`
+     - Anti-fuite PPTX embarqué : `tests/slides/check_pptx.py` sur le PPTX du zip
+
+**Non exécuté en CI** :
+- `check_links.py --offline` ou connecté (hors périmètre, manuel)
+- Vérification de la date de livraison dans `meta.js` (date à confirmer par l'utilisateur, non contrôlée en CI)
+
+**Génération et tests du zip (local)** :
 
 ```bash
-# Générer le zip (déterministe, PPTX inclus)
+# Générer le zip (déterministe, PPTX inclus, refuse un arbre modifié)
 node tools/package.js
 
-# Vérifier la structure (si unzip disponible)
-unzip -t build/Ansible-Training-HTML.zip > /dev/null  # valide l'archive sans décompression
-# ou
-unzip -l build/Ansible-Training-HTML.zip | tail -1  # affiche « 51 files, … octets »
+# Vérifier la validité (si unzip disponible)
+unzip -t build/Ansible-Training-HTML.zip > /dev/null  # valide sans décompression
+# ou (affiche le décompte en fin)
+unzip -l build/Ansible-Training-HTML.zip | tail -1
 
-# Tests du site
+# Afficher le SHA256
+sha256sum build/Ansible-Training-HTML.zip
+
+# Tests du site (avant packaging en CI)
 PARITY_STRICT=1 python3 -m unittest discover -s tests/site
 
 # Validation de structure HTML
 node tools/validate.js
 
-# Audit des liens (mode hors-ligne, ignore URLs externes)
-python3 tools/check_links.py --offline
+# Vérifier que meta.js est prêt pour le tag v0.2.0
+node tools/sync-meta.js --check --version 0.2.0
+
+# Audit des liens (manuel, hors CI)
+python3 tools/check_links.py --offline  # mode local (liens sans requête HTTP)
+# ou
+python3 tools/check_links.py  # mode connecté (requête HTTP, peut être lent/instable)
 ```
+
+**Avant tag** : le CI refusera la release si les tests locaux échouent. Vérifier localement avant de pousser le tag.
 
 ### Tests et Validation (v0.2.0)
 
@@ -360,10 +386,27 @@ python3 tests/slides/check_pptx.py "Ansible Training.pptx"
 python3 tools/check_links.py  # mode connecté (requête HTTP aux URLs externes)
 ```
 
-**Prérequis avant v0.2.0 et supérieur** :
+**Prérequis avant tag v0.2.0 et supérieur** (le CI les vérifie) :
 
-- Secret `LEAK_PATTERNS` configuré (voir section précédente)
-- Slide 2 du PPTX : version v0.2.0 déjà présente (commit `0d8552a`) ; confirmer la date de livraison avant chaque tag (actuellement 07/10/2026, provisoire)
-- `.github/workflows/release.yml` : adapter pour publier les deux artefacts (PPTX + HTML zip) avec leurs contrôles respectifs
-- Site HTML testé avec `node` Linux (wrapper Windows donne faux échecs d'environnement)
-- Tous les tests ci-dessus doivent passer avant de poser le tag
+1. **Secret `LEAK_PATTERNS`** : configuré sur le dépôt (`gh secret list` doit l'afficher)
+   - Sans lui, le workflow échoue volontairement
+   - Jamais écrit dans les logs (sortie masquée)
+
+2. **Date de livraison** (`assets/meta.js`) :
+   - Actuellement vide (« date »: "") ou 07/10/2026 (provisoire)
+   - À fixer avant tag via : `node tools/sync-meta.js --date JJ/MM/AAAA`, puis commiter
+   - Exemples : `07/10/2026` (date du jour), `15/10/2026` (date cible de release)
+   - Le workflow **ne contrôle pas** la date, seule la version est vérifiée
+
+3. **Slide 2 du PPTX** :
+   - Doit afficher version v0.2.0 (ou vX.Y.Z du tag) — commit `0d8552a` OK
+   - Doit afficher la date de livraison — à aligner sur meta.js
+
+4. **`milestone/v0.2.0` mergée sur `main`** avant le tag :
+   - Le CI vérifie que le commit du tag est ancêtre de `origin/main`
+   - Sans cela, workflow échoue avec message explicite
+
+5. **Tests locaux réussis** :
+   - Tous les tests ci-dessus doivent passer (QA responsable)
+   - Node 22 ou Linux (wrapper `node.exe` Windows donne faux échecs)
+   - Python 3.12+
