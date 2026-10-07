@@ -18,6 +18,17 @@ Ce projet n'a **aucune stack applicative** : `dev-backend`, `dev-frontend`, `dev
 - **CLEAR** : `dev-slides` est dans la categorie **contexte preserve** (jamais de CLEAR mid-feature), comme les autres `dev-*`.
 - **Fichier de version** : jamais modifie par `dev-slides` (regle `context/DEV_COMMON.md`).
 
+## Agent DEV du projet : `course`
+
+| Nom SendMessage | Subagent type | Role |
+|----------------|--------------|------|
+| `course` | `generic` | Developpement du site HTML v0.2.0 (conversion PPTX→modules, contenu additionnel, outils, workflows) — instance de `generic.template.md` specialisee par `.claude/agents/generic.course.md` |
+
+- **Retour DEV** : `COURSE DONE` / `COURSE BLOQUE` / jalons `COURSE EN COURS` (format `context/TEAMMATES_PROTOCOL.md` section 3 et 4b). Equivalent du `DONE/FAILED` attendu par le template pour tout agent DEV : meme traitement (Phase REVIEW apres DONE, retour DEV apres REFUSE).
+- **Corrections apres REVIEW/QA** : `SendMessage({ to: "course", content: "Corriger : [points du rapport]" })`.
+- **CLEAR** : `course` est dans la categorie **contexte preserve** (jamais de CLEAR mid-feature), comme les autres `dev-*`.
+- **Fichier de version** : jamais modifie par `course` (regle `.claude/agents/generic.course.md`).
+
 ## Agents non utilises ici
 
 - `infra` : pas d'environnements ni de CI/CD configures — ne pas dispatcher (ignorer le Mode Validation avant PUBLISH tant que `infrastructure.environments` est vide).
