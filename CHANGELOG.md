@@ -28,7 +28,7 @@ Version HTML interactive du support de formation : 15 modules répartis en 217 s
   - `tools/check_links.py` : audit des 100 URL externes du site et du PPTX
 - **Conventions de conversion PPTX → HTML** (`CONVENTIONS.md`) : verbatim du texte, blocs (code, bullets, table, lab/reveal, SVG, gallery, quiz), notes étiquetées du formateur, exceptions de parité (2 liens masqués)
 - **Tests du site** (`tests/site/`, 131 tests) : parité PPTX-HTML (slides couvertes, texte verbatim, `<code>` ⊆ PPTX, links), cohérence (quiz, SVG, metadata), accessibilité (alt, aria), structure (modules, fichiers, meta)
-- **Workflow adapté pour deux artefacts** (commit 43c826e, `.github/workflows/release.yml`) : variable `ARTIFACTS` pour PPTX et HTML zip, contrôles par type (validité, anti-fuite, version), tests bloquants (`PARITY_STRICT`, `LOTS_STRICT`, `RELEASE_TAG`), Node 22 et Python 3.12, deux SHA256 affichés dans le log CI
+- **Workflow adapté pour trois artefacts** (commits 43c826e, fab6435 `.github/workflows/release.yml`) : variable `ARTIFACTS` pour PPTX, HTML zip et .sha256, contrôles par type (validité, anti-fuite, version, date), tests bloquants (`PARITY_STRICT`, `LOTS_STRICT`, `RELEASE_TAG`), Node 22 et Python 3.12, SHAs affichés dans le log CI, vérification de la cohérence version/date entre slide 2 et meta.js
 
 ### Changed
 
@@ -48,18 +48,28 @@ Version HTML interactive du support de formation : 15 modules répartis en 217 s
 ### Notes de Développement
 
 - Slides masquées 193, 210, 217 exclues du HTML (Q3 décidé)
-- Contenu PPTX inchangé entre v0.1.1 et v0.2.0 ; slide 2 mise à jour (commit `0d8552a`) avec version v0.2.0 et date provisoire (07/10/2026, à confirmer avant chaque tag)
-- Artefact HTML zip (51 fichiers : index.html, assets/, modules/, Ansible Training.pptx) publié sur release GitHub en parallèle du PPTX (déterministe, générés par `node tools/package.js`)
-- Workflow **adapté** pour v0.2.0 et supérieur (commit 43c826e) — **aucune exécution réelle** (pas de tag, pas de `workflow_dispatch`)
+- Contenu PPTX inchangé entre v0.1.1 et v0.2.0 ; slide 2 mise à jour (commit `0d8552a`) avec version v0.2.0 et date 07/10/2026 (fixée)
+- Date de livraison fixée dans `assets/meta.js` (commit `6596dbf`) : 07/10/2026 (identique à la slide 2)
+- Artefacts : PPTX, HTML zip (51 fichiers : index.html, assets/, modules/, Ansible Training.pptx) et .sha256, générés par `node tools/package.js` (déterministe)
+- Workflow **adapté** pour v0.2.0 et supérieur (commits 43c826e, fab6435, `.github/workflows/release.yml`) :
+  - Contrôle de la version (slide 2 + meta.js du zip)
+  - Contrôle de la date de livraison (slide 2 + meta.js du zip, doivent être identiques)
+  - Génération du fichier .sha256 pour vérification locale (`sha256sum -c`)
+  - Aucune exécution réelle (pas de tag, pas de `workflow_dispatch`)
 
 ### Avant la première release v0.2.0
 
-À valider et fixer (CI les vérifie) :
+À valider (CI les vérifie) :
 1. **Secret `LEAK_PATTERNS`** : configuré (`gh secret list`)
-2. **Date de livraison** : fixer dans `assets/meta.js` via `node tools/sync-meta.js --date JJ/MM/AAAA`, commiter
-3. **Slide 2 du PPTX** : version v0.2.0 ✓ (commit `0d8552a`), date alignée sur meta.js
-4. **Branche `milestone/v0.2.0` mergée sur `main`** avant de poser le tag
-5. **Tests locaux** : tous les tests du CI doivent passer (`PARITY_STRICT`, `LOTS_STRICT`, `RELEASE_TAG=v0.2.0`)
+2. **Date de livraison** : fixée 07/10/2026 dans `assets/meta.js` (commit `6596dbf`) et slide 2 du PPTX (commit `0d8552a`)
+   - Si date différente : `node tools/sync-meta.js --date JJ/MM/AAAA`, commiter, et slide 2 alignée
+   - Le workflow **contrôle que les deux dates sont identiques**
+3. **Branche `milestone/v0.2.0` mergée sur `main`** avant de poser le tag
+4. **Tests locaux** (QA) : tous les tests du workflow doivent passer
+   - `PARITY_STRICT=1 RELEASE_TAG=v0.2.0 python3 -m unittest discover -s tests/site` (131 tests)
+   - `LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence` (42 tests)
+   - Node 22+ Linux, Python 3.12+
+5. **Premier lancement** : essai sur `v0.2.0` ; en cas d'échec partiel du workflow, prévoir de pouvoir supprimer la release GitHub et le tag avant relance
 
 ## [0.1.1] - 2026-10-07
 
