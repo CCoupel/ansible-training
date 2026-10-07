@@ -223,18 +223,21 @@ Chaque version est publiée automatiquement via GitHub Actions (`.github/workflo
 ```bash
 # 1. Merger milestone/vX.Y.Z sur main
 git checkout main
-git merge milestone/v0.1.1
+git merge milestone/v0.2.0
 
 # 2. Poser le tag sur main et pousser
-git tag v0.1.1
+git tag v0.2.0
 git push origin main
-git push origin v0.1.1
+git push origin v0.2.0
 
-# Ou via dispatch (rattrapage, ex. v0.1.0)
-gh workflow run release.yml -f tag=v0.1.0
+# Ou via dispatch (pour un tag cohérent avec sa slide 2 et meta.js)
+# Exemple : relancer v0.2.0 en cas d'échec partiel du workflow
+gh workflow run release.yml -f tag=v0.2.0
 ```
 
-**Règle critique** : le tag doit être posé sur `main` (ou en ancêtre de `main`). La CI vérifie avec `git merge-base --is-ancestor` que le commit du tag est dans l'historique de `origin/main` avant de publier. Sans cela, la release échoue avec un message explicite.
+**Règles critiques** :
+- Le tag doit être posé sur `main` (ou en ancêtre de `main`). La CI vérifie avec `git merge-base --is-ancestor` que le commit du tag est dans l'historique de `origin/main` avant de publier. Sans cela, la release échoue avec un message explicite.
+- La slide 2 du PPTX et `assets/meta.js` du site doivent tous deux afficher la même version (vX.Y.Z) et la même date de livraison (JJ/MM/AAAA). La CI contrôle la cohérence et échoue si l'une manque ou diffère.
 
 ### Étapes du Workflow
 
@@ -311,19 +314,22 @@ ARTIFACTS: |
    - `node tools/validate.js` (structure HTML/SVG/quiz)
    - `node tools/sync-meta.js --check --version "${TAG#v}"` (meta.js contient la bonne version, pas de réécriture)
 
-4. **Artefacts** :
-   - PPTX (`tests/slides/check_pptx.py`, anti-fuite avec `LEAK_PATTERNS`) + slide 2 affiche version du tag
+4. **Artefacts** (3 par release) :
+   - **PPTX** (`tests/slides/check_pptx.py`, anti-fuite avec `LEAK_PATTERNS`) :
+     - Slide 2 affiche version du tag (ex. v0.2.0)
+     - Slide 2 affiche date de livraison (JJ/MM/AAAA)
    - **Zip HTML** (51 fichiers) :
      - Validité : `unzip -t` (archive OK)
      - Contenu : présence de `index.html`, `assets/meta.js`, `Ansible Training.pptx` à la racine
      - PPTX embarqué identique au PPTX du tag (`cmp`)
      - `assets/meta.js` contient `"version": "X.Y.Z"` du tag (grep)
+     - **`assets/meta.js` contient `"date": "JJ/MM/AAAA"` identique à la slide 2 du PPTX** (vérifié par script Python)
      - Anti-fuite site : `tests/site/check_site.py --dir <extraction> --require-secret`
      - Anti-fuite PPTX embarqué : `tests/slides/check_pptx.py` sur le PPTX du zip
+   - **Zip HTML .sha256** : somme de contrôle pour vérification locale (`sha256sum -c`)
 
 **Non exécuté en CI** :
 - `check_links.py --offline` ou connecté (hors périmètre, manuel)
-- Vérification de la date de livraison dans `meta.js` (date à confirmer par l'utilisateur, non contrôlée en CI)
 
 **Génération et tests du zip (local)** :
 
@@ -392,21 +398,23 @@ python3 tools/check_links.py  # mode connecté (requête HTTP aux URLs externes)
    - Sans lui, le workflow échoue volontairement
    - Jamais écrit dans les logs (sortie masquée)
 
-2. **Date de livraison** (`assets/meta.js`) :
-   - Actuellement vide (« date »: "") ou 07/10/2026 (provisoire)
-   - À fixer avant tag via : `node tools/sync-meta.js --date JJ/MM/AAAA`, puis commiter
-   - Exemples : `07/10/2026` (date du jour), `15/10/2026` (date cible de release)
-   - Le workflow **ne contrôle pas** la date, seule la version est vérifiée
+2. **Date de livraison** — **cohérence requise** :
+   - `assets/meta.js` : `"date": "07/10/2026"` (commit `6596dbf`, fixée pour v0.2.0)
+   - Slide 2 du PPTX : doit afficher `07/10/2026` (commit `0d8552a`, OK)
+   - **Le workflow contrôle que les deux dates sont identiques**
+   - Si date différente : `node tools/sync-meta.js --date JJ/MM/AAAA` + commiter, et slide 2 alignée par dev-slides
 
-3. **Slide 2 du PPTX** :
-   - Doit afficher version v0.2.0 (ou vX.Y.Z du tag) — commit `0d8552a` OK
-   - Doit afficher la date de livraison — à aligner sur meta.js
+3. **Version — cohérence requise** :
+   - Slide 2 du PPTX : doit afficher v0.2.0 (ou vX.Y.Z du tag) — commit `0d8552a` OK
+   - `assets/meta.js` : contient `"version": "0.2.0"` — commit `6596dbf` OK
+   - **Le workflow contrôle que les deux versions sont présentes et cohérentes**
 
 4. **`milestone/v0.2.0` mergée sur `main`** avant le tag :
    - Le CI vérifie que le commit du tag est ancêtre de `origin/main`
    - Sans cela, workflow échoue avec message explicite
 
-5. **Tests locaux réussis** :
-   - Tous les tests ci-dessus doivent passer (QA responsable)
-   - Node 22 ou Linux (wrapper `node.exe` Windows donne faux échecs)
+5. **Tests locaux réussis** (avant tag) :
+   - Tous les tests du CI doivent passer (QA responsable)
+   - Node 22+ Linux (wrapper `node.exe` Windows donne faux échecs)
    - Python 3.12+
+   - Commandes : `PARITY_STRICT=1 RELEASE_TAG=v0.2.0 python3 -m unittest discover -s tests/site`, `LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence`, `validate.js`, `sync-meta --check --version`, `package.js`, `unzip -t`
