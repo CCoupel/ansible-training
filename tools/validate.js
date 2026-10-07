@@ -151,6 +151,7 @@ function checkSchema(file, mod) {
   if (/[<`]/.test(mod.title || '')) err(file, 'title ne doit pas contenir de HTML/backticks');
   for (const k of ['tagline', 'duration']) strs(mod[k]).forEach(tx => checkHtml(file, 'module', k, tx));
   if (!Array.isArray(mod.slides)) { err(file, 'slides manquant'); return null; }
+  if (Array.from(mod.slides).some(x => !x || typeof x !== 'object')) err(file, 'slides contient un élément vide ou invalide (virgule en trop ?)');
 
   // Slides sources du module (non extra), pour contrôler les `ref`.
   const srcSet = new Set();

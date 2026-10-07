@@ -101,7 +101,10 @@
   },
   {
     "fichier": "s008-1.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
@@ -112,7 +115,10 @@
   },
   {
     "fichier": "s008-2.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
@@ -123,7 +129,10 @@
   },
   {
     "fichier": "s008-3.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
@@ -134,7 +143,10 @@
   },
   {
     "fichier": "s008-4.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
@@ -145,7 +157,10 @@
   },
   {
     "fichier": "s008-5.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
@@ -156,7 +171,10 @@
   },
   {
     "fichier": "s008-6.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
@@ -167,7 +185,10 @@
   },
   {
     "fichier": "s008-7.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
@@ -178,7 +199,10 @@
   },
   {
     "fichier": "s008-8.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
@@ -189,7 +213,10 @@
   },
   {
     "fichier": "s008-9.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
@@ -200,7 +227,10 @@
   },
   {
     "fichier": "s008-10.png",
-    "slide": 8,
+    "slide": [
+      8,
+      9
+    ],
     "slides": [
       8,
       9
