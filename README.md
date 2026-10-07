@@ -68,30 +68,63 @@ git push origin v0.1.1
 
 ### Workflow de Release (`.github/workflows/release.yml`)
 
-Le workflow exécute les étapes suivantes :
+À partir de v0.2.0, le workflow publie deux artefacts : le PPTX et le zip HTML. Étapes :
 
-1. **Validation du tag** : format `vX.Y.Z` requis
-2. **Contrôles** :
-   - Validité du PPTX (archive, format)
-   - Anti-fuite : scan des termes sensibles via le secret `LEAK_PATTERNS`
-   - Vérification que la slide 2 affiche la version correcte
-3. **Publication** : création/mise à jour de la release GitHub avec l'asset versionné `Ansible-Training-vX.Y.Z.pptx`
+1. **Validation du tag** : format `vX.Y.Z` requis ; doit être posé sur `main` (garde-fou CI)
+2. **Environnement** : Node 22, Python 3.12, secret `LEAK_PATTERNS` présent
+3. **Tests bloquants** (échec = arrêt) :
+   - Parité HTML-PPTX (`PARITY_STRICT=1`, 131 tests)
+   - Obsolescence PPTX (`LOTS_STRICT=1`, 42 tests)
+   - Structure (`validate.js`), version dans `meta.js` (`sync-meta --check --version`)
+4. **Contrôles par artefact** :
+   - **PPTX** : validité, anti-fuite (`LEAK_PATTERNS`), slide 2 affiche version du tag
+   - **Zip HTML** : archive valide, contenu complet (index.html, assets/, modules/, PPTX), PPTX embarqué identique au PPTX du tag, `meta.js` affiche version du tag, anti-fuite du contenu
+5. **Publication** : création/mise à jour de la release GitHub avec deux assets : `Ansible-Training-vX.Y.Z.pptx` et `Ansible-Training-HTML-vX.Y.Z.zip`
 
-### Prérequis — Secret `LEAK_PATTERNS`
+### Prérequis avant Release v0.2.0+
 
-**Avant de créer un tag pour la publication**, le secret GitHub `LEAK_PATTERNS` doit être configuré sur le dépôt :
+**À valider avant de poser le tag** (le CI les vérifiera) :
 
-```bash
-# Créer un fichier local avec une regex par ligne (nombres, noms sensibles, domaines, etc.)
-# Exemple :
-# ^...$ (une regex insensible à la casse par ligne)
+1. **Secret `LEAK_PATTERNS`** : configuré sur le dépôt
+   ```bash
+   # Créer un fichier local avec une regex par ligne (nombres, noms sensibles, domaines, etc.)
+   # Exemple : ^...$ (insensible à la casse, une par ligne)
+   gh secret set LEAK_PATTERNS < leak_patterns.txt
+   
+   # Vérifier
+   gh secret list  # affiche LEAK_PATTERNS (jamais le contenu)
+   ```
+   **Sans ce secret**, le workflow échoue volontairement (protection contre publication accidentelle avec termes sensibles).
 
-gh secret set LEAK_PATTERNS < leak_patterns.txt
-```
+2. **Date de livraison** : fixer dans `assets/meta.js`
+   ```bash
+   node tools/sync-meta.js --date 07/10/2026  # ou date cible
+   git add assets/meta.js && git commit -m "..."  # commiter
+   ```
+   Le workflow ne contrôle pas la date, seule la version (du tag) est vérifiée.
 
-**Vérification** : `gh secret list` affiche `LEAK_PATTERNS` comme présent (le contenu n'est jamais affiché).
+3. **Slide 2 du PPTX** : doit afficher version v0.2.0 (ou vX.Y.Z du tag) et la date de livraison
+   - Version : ✓ (commit `0d8552a` pour v0.2.0)
+   - Date : aligner sur `meta.js`
 
-**Sans ce secret**, le workflow échoue volontairement au scan et refuse de publier la release. Cela protège contre une publication accidentelle avec des termes sensibles.
+4. **Branche mergée** : `milestone/vX.Y.Z` doit être mergée sur `main` avant le tag
+   ```bash
+   git checkout main
+   git merge milestone/vX.Y.Z
+   git push origin main
+   # Puis poser le tag sur main
+   git tag vX.Y.Z && git push origin vX.Y.Z
+   ```
+
+5. **Tests locaux** : tous les tests du workflow doivent passer
+   ```bash
+   PARITY_STRICT=1 RELEASE_TAG=v0.2.0 python3 -m unittest discover -s tests/site
+   LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence
+   node tools/validate.js
+   node tools/sync-meta.js --check --version 0.2.0
+   node tools/package.js && unzip -t build/Ansible-Training-HTML.zip > /dev/null
+   ```
+   Utiliser Node 22 et Python 3.12 ; `node` Linux (wrapper Windows donne faux échecs).
 
 ### Extensibilité (v0.2.0)
 
