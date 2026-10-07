@@ -92,7 +92,9 @@
       <div class="opts">${b.options.map((o, i) => `<button type="button" class="opt" data-i="${i}">${o}</button>`).join('')}</div>
       <div class="explain">${b.explain || ''}</div>
       <button type="button" class="redo">${esc(t('block.redo'))}</button></div>`,
-    reveal: b => `<details class="reveal${fc(b)}${wide(b)}"><summary>${b.label || esc(t('block.reveal'))}</summary><div>${b.html}</div></details>`,
+    // Les <pre> d'une solution sont rendus comme des blocs de code (fond thémé, défilement horizontal, bouton Copier).
+    reveal: b => `<details class="reveal${fc(b)}${wide(b)}"><summary>${b.label || esc(t('block.reveal'))}</summary><div>${String(b.html).replace(/<pre>([\s\S]*?)<\/pre>/g,
+      (m, inner) => `<div class="codebox"><div class="codebar"><span class="fn"></span><button class="copy" type="button">${esc(t('block.copy'))}</button></div><pre>${inner}</pre></div>`)}</div></details>`,
     lab: b => `<div class="lab${fc(b)}${wide(b)}"><h3>${esc(t('icon.lab'))} ${b.title}</h3>${b.goal ? `<p class="goal">${b.goal}</p>` : ''}<ol>${
       b.steps.map(s => `<li><label><input type="checkbox"><span>${s}</span></label></li>`).join('')}</ol></div>`,
     diagram: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="diagram">${b.html}</div>${b.caption ? `<div class="dcap">${b.caption}</div>` : ''}</div>`,

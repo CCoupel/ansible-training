@@ -234,6 +234,7 @@ tbody tr:hover td { background: var(--surface2); }
 details.reveal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; }
 details.reveal summary { cursor: pointer; font-weight: 700; color: var(--accent-text); }
 details.reveal > div { margin-top: 8px; }
+details.reveal .codebox { margin: 4px 0 8px; }
 
 /* Lab */
 .lab { background: var(--surface); border: 2px solid var(--accent); border-radius: 16px; padding: 16px 20px; }

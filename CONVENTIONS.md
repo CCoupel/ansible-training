@@ -81,7 +81,7 @@ Tous acceptent `frag` et `wide`. Champs « HTML » : balises autorisées `b i em
 | `img` | `file` (`assets/img/<fichier>`), `alt`, `caption?` | Image déclarée dans `assets/img/images.json` ; `alt` descriptif neutre |
 | `gallery` | `items:[{t:'img', file, alt, caption?, decorative?}]` | Rangée de petites images (pictogrammes d'une slide) ; chaque item est un `img` déclaré dans `images.json`. Un pictogramme purement décoratif porte `decorative: true` et `alt: ''` ; sinon `alt` décrit l'image (nom du logo…) |
 | `lab` | `title`, `goal?`, `steps:[html]` | Exercice à cocher |
-| `reveal` | `label?`, `html` | Contenu masqué (solution d'un exercice) |
+| `reveal` | `label?`, `html` | Contenu masqué (solution d'un exercice). Un `<pre>` y est rendu comme un bloc de code (fond thémé, défilement horizontal, bouton Copier) |
 | `quiz` | `q`, `options` (3-4), `answer`, `explain`, `ref` | QCM, **uniquement** sur une slide `extra: true` |
 
 ### Modèle d'un schéma SVG accessible
@@ -115,6 +115,7 @@ Objectifs, « À retenir » et quiz n'existent que dans le HTML (jamais reporté
 - **Quantités par module** : 3-5 objectifs, 4-6 « À retenir », 1-3 quiz (3-4 options, une seule bonne réponse défendable).
 - **Source** : dérivé **uniquement** du contenu du module. Chaque objectif, point « À retenir » et quiz porte `ref: [N, …]` (slides PPTX du **même** module). Aucune commande, option, module Ansible, comportement ou version absent du PPTX.
 - **`<code>`** d'un texte additionnel : doit apparaître dans le texte PPTX (slides + notes) des slides `ref` (vérifié par test).
+- **Options de quiz : longueur voisine** (la bonne réponse n'est jamais nettement plus longue que les distracteurs : écart de 30 % au plus) et **sans « uniquement » / « seulement » réservés aux mauvaises réponses** ; les bonnes réponses sont réparties sur toutes les positions.
 - **Options de quiz : mise en forme identique pour toutes** (aucune en `<code>`, y compris la bonne réponse) afin que la forme ne révèle jamais la réponse ; le `<code>` reste permis dans l'énoncé `q` et dans `explain`.
 - **Langue** : français ; termes techniques et identifiants dans leur forme d'origine.
 - **Objectifs** : à l'infinitif, mesurables (« Écrire… », « Comparer… »). **À retenir** : des faits issus des slides, pas de conseil nouveau.
@@ -142,3 +143,13 @@ Objectifs, « À retenir » et quiz n'existent que dans le HTML (jamais reporté
 ## Version et date
 
 La version et les versions de référence affichées sur l'accueil viennent de `assets/meta.js` (jamais saisies à la main). À la release, `node tools/sync-meta.js --version X.Y.Z --date JJ/MM/AAAA` est lancé dans le même commit que la slide 2 du PPTX.
+
+## Points d'attention pour le formateur (verbatim du PPTX conservé)
+
+Le texte du PPTX est repris tel quel ; ces points sont à connaître avant de projeter ou de faire copier un exemple :
+
+- **m11, slide 152** : la solution du lab (rôle `reboot-server`) est un playbook invalide (`tasks:` sans `hosts:`, tâche `Regather Facts` mal indentée, nom de play copié d'un autre exercice). À corriger à l'oral ou dans le PPTX avant de faire copier la solution.
+- **m15, slide 222** : « default/main.yml » est une coquille ; le répertoire d'un rôle s'appelle `defaults/`.
+- **m14, slide 203** : « with_item » est une coquille ; le mot-clé est `with_items`.
+- **m02, slide 29** : `-l Web` alors que le groupe est `WEB` ; les noms de groupes sont sensibles à la casse.
+- **m11, slide 147** : l'exemple `argument_specs` contient un nom d'auteur (décision : conservé).
