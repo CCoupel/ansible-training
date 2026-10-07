@@ -47,6 +47,19 @@ jobs:
         with:
           ref: refs/tags/${{ env.TAG }}
           persist-credentials: false
+          fetch-depth: 0
+
+      - name: Vérifier que le tag est posé sur main
+        run: |
+          # Garde-fou : on ne publie que les tags dont le commit est dans l'historique de main
+          # (valable aussi pour workflow_dispatch).
+          git fetch --no-tags origin '+refs/heads/main:refs/remotes/origin/main'
+          COMMIT=$(git rev-list -n 1 "refs/tags/$TAG")
+          if ! git merge-base --is-ancestor "$COMMIT" origin/main; then
+            echo "::error::Le tag $TAG n'est pas sur main : merge d'abord la branche milestone sur main puis retag"
+            exit 1
+          fi
+          echo "Tag $TAG sur main : OK"
 
       - name: Vérifier la présence du secret LEAK_PATTERNS
         env:
