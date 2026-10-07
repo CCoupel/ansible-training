@@ -127,7 +127,21 @@ python3 -m http.server 8000
 
 **Note Windows** : si les images ou modules ne chargent pas, vérifier que les chemins ne contiennent pas de caractères spéciaux (répertoire racine sans espaces recommandé).
 
-### Structure du site HTML
+### Contenu du zip HTML (release)
+
+Le fichier `Ansible-Training-HTML-vX.Y.Z.zip` publié sur GitHub (généré par `node tools/package.js`) contient :
+- `index.html` — page d'accueil du cours
+- `assets/` — moteur (engine.js), styles (style.css), images (img/), internationalisations (i18n/fr.js)
+- `modules/` — 15 modules (m01–m15)
+- `Ansible Training.pptx` — support original à la racine (lien téléchargement disponible depuis l'accueil)
+
+**Total : 51 fichiers**, ouvrable en `file://` (double-clic) sans serveur.
+
+**Aucun embarquement de** : `tools/`, `tests/`, `CONVENTIONS.md`, `build/`, `.github/`, `.claude/`, ou autres répertoires du dépôt.
+
+### Structure du Dépôt (source du site)
+
+La section ci-dessous décrit l'arborescence du **dépôt git**, y compris les fichiers n'étant pas dans le zip publié :
 
 ```
 .
@@ -147,17 +161,17 @@ python3 -m http.server 8000
 │   ├── m02-inventory.js               # Module 02 : Inventory
 │   ├── ... (m03 à m15)
 │   └── m15-automation-integration.js  # Module 15 : Automation Integration
-├── tools/
+├── tools/                             # 🚫 Non embarqué dans le zip
 │   ├── validate.js                    # Vérification de structure du site
 │   ├── sync-meta.js                   # Génération de assets/meta.js
 │   ├── dump-course.js                 # Export JSON du contenu
 │   ├── package.js                     # Création du zip HTML
 │   └── check_links.py                 # Audit des liens (HTTP)
-├── tests/
+├── tests/                             # 🚫 Non embarqué dans le zip
 │   └── site/
 │       ├── test_*.py                  # Tests de parité, accessibilité, structure
 │       └── parity_exceptions.json     # Exceptions documentées (2 liens masqués)
-├── CONVENTIONS.md                     # Règles de conversion PPTX → HTML
+├── CONVENTIONS.md                     # 🚫 Non embarqué dans le zip
 ```
 
 ### Conventions et contenu
