@@ -16,7 +16,7 @@ Version HTML interactive du support de formation : 15 modules répartis en 217 s
 ### Added
 
 - **Version HTML du support** : 15 modules (m01 Introduction, m02 Inventory, m03 Playbooks, m04 Modules, m05 Variables & facts, m06 Errors & delegation, m07 Filters & conditions, m08 Loops & tags, m09 Templates & async, m10 Vault, m11 Roles & Galaxy, m12 Extend Ansible, m13 Real use case, m14 Best practices, m15 Automation integration), 217 slides PPTX (non masquées 4–223), site statique (`index.html` racine, `assets/` moteur/style/manifeste, `modules/` modules JS), ouvrable en double-clic depuis un clone (`file://`) (#3, #4)
-- **Contenu interactif** : 45 quiz (3 par module, une seule réponse défendable d'après le PPTX), objectifs et « À retenir » (4-6 items) générés par le moteur de présentation, 12 notes du formateur (touches n), 9 schémas SVG avec descriptions accessibles, images converties (19 WMF → PNG)
+- **Contenu interactif** : 45 quiz (3 par module, une seule réponse défendable d'après le PPTX), objectifs et « À retenir » (4-6 items) générés par le moteur de présentation, 7 notes du formateur (touches n), 9 schémas SVG avec descriptions accessibles, images converties (19 WMF → PNG)
 - **Accessibilité** : clavier complet (navigation flèches, Enter, Espace, Tab), SVG avec `aria-label`/`aria-labelledby`/`aria-describedby`, alt descriptif des images, validation automatique (`validate.js`), lecteur d'écran (#3)
 - **Interface en français** : libellés, menus, notes du formateur en français ; termes techniques (ansible-playbook, become, loop…) en anglais d'origine (#4, #5)
 - **Thème adaptable** : clair/sombre (préférence utilisateur), variables CSS pour les couleurs des blocs de code
@@ -28,7 +28,7 @@ Version HTML interactive du support de formation : 15 modules répartis en 217 s
   - `tools/check_links.py` : audit des 100 URL externes du site et du PPTX
 - **Conventions de conversion PPTX → HTML** (`CONVENTIONS.md`) : verbatim du texte, blocs (code, bullets, table, lab/reveal, SVG, gallery, quiz), notes étiquetées du formateur, exceptions de parité (2 liens masqués)
 - **Tests du site** (`tests/site/`, 131 tests) : parité PPTX-HTML (slides couvertes, texte verbatim, `<code>` ⊆ PPTX, links), cohérence (quiz, SVG, metadata), accessibilité (alt, aria), structure (modules, fichiers, meta)
-- **Workflow extensible** (`.github/workflows/release.yml` v0.2.0) : variable `ARTIFACTS` pour publier PPTX + HTML zip en parallèle, contrôles adaptés par type (archive, slide 2, anti-fuite)
+- **Préparation pour workflow étendu** : architecture du workflow compatible avec deux artefacts (PPTX + HTML zip) ; variable `ARTIFACTS` et contrôles à adapter par type (archive, slide 2, anti-fuite) — tâche `deployer` avant tag v0.2.0
 
 ### Changed
 
@@ -53,7 +53,7 @@ Version HTML interactive du support de formation : 15 modules répartis en 217 s
 - Avant la première release v0.2.0, confirmer :
   - **Slide 2** : date de livraison confirmée par l'utilisateur (remplacer 07/10/2026)
   - **Secret `LEAK_PATTERNS`** : configuré
-  - **`.github/workflows/release.yml`** : adapté pour les deux artefacts (PPTX + HTML zip) avec contrôles respectifs
+  - **`.github/workflows/release.yml`** : à adapter pour publier les deux artefacts (PPTX + HTML zip) avec contrôles respectifs (tâche `deployer`)
 
 ## [0.1.1] - 2026-10-07
 
