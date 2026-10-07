@@ -100,11 +100,12 @@
 ### Batch 1 — Développement (🔄 EN COURS — partiellement)
 
 **Tâche 1.1** : Liens #50 (dev-slides)
-- État : **EN COURS, interrompu** — dev-slides a commencé la vérification HTTP des liens
-- Progression : slides 47, 120, 168, 169, 174 identifiées (liens docs.ansible.com → /projects/ansible/latest/)
-- État de reprise : dans `build/` (non versionné, ignoré par .gitignore)
-- PPTX : **pas encore modifié** — vérifications et corrections en attente
-- À reprendre : vérifications par lots espacés (HTTP HEAD/GET, Retry-After)
+- État : ✅ **TERMINÉE — commit e905af0**
+- Réalisation : 13 occurrences de l'ancien préfixe `docs.ansible.com/ansible/latest/` migrées vers `/projects/ansible/latest/`
+- Slides affectées : 47 (cisco/dnac, cisco/ise, cloud/common), 120, 168, 169, 174
+- Vérification : toutes les 13 URL cibles confirment HTTP 200
+- PPTX : **modifié et commité** — plus d'ancien préfixe dans le document
+- Rapport : `docs/plans/v0.2.0/dev-slides-links-20261007-143500.md`
 
 **Tâche 1.2** : Extraction images (dev-slides)
 - État : ✅ **COMPLÉTÉE — commits b9367c5** 
@@ -286,17 +287,13 @@ Module EDA + site multilingue (fr/en)
 
 **Reprise et continuation Batch 1** (parallèle) :
 
-1. **dev-slides 1.1** : reprendre liens #50 (vérifications HTTP, lot A/B/C espacés)
-   - État : en cours, pas de modif PPTX encore
-   - Ressource : `docs/plans/v0.2.0/dev-slides-20261007-140100.md`
-   
-2. **course 1.3-1.5** : après 0.2, moteur + outils + pilote m02
+1. **course 1.3-1.5** : après 0.2, moteur + outils + pilote m02
    - Entrée : `docs/plans/v0.2.0/plan-v0.2.0.md` (révision 2)
    - Interfaces : `docs/plans/v0.2.0/test-writer-20261007-140724.md` (supposées)
    - **Consigne i18n** : libellés dans `assets/i18n/fr.js` dès v0.2.0 (FR uniquement, sans sélecteur)
    - Adresse retour : `team-lead`, mots-clés COURSE DONE/BLOQUE/EN COURS
 
-3. **test-writer 1.6** : ✅ déjà fait (5fdd31a) ; compléments possibles en parallèle Batch 2
+2. **test-writer 1.6** : ✅ déjà fait (5fdd31a) ; compléments possibles en parallèle Batch 2
 
 ### Décisions utilisateur (v0.2.0, GATE 2)
 - ✅ Revue visuelle #1 : validée (images 1.2 commises b9367c5)
@@ -367,15 +364,15 @@ Module EDA + site multilingue (fr/en)
   - Agent `course` spec (ece2825, f367905)
   - Maquettes validées archivées (84038a7)
   - MEMORY/docs mise à jour (714c7ce, fe76490)
-- **Batch 1** (Développement) : 🔄 PARTIELLEMENT COMMENCÉ
-  - 1.1 liens #50 : EN COURS (pas de modif PPTX encore)
+- **Batch 1** (Développement) : ✅ 1.1/1.2/1.6 COMPLÉTÉES, 1.3-1.5 À FAIRE
+  - 1.1 liens #50 : ✅ TERMINÉE (e905af0 — 13 URL migrées, PPTX modifié)
   - 1.2 images : ✅ COMPLÉTÉE (b9367c5, revue visuelle #1 validée)
   - 1.6 tests : ✅ COMPLÉTÉE (5fdd31a)
   - 1.3-1.5 course : À FAIRE (après 0.2, entrée : docs/plans/v0.2.0/plan-v0.2.0.md)
 
 ### Issues & Pipeline
 - Issues fermées : v0.1.1 (39 #10-#49 hors #19)
-- Pipeline v0.2.0 : 4 issues (#3, #4, #5, #50) — Batch 1/2/3 en cours
+- Pipeline v0.2.0 : 4 issues (#3 🔄, #4 🔄, #5 🔄, #50 ✅) — Batch 1 (3/4 ✅), Batch 2/3 à venir
 - Pipeline v1.0.0 : 6 issues (#6-#9, #19, #51) — après v0.2.0 release
 
 ### Configuration Agents
