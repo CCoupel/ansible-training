@@ -3,7 +3,8 @@
    Construit build/Ansible-Training-HTML.zip : le site (index.html, assets/, modules/) et le support PowerPoint
    « Ansible Training.pptx » à la racine, à côté de index.html (le lien de téléchargement de l'accueil reste valable),
    tels que commités.
-   Refuse de construire si ces chemins ont des modifications non commitées (le zip doit refléter le commit).
+   Refuse de construire si des fichiers SUIVIS de ces chemins ont des modifications non commitées (le zip doit refléter
+   le commit) ; les fichiers non suivis sont ignorés (ils ne sont jamais empaquetés : seul `git ls-files` fait foi).
    Déterministe : mêmes fichiers → même sha256 (entrées triées, dates fixes 1980-01-01, permissions fixes 0644,
    compression zlib niveau 9, aucun champ horodaté) ; à version de zlib identique. Lecture binaire (aucune conversion
    de fin de ligne ; voir .gitattributes pour les octets stables entre plateformes).
@@ -24,7 +25,7 @@ const fail = m => { console.error('ERREUR  package : ' + m); process.exit(1); };
 const PATHS = ['index.html', 'assets', 'modules', 'Ansible Training.pptx'];
 let names;
 try {
-  const dirty = execFileSync('git', ['-C', ROOT, 'status', '--porcelain', '--', ...PATHS], { encoding: 'utf8' }).trim();
+  const dirty = execFileSync('git', ['-C', ROOT, 'status', '--porcelain', '--untracked-files=no', '--', ...PATHS], { encoding: 'utf8' }).trim();
   if (dirty) fail('modifications non commitées sur le contenu du zip (commit requis) :\n' + dirty);
   names = execFileSync('git', ['-C', ROOT, 'ls-files', '-z', '--', ...PATHS], { encoding: 'utf8' })
     .split('\0').filter(Boolean);
