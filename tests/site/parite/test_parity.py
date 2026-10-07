@@ -151,7 +151,7 @@ class TestParite(unittest.TestCase):
             raw = S._html.unescape(S.slide_raw_text(hs))
             with self.subTest(module=mid, slide=n):
                 for k, target in enumerate(links, 1):
-                    if S.is_excepted("link", n):
+                    if S.is_excepted("link", n, target=target):
                         continue
                     self.assertIn(target, raw, "lien manquant : slide %d, lien %d" % (n, k))
 
@@ -196,10 +196,19 @@ class TestParite(unittest.TestCase):
                 self.assertNotIn(e["slide"], hidden)
                 self.assertTrue(4 <= e["slide"] <= 223)
                 self.assertTrue(len(str(e.get("reason", "")).strip()) >= 15, "justification trop courte")
+                if e["kind"] == "link":
+                    self.assertTrue(str(e.get("target", "")).strip(), "cible exacte obligatoire pour link")
                 if e["kind"] in ("text", "notes"):
                     self.assertIsInstance(e.get("line"), int, "ligne obligatoire pour text/notes")
                 if e["kind"] == "image":
                     self.assertTrue(e.get("media"))
+
+    def test_exceptions_de_lien_visent_un_lien_reel_du_pptx(self):
+        """Une exception de lien est étroite : sa cible exacte existe sur la slide PPTX (sinon exception périmée)."""
+        for i, e in enumerate(S.exceptions(), 1):
+            if e.get("kind") == "link":
+                self.assertIn(e["target"], S.slide_links(S.deck().slide(e["slide"])),
+                              "exception %d : cible absente de la slide %d" % (i, e["slide"]))
 
     def test_exceptions_ne_masquent_pas_de_contenu_textuel_long(self):
         """Une exception de texte porte sur une ligne décorative (< 60 caractères), jamais sur un paragraphe."""

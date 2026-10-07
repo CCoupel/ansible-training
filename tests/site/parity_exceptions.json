@@ -1,4 +1,17 @@
 {
   "_comment": "Exceptions de parité PPTX -> HTML. Une entrée UNIQUEMENT sur demande justifiée de l'agent `course` (contenu décoratif sans équivalent HTML), validée par le teamleader. Plafond : < 20 entrées. Format : { \"slide\": N, \"kind\": \"text|notes|link|image\", \"line\": k (1-based, pour text/notes), \"media\": \"imageN.ext\" (pour image), \"reason\": \"justification obligatoire\" }.",
-  "exceptions": []
+  "exceptions": [
+    {
+      "slide": 138,
+      "kind": "link",
+      "target": "mailto:test1@prompt",
+      "reason": "m10 : hyperlien automatique de PowerPoint sur le texte test1@prompt (pas une adresse réelle) ; le texte reste visible dans le code, aucun lien à rendre"
+    },
+    {
+      "slide": 161,
+      "kind": "link",
+      "target": "https://galaxy-test.example.com/api/galaxy%20",
+      "reason": "m11 : hyperlien PowerPoint dont la cible (%20 final, artefact de saisie) n'est pas rendue ; l'URL est visible dans le code de la slide"
+    }
+  ]
 }

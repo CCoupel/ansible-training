@@ -325,12 +325,14 @@ def exceptions():
         return json.load(fh).get("exceptions", [])
 
 
-def is_excepted(kind, slide, line=None, media=None):
+def is_excepted(kind, slide, line=None, media=None, target=None):
     for e in exceptions():
         if e.get("kind") == kind and e.get("slide") == slide:
             if line is not None and e.get("line") not in (None, line):
                 continue
             if media is not None and e.get("media") not in (None, media):
+                continue
+            if kind == "link" and e.get("target") != target:  # exception de lien : cible exacte obligatoire
                 continue
             return True
     return False
