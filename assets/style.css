@@ -293,3 +293,4 @@ details.reveal > div { margin-top: 8px; }
   .frag, .frag:not(.show) { opacity: 1; visibility: visible; transform: none; }
   .notes { display: block; }
 }
+.glyph { display: none; } /* glyphes d'icônes du PPTX : conservés dans le texte (parité), non affichés */
