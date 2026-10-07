@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-07
+
+Version HTML interactive du support de formation : 15 modules répartis en 217 slides PPTX (hors slides masquées), 45 quiz (3 par module), objectifs et « À retenir » pour chaque module, accueil interactif, thème clair/sombre, accessibilité (clavier, SVG nommés), interface en français, outils d'inspection et de validation du site, tests de parité, zip HTML versionné pour distribution (#3, #4, #5).
+
+**Versions de référence** : ansible-core 2.20, Python 3.12+ (nœud de contrôle)
+
+### Added
+
+- **Version HTML du support** : 15 modules (m01 Introduction, m02 Inventory, m03 Playbooks, m04 Modules, m05 Variables & facts, m06 Errors & delegation, m07 Filters & conditions, m08 Loops & tags, m09 Templates & async, m10 Vault, m11 Roles & Galaxy, m12 Extend Ansible, m13 Real use case, m14 Best practices, m15 Automation integration), site statique (`index.html` racine, `assets/` moteur/style/manifeste, `modules/` modules JS), ouvrable en double-clic depuis un clone (`file://`) (#3, #4)
+- **Contenu interactif** : 45 quiz (3 par module, une seule réponse défendable d'après le PPTX), objectifs et « À retenir » (4-6 items) générés par le moteur de présentation, 12 notes du formateur (touches n), 9 schémas SVG avec descriptions accessibles, images converties (19 WMF → PNG)
+- **Accessibilité** : clavier complet (navigation flèches, Enter, Espace, Tab), SVG avec `aria-label`/`aria-labelledby`/`aria-describedby`, alt descriptif des images, validation automatique (`validate.js`), lecteur d'écran (#3)
+- **Interface en français** : libellés, menus, notes du formateur en français ; termes techniques (ansible-playbook, become, loop…) en anglais d'origine (#4, #5)
+- **Thème adaptable** : clair/sombre (préférence utilisateur), variables CSS pour les couleurs des blocs de code
+- **Outils** :
+  - `tools/validate.js` : vérification des structures (module, slide, alt, SVG, quiz, code, links)
+  - `tools/sync-meta.js` : génération/mise à jour de `assets/meta.js` depuis `.claude/project-config.json`
+  - `tools/dump-course.js` : export JSON du contenu pour scripts et tests
+  - `tools/package.js` : génération déterministe du zip `Ansible-Training-HTML-vX.Y.Z.zip` (51 fichiers, poids ~2.6 Mo)
+  - `tools/check_links.py` : audit des 100 URL externes du site et du PPTX
+- **Conventions de conversion PPTX → HTML** (`CONVENTIONS.md`) : verbatim du texte, blocs (code, bullets, table, lab/reveal, SVG, gallery, quiz), notes étiquetées du formateur, exceptions de parité (2 liens masqués)
+- **Tests du site** (`tests/site/`, 131 tests) : parité PPTX-HTML (slides couvertes, texte verbatim, `<code>` ⊆ PPTX, links), cohérence (quiz, SVG, metadata), accessibilité (alt, aria), structure (modules, fichiers, meta)
+- **Workflow extensible** (`.github/workflows/release.yml` v0.2.0) : variable `ARTIFACTS` pour publier PPTX + HTML zip en parallèle, contrôles adaptés par type (archive, slide 2, anti-fuite)
+
+### Changed
+
+- **Liens documentation** : migration vers `/projects/ansible/latest/` (slides 120, 168, 169, 174, 47, 49-52) ; arborescence mise à jour (`playbook_guide`, `inventory_guide`, etc.) (#50)
+- **Slide 2** : version à mettre à jour avant chaque tag (v0.2.0 à confirmer)
+
+### Fixed
+
+- **Quiz** : rééquilibrage des longueurs (13 quiz reformulés pour éviter biais longueur/position), suppression de « uniquement » et `<code>` dans les options, répartition des bonnes réponses 15/15/15 (positions 0/1/2), distracteurs sans symétrie logique (M1, m10 Q1/Q3)
+- **Contenu additionnel** : defaults/main.yml (m15 Q3, explain), with_items (m14), spécificités citées avec slide source (traçabilité verbatim)
+- **SVG schémas** : noms accessibles (9 SVG), aria-labelledby/aria-describedby avec title+desc, ids uniques par schéma, m14 parallelism sans numéro parasite « 214 », timelines (Strategy, Asynchroneous) sans anomalie (M2)
+- **Pictogrammes m01** : marqués décoratifs (`decorative: true`, `alt: ''`) avec texte explicatif dans le contexte (slides 5, 6, 8, 9 ; m1)
+- **Solutions reveal** : rendues comme blocs de code (fond thémé, `overflow-x:auto`, bouton Copier), texte du PPTX préservé, aucune reformulation (m5)
+- **Liens masqués** : 2 exceptions documentées (m10 slide 138 mailto, m11 slide 161 galaxy%20), légendes retirées du HTML, parité testée (m6)
+- **m03 slides 34-39** : guidage étape par étape dans notes étiquetées (« Noms des tâches (slide 35) : … »), parité verte, aucun texte perdu (m3, N3)
+
+### Notes de Développement
+
+- Slide masquées 193, 210, 217 exclues du HTML (Q3 décidé)
+- Pas de modification du PPTX v0.1.1 en v0.2.0 (contenu inchangé, slide 2 à mettre à jour avant tag)
+- Artefact HTML zip publié sur release GitHub en parallèle du PPTX (déterministe, 51 fichiers)
+- Avant la première release v0.2.0, confirmer :
+  - Slide 2 v0.2.0 + date livraison
+  - Secret `LEAK_PATTERNS` configuré
+  - `release.yml` adapté pour les deux artefacts (PPTX + HTML zip)
+
 ## [0.1.1] - 2026-10-07
 
 Support de formation Ansible générique : audit et correction de 38 constats d'obsolescence (versions Ansible/Python, noms de produits, FQCN des modules, liens documentation) et mise en place du workflow de publication CI.
