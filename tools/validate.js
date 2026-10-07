@@ -211,7 +211,19 @@ function checkSchema(file, mod) {
       if (b.t === 'callout' && !CALLOUTS.includes(b.kind)) err(file, `${bt} : kind "${b.kind}" inconnu (${CALLOUTS.join(', ')})`);
       if (b.t === 'table' && Array.isArray(b.rows) && Array.isArray(b.head)) b.rows.forEach((r, k) => { if (r.length !== b.head.length) err(file, `${bt} : ligne ${k + 1} a ${r.length} colonnes pour ${b.head.length} en-têtes`); });
       if (b.t === 'cmds' && Array.isArray(b.items)) b.items.forEach((c, k) => { if (!Array.isArray(c) || c.length !== 2) err(file, `${bt} : item ${k + 1} doit être [cmd, desc]`); });
-      if (b.t === 'diagram') checkAttrs(file, bt, 'html', String(b.html || ''));
+      if (b.t === 'diagram') {
+        const h = String(b.html || '');
+        checkAttrs(file, bt, 'html', h);
+        // Un SVG role="img" doit avoir un nom accessible : <title id="X"> référencé par aria-labelledby="X".
+        for (const m of h.matchAll(/<svg\b[^>]*>/gi)) {
+          if (!/role\s*=\s*["']img["']/i.test(m[0])) continue;
+          const lab = /aria-labelledby\s*=\s*["']([^"']+)["']/i.exec(m[0]);
+          if (!lab) { err(file, `${bt} : SVG role="img" sans aria-labelledby (nom accessible obligatoire)`); continue; }
+          for (const id of lab[1].split(/\s+/)) if (!new RegExp(`<title\\b[^>]*\\bid\\s*=\\s*["']${id}["'][^>]*>[^<]+</title>`, 'i').test(h)) err(file, `${bt} : aria-labelledby="${id}" ne désigne aucun <title id> non vide`);
+        }
+        const ids = [...h.matchAll(/\bid\s*=\s*["']([^"']+)["']/g)].map(m => m[1]);
+        if (new Set(ids).size !== ids.length) err(file, `${bt} : identifiants en double dans le SVG`);
+      }
       if (b.t === 'img' || b.t === 'gallery') {
         (b.t === 'img' ? [b] : (Array.isArray(b.items) ? b.items : [])).forEach((im, k) => {
           const w = b.t === 'img' ? bt : `${bt} image ${k + 1}`;
@@ -221,7 +233,9 @@ function checkSchema(file, mod) {
             if (!fs.existsSync(path.join(ROOT, 'assets', 'img', m[1]))) err(file, `${w} : fichier assets/img/${m[1]} absent`);
             if (!IMAGES || !IMAGES.has(m[1])) err(file, `${w} : image ${m[1]} non déclarée dans assets/img/images.json`);
           }
-          if (!im || typeof im.alt !== 'string' || !im.alt.trim()) err(file, `${w} : alt obligatoire et non vide`);
+          if (b.t === 'gallery' && im && im.decorative === true) {
+            if (im.alt !== '') err(file, `${w} : image décorative (decorative: true) : alt doit être vide`);
+          } else if (!im || typeof im.alt !== 'string' || !im.alt.trim()) err(file, `${w} : alt obligatoire et non vide (ou decorative: true dans une gallery)`);
         });
       }
       if (b.t === 'quiz') {

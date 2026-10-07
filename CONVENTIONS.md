@@ -77,12 +77,25 @@ Tous acceptent `frag` et `wide`. Champs « HTML » : balises autorisées `b i em
 | `callout` | `kind`, `html`, `title?` | `tip` 💡, `warn` ⚠️, `trap` 🪤, `note` 📝, `awx` 🔄 (AWX / automation controller) |
 | `flow` | `nodes:[string \| {label, sub?, hl?}]`, `caption?` | Chaîne horizontale |
 | `layers` | `items:[{name, desc, hl?, base?}]` | Pile de couches |
-| `diagram` | `html` (SVG), `caption?` | Schéma SVG responsive (`viewBox`, couleurs en variables CSS) ; ni script, ni `on…=` |
+| `diagram` | `html` (SVG), `caption?` | Schéma SVG responsive (`viewBox`, couleurs en variables CSS) ; ni script, ni `on…=` ; **nom accessible obligatoire** (voir modèle ci-dessous) |
 | `img` | `file` (`assets/img/<fichier>`), `alt`, `caption?` | Image déclarée dans `assets/img/images.json` ; `alt` descriptif neutre |
-| `gallery` | `items:[{t:'img', file, alt, caption?}]` | Rangée de petites images (pictogrammes d'une slide) ; chaque item est un `img` déclaré dans `images.json` |
+| `gallery` | `items:[{t:'img', file, alt, caption?, decorative?}]` | Rangée de petites images (pictogrammes d'une slide) ; chaque item est un `img` déclaré dans `images.json`. Un pictogramme purement décoratif porte `decorative: true` et `alt: ''` ; sinon `alt` décrit l'image (nom du logo…) |
 | `lab` | `title`, `goal?`, `steps:[html]` | Exercice à cocher |
 | `reveal` | `label?`, `html` | Contenu masqué (solution d'un exercice) |
 | `quiz` | `q`, `options` (3-4), `answer`, `explain`, `ref` | QCM, **uniquement** sur une slide `extra: true` |
+
+### Modèle d'un schéma SVG accessible
+
+```html
+<svg viewBox="0 0 720 420" role="img" aria-labelledby="mNN-svgK-t" aria-describedby="mNN-svgK-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="mNN-svgK-t">Nom court du schéma</title>
+  <desc id="mNN-svgK-d">Description textuelle : éléments, flux ou étapes, dans l'ordre de lecture.</desc>
+  <defs><marker id="ar-mNN-svgK" …/></defs>   <!-- identifiants uniques (préfixe module + rang) -->
+  …
+</svg>
+```
+
+`tools/validate.js` refuse un `<svg role="img">` sans `aria-labelledby` pointant vers un `<title id>` non vide, ou avec des `id` en double. Les couleurs restent des variables CSS ; pas de `<script>`, de gestionnaire d'événement ni de `href`.
 
 ## Règles de conversion PPTX → HTML
 
