@@ -100,25 +100,124 @@ Le workflow est conçu pour supporter des artefacts supplémentaires (HTML, PDF)
 - Variable `ARTIFACTS` dans le workflow : une ligne par artefact (`<source>|<asset>`)
 - Ajouter un contrôle dans l'étape « Contrôles » pour chaque nouveau type
 
-## Structure
+## Version HTML
+
+À partir de v0.2.0, le support est disponible en version HTML interactive : 15 modules, 217 slides (hors slides masquées), 45 quiz, objectifs et résumés par module, accessibilité complète (clavier, SVG nommés, alt descriptifs), interface en français.
+
+### Ouverture du cours HTML
+
+**Sur tout système** (Windows, macOS, Linux) :
+
+```bash
+# 1. Clone ou téléchargement du dépôt
+git clone https://github.com/CCoupel/ansible-training.git
+cd ansible-training
+
+# 2. Double-clic sur `index.html`
+# Ou via le navigateur :
+# - Firefox : Ouvrir File > index.html
+# - Chrome : --allow-file-access-from-files (ou serveur local)
+
+# 3. Optional : serveur local (pour des tests complets)
+python3 -m http.server 8000
+# Puis : http://localhost:8000/
+```
+
+**Prérequis** : aucun. Le site est un ensemble de fichiers HTML/CSS/JS statiques ouvrable en `file://` (double-clic).
+
+**Note Windows** : si les images ou modules ne chargent pas, vérifier que les chemins ne contiennent pas de caractères spéciaux (répertoire racine sans espaces recommandé).
+
+### Structure du site HTML
+
+```
+.
+├── index.html                         # Page d'accueil, manifeste des 15 modules
+├── assets/
+│   ├── engine.js                      # Moteur de présentation (navigation, thème, notes)
+│   ├── style.css                      # Styles (clair/sombre, accessibilité)
+│   ├── plan.js                        # Manifeste : 15 modules, metadata
+│   ├── meta.js                        # Version, date, versions de référence (généré)
+│   ├── i18n/
+│   │   └── fr.js                      # Libellés en français
+│   └── img/
+│       ├── *.png                      # Images converties (19 WMF, 9 PNG)
+│       └── images.json                # Index des images (slide source, hash)
+├── modules/
+│   ├── m01-introduction.js            # Module 01 : Introduction
+│   ├── m02-inventory.js               # Module 02 : Inventory
+│   ├── ... (m03 à m15)
+│   └── m15-automation-integration.js  # Module 15 : Automation Integration
+├── tools/
+│   ├── validate.js                    # Vérification de structure du site
+│   ├── sync-meta.js                   # Génération de assets/meta.js
+│   ├── dump-course.js                 # Export JSON du contenu
+│   ├── package.js                     # Création du zip HTML
+│   └── check_links.py                 # Audit des liens (HTTP)
+├── tests/
+│   └── site/
+│       ├── test_*.py                  # Tests de parité, accessibilité, structure
+│       └── parity_exceptions.json     # Exceptions documentées (2 liens masqués)
+├── CONVENTIONS.md                     # Règles de conversion PPTX → HTML
+```
+
+### Conventions et contenu
+
+- **Verbatim du PPTX** : texte copié exactement (coquilles conservées sauf si corrigées dans le PPTX)
+- **Quiz** : 45 quiz (3 par module), une seule réponse défendable, distracteurs tirés d'erreurs classiques du module
+- **Objectifs et « À retenir »** : dérivés du contenu du module, en français, avec références aux slides sources
+- **Accessibilité** : clavier complet (flèches, Enter, Espace), SVG nommés, alt descriptif, notes du formateur (touche `n`)
+- **Thème** : clair/sombre (préférence utilisateur)
+
+Voir `CONVENTIONS.md` pour les détails (blocs, code, tables, labs, SVG, etc.).
+
+### Tests du site
+
+```bash
+# Tests de parité PPTX-HTML (tous les OS)
+PARITY_STRICT=1 python3 -m unittest discover -s tests/site -p 'test_*.py'
+
+# Validation de structure
+node tools/validate.js
+
+# Vérification des liens (hors-ligne : liens locaux uniquement)
+python3 tools/check_links.py --offline
+
+# Export JSON du contenu (pour scripts tiers)
+node tools/dump-course.js > build/course.json
+
+# Création du zip (asset de release)
+node tools/package.js
+```
+
+**Note Windows** : utiliser Node.js Linux (WSL) pour les tests complets ; le wrapper `node.exe` Windows a des chemins en `C:\mnt\…` qui peuvent causer des faux échecs (environnement, non contenu).
+
+## Structure du Dépôt
 
 ```
 .
 ├── README.md                          # Ce fichier
 ├── CHANGELOG.md                       # Historique des versions
 ├── CLAUDE.md                          # Configuration projet
-├── Ansible Training.pptx              # Support de formation
+├── Ansible Training.pptx              # Support de formation (PPTX)
 ├── Ansible Training.orig.pptx         # Sauvegarde originale (non tracée)
+├── index.html                         # Page d'accueil site HTML
+├── assets/                            # Moteur, styles, images, metadata du site
+├── modules/                           # 15 modules du site HTML (m01–m15)
+├── tools/                             # Outils (validate, sync-meta, etc.)
+├── CONVENTIONS.md                     # Règles PPTX → HTML
 ├── tests/
 │   ├── slides/
-│   │   ├── check_pptx.py              # Scan de validité et anti-fuite
+│   │   ├── check_pptx.py              # Scan de validité et anti-fuite (PPTX)
 │   │   ├── pptx_reader.py             # Lecteur PPTX (stdlib)
 │   │   └── obsolescence/
-│   │       └── test_*.py              # Tests d'obsolescence
+│   │       └── test_*.py              # Tests d'obsolescence (PPTX)
+│   ├── site/
+│   │   ├── test_*.py                  # Tests parité/accessibilité (HTML)
+│   │   └── parity_exceptions.json     # Exceptions documentées
 │   └── INDEX.md
 ├── .github/
 │   └── workflows/
-│       └── release.yml                # Publication automatique
+│       └── release.yml                # Publication PPTX + HTML (GitHub Actions)
 ├── .claude/
 │   ├── project-config.json            # Versions de référence
 │   ├── agents/                        # Équipe (dev-slides, test-writer, etc.)
@@ -126,8 +225,13 @@ Le workflow est conçu pour supporter des artefacts supplémentaires (HTML, PDF)
 │   │   └── MEMORY.md                  # Mémoire du projet
 │   └── ...
 └── docs/
+    ├── plans/
+    │   ├── v0.2.0/
+    │   │   ├── plan-v0.2.0.md         # Plan d'implémentation HTML
+    │   │   └── ...                    # Rapports, maquettes (archives)
     ├── mockup/
     │   └── DECISIONS.md               # Décisions de conception
+    └── ...
 
 ```
 
