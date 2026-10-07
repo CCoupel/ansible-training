@@ -1,0 +1,4 @@
+{
+  "_comment": "Exceptions de parité PPTX -> HTML. Une entrée UNIQUEMENT sur demande justifiée de l'agent `course` (contenu décoratif sans équivalent HTML), validée par le teamleader. Plafond : < 20 entrées. Format : { \"slide\": N, \"kind\": \"text|notes|link|image\", \"line\": k (1-based, pour text/notes), \"media\": \"imageN.ext\" (pour image), \"reason\": \"justification obligatoire\" }.",
+  "exceptions": []
+}
