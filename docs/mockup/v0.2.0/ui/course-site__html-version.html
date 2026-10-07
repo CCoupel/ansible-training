@@ -1,0 +1,293 @@
+<!doctype html>
+<!--
+  composant : course-site (site HTML du support Ansible Training)
+  feature   : version HTML du support (#3, #4)
+  version   : 0.2.0
+  type      : ui
+  issue     : #3, #4
+  complete  : aucune (premiere maquette du composant)
+  remplace  : aucune (révision 2 : décisions GATE 2 — Q2 quiz + objectifs + À retenir, Q4 interface FR)
+  Note      : maquette STATIQUE (aucun moteur). 4 ecrans empiles : accueil, slide de contenu + notes,
+              exercice/solution (lab + reveal), quiz (bloc additionnel « Bonus HTML »), + ecran 5 : couverture « Objectifs » et « A retenir ».
+              Langue de l'interface : francais (decision Q4). Contenu additionnel : francais, derive du PPTX uniquement (ref vers slides source). Contenu des slides : texte d'origine du PPTX, non reecrit.
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette site HTML</title>
+<style>
+:root{--accent:#1a5fb4;--accent-2:#3584e4;--accent-soft:#e7f0fb;--bg:#f6f8fb;--surface:#fff;--border:#d5dce6;--text:#1d2633;--muted:#5f6b7a;--code-bg:#0f1b2d;--code-fg:#e6edf6;--ok:#1f8a4c;--ko:#c0392b;--warn:#b7791f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#62a0ea;--accent-2:#99c1f1;--accent-soft:#1c2b40;--bg:#0f141b;--surface:#18202b;--border:#2c3747;--text:#e6ebf2;--muted:#9aa7b8;--code-bg:#0a111c}}
+:root[data-theme="dark"]{--accent:#62a0ea;--accent-2:#99c1f1;--accent-soft:#1c2b40;--bg:#0f141b;--surface:#18202b;--border:#2c3747;--text:#e6ebf2;--muted:#9aa7b8;--code-bg:#0a111c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1.frame{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:32px 16px 8px;max-width:1200px}
+.app{display:grid;grid-template-columns:260px 1fr;max-width:1200px;margin:0 16px 24px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);min-height:560px}
+@media (max-width:760px){.app{grid-template-columns:1fr}.side{display:none}}
+.side{border-right:1px solid var(--border);padding:14px;background:var(--bg)}
+.brand{font-weight:700;color:var(--accent);display:flex;gap:8px;align-items:center}.brand small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.side input{width:100%;margin:12px 0;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text)}
+.day{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 4px}
+.mod{display:flex;gap:8px;align-items:center;padding:5px 6px;border-radius:6px;font-size:14px}
+.mod.cur{background:var(--accent-soft);color:var(--accent);font-weight:600}.mod .n{font-variant-numeric:tabular-nums;color:var(--muted);width:22px}
+.mod .pct{margin-left:auto;font-size:11px;color:var(--muted)}.mod.done .pct{color:var(--ok)}
+.main{display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:14px}
+.top .crumb{color:var(--muted)}.top .crumb b{color:var(--text)}.top .sp{flex:1}
+.btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:6px;padding:4px 10px;font-size:13px}
+.btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.prog{height:3px;background:var(--border)}.prog i{display:block;height:100%;width:38%;background:var(--accent)}
+.slide{padding:24px 32px;flex:1}.slide h2{margin:0 0 4px;font-size:24px}
+.src{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:0 8px;margin-bottom:14px}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:10px;padding:1px 8px;margin-left:8px;vertical-align:middle;background:var(--accent-soft);color:var(--accent)}
+.tag.bonus{background:#fff4e0;color:var(--warn)}
+.codebox{border-radius:8px;overflow:hidden;background:var(--code-bg);color:var(--code-fg);margin:10px 0}
+.codebar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(255,255,255,.06);font-size:12px}.codebar .fn{flex:1;opacity:.8}
+.codebar button{font-size:11px;background:transparent;color:var(--code-fg);border:1px solid rgba(255,255,255,.25);border-radius:4px;padding:1px 8px}
+pre{margin:0;padding:12px 14px;font:13px/1.45 ui-monospace,Consolas,monospace;overflow:auto}.cm{color:#8b9bb0}
+.notes{border-top:2px dashed var(--accent-2);background:var(--accent-soft);padding:12px 32px;font-size:14px}.notes b{color:var(--accent)}
+.foot{display:flex;align-items:center;padding:10px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);gap:10px}.foot .sp{flex:1;text-align:center}
+.lab{border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:12px 16px;background:var(--surface)}
+.lab h3{margin:0 0 6px;font-size:16px}.lab label{display:flex;gap:8px;margin:4px 0}
+details{border:1px solid var(--border);border-radius:8px;margin-top:12px}summary{padding:8px 12px;cursor:pointer;color:var(--accent);font-weight:600}
+details .codebox{margin:0 12px 12px}
+.quiz{border:1px solid var(--border);border-radius:8px;padding:14px 16px}.quiz .q{font-weight:600;margin-bottom:8px}
+.opt{display:block;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:6px 0}.opt.ok{border-color:var(--ok);background:rgba(31,138,76,.1)}.opt.ko{border-color:var(--ko);background:rgba(192,57,43,.08)}
+.explain{font-size:14px;color:var(--muted);margin-top:8px}
+.home{padding:40px 48px}.home h2{font-size:34px;margin:0;color:var(--accent)}.home .sub{font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.pill{border:1px solid var(--border);border-radius:14px;padding:3px 12px;font-size:13px}.pill b{color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:18px}
+.card{border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px}.card small{display:block;color:var(--muted)}
+.dl{margin-top:18px;font-size:14px}.dl a{color:var(--accent)}
+.annot{max-width:1200px;margin:0 16px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- ============ ECRAN 1 : ACCUEIL (remplace les slides 1-3 : couverture, version, agenda) ============ -->
+<h1 class="frame">Écran 1 — Accueil (#home) : couverture + version + agenda généré depuis le manifeste</h1>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div>
+    <input type="search" placeholder="Rechercher ( / )">
+    <div class="day">Jour 1</div>
+    <div class="mod"><span class="n">01</span>🚀 Introduction <span class="pct">0/9</span></div>
+    <div class="mod"><span class="n">02</span>📇 Inventory <span class="pct">0/17</span></div>
+    <div class="mod"><span class="n">03</span>📜 Playbooks <span class="pct">0/14</span></div>
+    <div class="mod"><span class="n">04</span>🧩 Modules <span class="pct">0/12</span></div>
+    <div class="mod"><span class="n">05</span>🔣 Variables &amp; facts <span class="pct">0/12</span></div>
+    <div class="mod"><span class="n">06</span>🚨 Errors &amp; delegation <span class="pct">0/14</span></div>
+    <div class="day">Jour 2</div>
+    <div class="mod"><span class="n">07</span>🧪 Filters &amp; conditions</div>
+    <div class="mod"><span class="n">08</span>🔁 Loops &amp; tags</div>
+    <div class="mod"><span class="n">09</span>🧾 Templates &amp; async</div>
+    <div class="mod"><span class="n">10</span>🔐 Vault</div>
+    <div class="mod"><span class="n">11</span>📦 Roles &amp; Galaxy</div>
+    <div class="mod"><span class="n">12</span>🛠️ Extend Ansible</div>
+    <div class="day">Pour aller plus loin</div>
+    <div class="mod"><span class="n">13</span>🌐 Real use case</div>
+    <div class="mod"><span class="n">14</span>✅ Best practices</div>
+    <div class="mod"><span class="n">15</span>🔗 Automation integration</div>
+  </aside>
+  <div class="main">
+    <div class="top"><span class="crumb"><b>Accueil</b></span><span class="sp"></span><button class="btn">🗒️ Notes (n)</button><button class="btn">🌓 (t)</button></div>
+    <div class="home">
+      <div class="sub">Ansible</div>
+      <h2>Automation for everyone</h2>
+      <div class="meta">
+        <span class="pill">Version <b>v0.2.0</b></span>
+        <span class="pill">Livraison <b>JJ/MM/AAAA</b></span>
+        <span class="pill">Référence : <b>ansible-core 2.20</b> · Python contrôleur ≥ 3.12</span>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin:0">Version, date et versions de référence lues dans <code>assets/meta.js</code>, généré depuis <code>.claude/project-config.json</code> par <code>tools/sync-meta.js</code> et commité (jamais saisies à la main).</p>
+      <div class="grid">
+        <div class="card"><b>Jour 1</b><small>Modules 01 à 06 — matin : 01-04, après-midi : 05-06</small></div>
+        <div class="card"><b>Jour 2</b><small>Modules 07 à 12 — matin : 07-08, après-midi : 09-12</small></div>
+        <div class="card"><b>Pour aller plus loin</b><small>Modules 13 à 15</small></div>
+        <div class="card"><b>Reprendre</b><small>Dernière slide vue : 03 · Playbooks — 4/14</small></div>
+      </div>
+      <div class="dl">⬇️ <a>Télécharger le support PowerPoint (même version, lien relatif Ansible%20Training.pptx)</a></div>
+    </div>
+    <div class="foot"><button class="btn">← Précédent</button><span class="sp">← → naviguer · m sommaire · n notes · t thème · / recherche</span><button class="btn on">Commencer →</button></div>
+  </div>
+</div>
+
+<!-- ============ ECRAN 2 : SLIDE DE CONTENU + NOTES (source PPTX slide 35) ============ -->
+<h1 class="frame">Écran 2 — Slide de contenu (bloc code) avec panneau Notes ouvert — source PPTX slide 35</h1>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div>
+    <input type="search" placeholder="Rechercher ( / )">
+    <div class="day">Jour 1</div>
+    <div class="mod done"><span class="n">01</span>🚀 Introduction <span class="pct">✓</span></div>
+    <div class="mod done"><span class="n">02</span>📇 Inventory <span class="pct">✓</span></div>
+    <div class="mod cur"><span class="n">03</span>📜 Playbooks <span class="pct">6/14</span></div>
+    <div class="mod"><span class="n">04</span>🧩 Modules <span class="pct">0/12</span></div>
+    <div class="mod"><span class="n">05</span>🔣 Variables &amp; facts</div>
+    <div class="mod"><span class="n">06</span>🚨 Errors &amp; delegation</div>
+    <div class="day">Jour 2</div>
+    <div class="mod"><span class="n">07</span>🧪 Filters &amp; conditions</div>
+    <div class="mod"><span class="n">…</span>…</div>
+  </aside>
+  <div class="main">
+    <div class="top"><span class="crumb">03 · Playbooks › <b>Playbook example</b></span><span class="sp"></span><span style="color:var(--muted)">6 / 14</span><button class="btn on">🗒️ Notes (n)</button><button class="btn">🌓 (t)</button></div>
+    <div class="prog"><i></i></div>
+    <div class="slide">
+      <h2>Playbook example</h2>
+      <span class="src" title="Traçabilité parité PPTX ↔ HTML">PPTX · slide 35</span>
+      <div class="codebox">
+        <div class="codebar"><span class="fn">deploy_apache.yml</span><button>Copier</button></div>
+<pre>---
+- name: install and start apache
+  hosts: WEB
+  vars:
+    http_port: 80
+    max_clients: 200
+  remote_user: root
+
+  tasks:
+  - name: install httpd
+    ansible.builtin.dnf:
+      name: httpd
+      state: latest
+  - name: write the apache config file
+    ansible.builtin.template:
+      src: /srv/httpd.j2
+      dest: /etc/httpd.conf
+  - name: start httpd
+    ansible.builtin.service:
+      name: httpd
+      state: started</pre>
+      </div>
+    </div>
+    <div class="notes"><b>Notes du formateur</b> — The name fields are human-readable comments. Optional, but useful as comments to the playbook. These strings also show up in automation controller / AWX, so it is easy to correlate any failures in a long running playbook.</div>
+    <div class="foot"><button class="btn">← Précédent</button><span class="sp">← → naviguer · m sommaire · n notes · t thème · / recherche</span><button class="btn on">Suivant →</button></div>
+  </div>
+</div>
+<p class="annot">Le badge « PPTX · slide N » est discret (pas de numéro de section) ; il sert la parité et le formateur qui projette les deux supports. Panneau Notes : masqué par défaut, mémorisé (localStorage), absent si la slide n'a pas de notes.</p>
+
+<!-- ============ ECRAN 3 : EXERCICE + SOLUTION (sources PPTX slides 88 et 89) ============ -->
+<h1 class="frame">Écran 3 — Exercice (bloc lab à cocher) et solution repliée (bloc reveal) — sources PPTX slides 88 + 89</h1>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div>
+    <input type="search" placeholder="Rechercher ( / )">
+    <div class="day">Jour 2</div>
+    <div class="mod cur"><span class="n">07</span>🧪 Filters &amp; conditions <span class="pct">7/17</span></div>
+    <div class="mod"><span class="n">08</span>🔁 Loops &amp; tags</div>
+  </aside>
+  <div class="main">
+    <div class="top"><span class="crumb">07 · Filters &amp; conditions › <b>Filtres — Exercice</b></span><span class="sp"></span><span style="color:var(--muted)">7 / 17</span><button class="btn">🗒️ Notes (n)</button><button class="btn">🌓 (t)</button></div>
+    <div class="prog"><i style="width:41%"></i></div>
+    <div class="slide">
+      <h2>Filtres — Exercice <span class="tag">exercice</span></h2>
+      <span class="src">PPTX · slides 88-89</span>
+      <div class="lab">
+        <h3>Exercice</h3>
+        <label><input type="checkbox" checked> Write a playbook to add a user with variables:</label>
+        <label><input type="checkbox"> a mandatory name</label>
+        <label><input type="checkbox"> a group as “nobody” if not provided</label>
+      </div>
+      <div class="codebox"><div class="codebar"><span class="fn">terminal</span><button>Copier</button></div>
+<pre>ansible-playbook -i inventory set_user.yml -e user_name="toto" [-e user_group="titi"]
+ansible-playbook -i inventory set_user.yml -e "user_name='toto' user_group='titi'"</pre></div>
+      <details>
+        <summary>💡 Voir la solution (slide 89)</summary>
+        <div class="codebox"><div class="codebar"><span class="fn">set_user.yml</span><button>Copier</button></div>
+<pre>---
+- hosts: all
+  become: true
+  vars:
+    The_Name: "{{ user_name | mandatory('user_name must be defined') }}"
+    The_Group: "{{ user_group | default('nobody') }}"
+  tasks:
+    - name: set Group
+      ansible.builtin.group:
+        name: "{{ The_Group }}"
+        state: present
+    <span class="cm"># … (suite identique au PPTX)</span></pre></div>
+      </details>
+    </div>
+    <div class="foot"><button class="btn">← Précédent</button><span class="sp">← → naviguer · m sommaire · n notes · t thème · / recherche</span><button class="btn on">Suivant →</button></div>
+  </div>
+</div>
+<p class="annot">Règle de conversion : une slide « Exercice » suivie de sa slide solution = UNE slide HTML (lab + reveal), qui porte les deux numéros source. Le texte reste celui du PPTX (anglais/français d'origine, coquilles corrigées seulement si déjà corrigées dans le PPTX).</p>
+
+<!-- ============ ECRAN 4 : QUIZ (bloc additionnel, sous reserve Q2) ============ -->
+<h1 class="frame">Écran 4 — Quiz de fin de module (contenu ADDITIONNEL marqué « Bonus HTML », décision Q2)</h1>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div>
+    <div class="day">Jour 1</div>
+    <div class="mod cur"><span class="n">03</span>📜 Playbooks <span class="pct">14/14</span></div>
+  </aside>
+  <div class="main">
+    <div class="top"><span class="crumb">03 · Playbooks › <b>Quiz</b></span><span class="sp"></span><span style="color:var(--muted)">15 / 16</span><button class="btn">🗒️ Notes (n)</button><button class="btn">🌓 (t)</button></div>
+    <div class="prog"><i style="width:94%"></i></div>
+    <div class="slide">
+      <h2>Quiz <span class="tag bonus">Bonus HTML</span></h2>
+      <span class="src">hors PPTX — dérivé de la slide 35 (ref) — exclu du contrôle de parité</span>
+      <div class="quiz">
+        <div class="q">Dans un playbook, à quoi sert le champ <code>name</code> d'une tâche ?</div>
+        <span class="opt">Il est obligatoire et identifie le module appelé</span>
+        <span class="opt ok">✓ Il documente la tâche et apparaît dans la sortie d'exécution</span>
+        <span class="opt ko">✗ Il définit l'hôte cible de la tâche</span>
+        <div class="explain">Le champ <code>name</code> est optionnel mais fortement recommandé : il s'affiche dans la sortie et dans AWX / automation controller (cf. notes de la slide 35).</div>
+      </div>
+    </div>
+    <div class="foot"><button class="btn">← Précédent</button><span class="sp">Score du module : 1/1</span><button class="btn on">À retenir →</button></div>
+  </div>
+</div>
+<p class="annot">1 à 3 quiz par module, en fin de module (avant « À retenir »). Réponse sélectionnée → correction + explication citant la slide source ; score mémorisé (localStorage) et repris sur « À retenir ».</p>
+
+<!-- ============ ECRAN 5 : COUVERTURE « OBJECTIFS » ET « A RETENIR » (Q2) ============ -->
+<h1 class="frame">Écran 5 — Couverture de module « Objectifs » (début) et « À retenir » (fin) — générées par le moteur, « Bonus HTML »</h1>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div>
+    <div class="day">Jour 1</div>
+    <div class="mod cur"><span class="n">03</span>📜 Playbooks <span class="pct">0/16</span></div>
+  </aside>
+  <div class="main">
+    <div class="top"><span class="crumb">03 · Playbooks › <b>Objectifs</b></span><span class="sp"></span><span style="color:var(--muted)">1 / 16</span><button class="btn">🗒️ Notes (n)</button><button class="btn">🌓 (t)</button></div>
+    <div class="prog"><i style="width:6%"></i></div>
+    <div class="slide">
+      <div style="font-size:40px">📜</div>
+      <h2>Module 03 — Playbooks <span class="tag bonus">Bonus HTML</span></h2>
+      <span class="src">hors PPTX — chaque objectif cite ses slides source</span>
+      <ul>
+        <li>Décrire la structure d'un playbook : plays, hôtes, tâches, modules et paramètres <small style="color:var(--muted)">(slides 31-32)</small></li>
+        <li>Lire un playbook d'installation et de démarrage d'Apache <small style="color:var(--muted)">(slides 34-39)</small></li>
+        <li>Grouper des tâches avec <code>block</code> <small style="color:var(--muted)">(slide 42)</small></li>
+        <li>Distinguer <code>import*</code> (statique) et <code>include*</code> (dynamique) <small style="color:var(--muted)">(slide 43)</small></li>
+      </ul>
+    </div>
+    <div class="foot"><button class="btn">← Précédent</button><span class="sp">← → naviguer · m sommaire · n notes · t thème · / recherche</span><button class="btn on">Commencer →</button></div>
+  </div>
+</div>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div>
+    <div class="day">Jour 1</div>
+    <div class="mod cur done"><span class="n">03</span>📜 Playbooks <span class="pct">✓</span></div>
+  </aside>
+  <div class="main">
+    <div class="top"><span class="crumb">03 · Playbooks › <b>À retenir</b></span><span class="sp"></span><span style="color:var(--muted)">16 / 16</span><button class="btn">🗒️ Notes (n)</button><button class="btn">🌓 (t)</button></div>
+    <div class="prog"><i style="width:100%"></i></div>
+    <div class="slide">
+      <h2>À retenir <span class="tag bonus">Bonus HTML</span></h2>
+      <div class="meta"><span class="pill">Quiz du module : <b>1 / 1</b></span></div>
+      <ul>
+        <li>Un playbook est une liste de plays ; chaque play cible des hôtes de l'inventaire et exécute ses tâches dans l'ordre.</li>
+        <li>Le champ <code>name</code> est optionnel mais apparaît dans la sortie et dans AWX / automation controller.</li>
+        <li><code>block</code> regroupe des tâches qui partagent les mêmes attributs.</li>
+        <li>Les <code>import*</code> sont traités au chargement du playbook (statique).</li>
+      </ul>
+    </div>
+    <div class="foot"><button class="btn">← Précédent</button><span class="sp"></span><button class="btn on">Module 04 →</button></div>
+  </div>
+</div>
+<p class="annot">Textes d'exemple dérivés des slides citées (à confirmer à la rédaction : ils seront soumis à la revue code-reviewer et à la relecture humaine). Aucun nouveau fait : uniquement ce que disent les slides <code>ref</code>.</p>
+
+</body>
+</html>
