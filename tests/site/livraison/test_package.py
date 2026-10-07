@@ -1,7 +1,10 @@
 """Tests d'intégration du zip de release `tools/package.js` (CA-5.2, CA-5.4, CA-T.1) — lot livraison.
 
-  - contenu exact : index.html + assets/** + modules/** (= fichiers suivis par git de ces chemins), rien d'autre
-    (le PPTX reste un asset de release séparé) ;
+  - contenu exact : index.html + assets/** + modules/** (= fichiers suivis par git de ces chemins) + le PPTX
+    « Ansible Training.pptx » à la racine (octet pour octet identique au fichier commité), rien d'autre
+    (aucun autre .pptx ni .zip) ;
+  - le lien de téléchargement de l'accueil (engine.js) pointe vers un fichier présent dans le zip ;
+  - .gitattributes : *.pptx / *.png binary, eol=lf sur les sources texte (le PPTX ne doit pas être altéré) ;
   - déterminisme : deux exécutions → même sha256 ; entrées triées, dates fixes 1980-01-01, permissions fixes ;
   - site autonome : aucune ressource externe chargée par index.html / CSS (pas de CDN, police distante) ;
   - aucune trace du cours OpenShift dont le moteur est porté.
@@ -13,16 +16,26 @@ Exécution : python3 -m unittest discover -s tests/site -p "test_package.py" -v
 import hashlib
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from urllib.parse import unquote
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import site_support as S  # noqa: E402
 
 ZIP = S.ROOT / "build" / "Ansible-Training-HTML.zip"
+PPTX_NAME = "Ansible Training.pptx"
+
+
+def committed_pptx():
+    """Octets du PPTX tel que commité (HEAD), sans conversion de fin de ligne."""
+    r = subprocess.run(["git", "show", "HEAD:" + PPTX_NAME], cwd=str(S.ROOT), capture_output=True)
+    assert r.returncode == 0, "git show HEAD:%s a échoué" % PPTX_NAME
+    return r.stdout
 
 
 def package():
@@ -53,15 +66,39 @@ class TestPackage(unittest.TestCase):
     def test_deux_executions_meme_sha256(self):
         self.assertEqual(hashlib.sha256(self.first).hexdigest(), hashlib.sha256(self.second).hexdigest())
 
-    def test_contenu_exact_index_assets_modules(self):
+    def test_contenu_exact_index_assets_modules_et_pptx(self):
         files = {n for n in self.names if not n.endswith("/")}
         for n in files:
-            self.assertTrue(n == "index.html" or n.startswith(("assets/", "modules/")), "entrée inattendue : %s" % n)
-        tracked = set(S.git_files("index.html", "assets", "modules"))
-        self.assertEqual(files, tracked, "le zip doit contenir exactement les fichiers suivis (index.html, assets/, modules/)")
+            self.assertTrue(n in ("index.html", PPTX_NAME) or n.startswith(("assets/", "modules/")),
+                            "entrée inattendue : %s" % n)
+        tracked = set(S.git_files("index.html", "assets", "modules")) | {PPTX_NAME}
+        self.assertEqual(files, tracked,
+                         "le zip doit contenir exactement les fichiers suivis (index.html, assets/, modules/) + le PPTX")
 
-    def test_ni_pptx_ni_build_ni_outils(self):
+    def test_pptx_a_la_racine_a_cote_de_index_html(self):
+        self.assertIn(PPTX_NAME, self.names)
+        self.assertIn("index.html", self.names)
+        self.assertEqual(self.names.count(PPTX_NAME), 1, "PPTX en double dans l'archive")
+
+    def test_pptx_identique_octet_pour_octet(self):
+        data = self.zf.read(PPTX_NAME)
+        ref = committed_pptx()
+        self.assertEqual(len(data), len(ref), "taille différente du PPTX commité (conversion de fin de ligne ?)")
+        self.assertEqual(hashlib.sha256(data).hexdigest(), hashlib.sha256(ref).hexdigest())
+
+    def test_pptx_embarque_est_un_zip_ooxml_valide(self):
+        data = self.zf.read(PPTX_NAME)
+        self.assertEqual(data[:4], b"PK\x03\x04")
+        tmp = Path(self.tmp) / "embedded.pptx"
+        tmp.write_bytes(data)
+        with zipfile.ZipFile(tmp) as z:
+            self.assertIsNone(z.testzip())
+            self.assertIn("[Content_Types].xml", z.namelist())
+
+    def test_aucun_autre_pptx_ni_zip(self):
         for n in self.names:
+            if n == PPTX_NAME:
+                continue
             self.assertFalse(n.lower().endswith((".pptx", ".zip")), n)
             self.assertFalse(n.startswith(("build/", "tools/", "tests/", ".git", ".claude/")), n)
 
@@ -113,10 +150,47 @@ class TestPackage(unittest.TestCase):
             if re.match(r"(?i)(https?:|mailto:|data:)", attr):
                 continue
             self.assertFalse(attr.startswith(("/", "file:")), "chemin non relatif : %s" % attr)
-            target = attr.split("?")[0].replace("%20", " ")
-            if target.lower().endswith(".pptx"):
-                continue  # lien de téléchargement : asset de release / servi par Pages
+            target = unquote(attr.split("?")[0])
             self.assertIn(target, self.names, "ressource absente du zip : %s" % attr)
+
+    def test_lien_pptx_de_l_accueil_present_dans_le_zip(self):
+        """Le lien « Télécharger le PPTX » (home.download, engine.js) vise un fichier embarqué (plus de 404 dans le zip)."""
+        engine = self.zf.read("assets/engine.js").decode("utf-8")
+        hrefs = re.findall(r"""href\s*=\s*["']([^"'$]+\.pptx)["']""", engine, re.I)
+        self.assertTrue(hrefs, "aucun lien .pptx dans engine.js")
+        for h in hrefs:
+            self.assertFalse(re.match(r"(?i)(https?:)?//|/|file:", h), "lien non relatif : %s" % h)
+            self.assertIn(unquote(h), self.names, "lien PPTX mort dans le zip : %s" % h)
+        fr = self.zf.read("assets/i18n/fr.js").decode("utf-8")
+        self.assertIn("home.download", fr)
+
+
+class TestGitattributes(unittest.TestCase):
+    """.gitattributes : le PPTX et les PNG ne doivent jamais subir de conversion de fin de ligne."""
+
+    @classmethod
+    def setUpClass(cls):
+        p = S.ROOT / ".gitattributes"
+        assert p.is_file(), ".gitattributes absent à la racine"
+        cls.rules = {}
+        for ln in p.read_text(encoding="utf-8").splitlines():
+            ln = ln.strip()
+            if ln and not ln.startswith("#"):
+                pat, *attrs = ln.split()
+                cls.rules.setdefault(pat, set()).update(attrs)
+
+    def test_pptx_et_png_binary(self):
+        for pat in ("*.pptx", "*.png"):
+            self.assertIn("binary", self.rules.get(pat, set()), "%s doit être « binary »" % pat)
+
+    def test_sources_texte_eol_lf(self):
+        for pat in ("*.js", "*.css", "*.html", "*.py"):
+            self.assertIn("eol=lf", self.rules.get(pat, set()), "%s doit avoir eol=lf" % pat)
+
+    def test_pptx_non_converti_par_git(self):
+        r = S.run(["git", "check-attr", "-a", "--", PPTX_NAME])
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("binary: set", r.stdout)
 
 
 if __name__ == "__main__":
