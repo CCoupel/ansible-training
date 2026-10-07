@@ -158,7 +158,7 @@ test-writer, code-reviewer, qa, doc-updater, deployer, security
 **Règle absolue** : toute information, décision ou validation attendue de l'utilisateur est posée
 **via l'outil `AskUserQuestion`** — jamais en texte dans le chat (pas de liste numérotée, pas de « OUI/NON »,
 pas de `[O/n]`, pas de « dis-moi »). Ça vaut aussi pour les questions remontées par un teammate
-(`BLOQUE` / `BLOCKED` / `FAILED` / `BESOIN CADRAGE`).
+(`BLOQUE` / `FAILED` — format unique `[NOM] BLOQUE` + `Questions:`, `TEAMMATES_PROTOCOL.md`).
 
 Chaîne : les teammates ne parlent jamais à l'utilisateur — ils t'envoient leurs questions et options
 (`SendMessage` vers `main`), **tu les convertis en `AskUserQuestion`**, puis tu leur renvoies les réponses
@@ -200,3 +200,104 @@ SendMessage({
 - **Commits** : `type(scope): message` — types : `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 - **Tags** : `vX.Y.Z` — la CI patche et publie la release automatiquement
 - **Jamais de travail direct sur `main`** — la branche milestone n'y est mergée qu'au déploiement PROD
+
+---
+
+## Release et CI
+
+### Workflow de Publication
+
+Chaque version est publiée automatiquement via GitHub Actions (`.github/workflows/release.yml`) lors d'un tag `vX.Y.Z` posé sur `main` ou d'un lancement manuel (`workflow_dispatch`).
+
+**Déclenchement** :
+
+```bash
+# 1. Merger milestone/vX.Y.Z sur main
+git checkout main
+git merge milestone/v0.1.1
+
+# 2. Poser le tag sur main et pousser
+git tag v0.1.1
+git push origin main
+git push origin v0.1.1
+
+# Ou via dispatch (rattrapage, ex. v0.1.0)
+gh workflow run release.yml -f tag=v0.1.0
+```
+
+**Règle critique** : le tag doit être posé sur `main` (ou en ancêtre de `main`). La CI vérifie avec `git merge-base --is-ancestor` que le commit du tag est dans l'historique de `origin/main` avant de publier. Sans cela, la release échoue avec un message explicite.
+
+### Étapes du Workflow
+
+1. **Validation du tag** : format `vX.Y.Z` requis
+2. **Contrôles** :
+   - Validité du PPTX : archive ZIP bien formée, `[Content_Types].xml` en première position
+   - Anti-fuite : scan des métadonnées XML et images via `check_pptx.py`, utilise le secret `LEAK_PATTERNS` (regex des termes sensibles)
+   - Version slide 2 : vérification que la slide 2 affiche la version correspondant au tag
+3. **Publication** : création/mise à jour de la release GitHub avec l'asset `Ansible-Training-vX.Y.Z.pptx`
+4. **Release notes** : extraction du CHANGELOG.md si présent, sinon génération automatique
+
+### Secret `LEAK_PATTERNS` — Prérequis Utilisateur
+
+**Avant chaque tag de release**, le secret GitHub `LEAK_PATTERNS` doit être configuré sur le dépôt :
+
+```bash
+# Créer un fichier local avec une regex par ligne
+# (exemples : nom de l'organisation, acronymes, domaines sensibles)
+cat > leak_patterns.txt <<EOF
+motif1
+motif2
+...
+EOF
+
+# Ajouter au dépôt comme secret
+gh secret set LEAK_PATTERNS < leak_patterns.txt
+```
+
+**Sans ce secret**, le workflow échoue volontairement au scan et refuse de publier — c'est une protection contre la publication accidentelle.
+
+**Vérification** : `gh secret list` affiche `LEAK_PATTERNS` comme présent (jamais le contenu).
+
+### Asset Versionné
+
+Chaque release publie un PPTX nommé `Ansible-Training-vX.Y.Z.pptx`, où `X.Y.Z` correspond au tag.
+
+### Contrôle de Version Slide 2
+
+La slide 2 affiche obligatoirement :
+- **Version** : vX.Y.Z (exemple : « v0.1.1 »)
+- **Date de livraison** : JJ/MM/AAAA
+- **Versions de référence** : « Référence : ansible-core 2.20 » (lues dans `reference_version` de `.claude/project-config.json`)
+
+Le workflow valide que la version affichée sur la slide 2 correspond au tag avant publication.
+
+### Extensibilité (v0.2.0)
+
+Le workflow est conçu pour supporter d'autres artefacts (HTML, PDF, etc.) :
+
+- Variable `ARTIFACTS` : ajouter une ligne `<fichier source>|<asset nommé>` pour chaque type
+- Étape « Contrôles » : ajouter un `case` pour chaque nouveau type (ex. `*.zip|*.html`)
+
+Exemple pour v0.2.0 :
+
+```bash
+ARTIFACTS: |
+  Ansible Training.pptx|Ansible-Training-${TAG}.pptx
+  dist/html/index.html|Ansible-Training-HTML-${TAG}.zip
+```
+
+### Tests et Validation
+
+Avant de tagguer une release :
+
+```bash
+# Tests d'obsolescence (doivent passer)
+LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence
+
+# Scan local (sans secret)
+python3 tests/slides/check_pptx.py "Ansible Training.pptx"
+
+# Avec secret local (vérification complète)
+export LEAK_PATTERNS="$(cat leak_patterns.txt)"
+python3 tests/slides/check_pptx.py "Ansible Training.pptx"
+```

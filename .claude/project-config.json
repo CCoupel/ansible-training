@@ -4,15 +4,21 @@
   "org": "",
   "project": "ansible-training",
   "description": "Support de cours de formation Ansible (PPTX), version generique sans references a l'organisation d'origine, avec exemples de playbooks/roles et labs de TP",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "reference_version": {
+    "ansible_core": "2.20",
+    "python_controller_min": "3.12",
+    "fixed_on": "2026-10-06",
+    "source": "audit d'obsolescence v0.1.0 (#10)"
+  },
   "initialized_at": "2026-10-06T15:32:13+02:00",
   "initialized_from": "workshop",
   "template_version": {
-    "tag": "v3.10.0",
-    "commit": "c620b204c976c789d9039dc14c6958632f804672"
+    "tag": "v3.12.0",
+    "commit": "dedf7992b0d5625e35933c48b10319c579eaa096"
   },
   "src_dir": ".",
-  "version_file": "",
+  "version_file": ".claude/project-config.json",
   "stack": {
     "backend": null,
     "frontend": null,

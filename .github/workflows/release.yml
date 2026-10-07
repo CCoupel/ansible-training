@@ -1,0 +1,155 @@
+name: release
+
+# Publication du support de formation sur la release GitHub du tag vX.Y.Z.
+# - tag poussé (v*.*.*) ou lancement manuel (input `tag`, ex. rattrapage de v0.1.0)
+# - le scan anti-fuite (tests/slides/check_pptx.py) est bloquant : sans secret LEAK_PATTERNS, aucune publication
+# - ne jamais afficher un terme interdit dans les logs (dépôt public)
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag à publier (ex. v0.1.0)'
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+      # Artefacts à publier, un par ligne : <fichier source>|<asset>  (${TAG} remplacé à l'exécution).
+      # v0.2.0 : ajouter ici le HTML (ex. `dist/ansible-training-html.zip|Ansible-Training-HTML-${TAG}.zip`)
+      # et le contrôle correspondant dans l'étape « Contrôles ».
+      ARTIFACTS: |
+        Ansible Training.pptx|Ansible-Training-${TAG}.pptx
+    steps:
+      - name: Valider le tag
+        run: |
+          if ! printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Tag invalide (attendu vX.Y.Z)"
+            exit 1
+          fi
+
+      - name: Checkout du tag
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: refs/tags/${{ env.TAG }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Vérifier que le tag est posé sur main
+        run: |
+          # Garde-fou : on ne publie que les tags dont le commit est dans l'historique de main
+          # (valable aussi pour workflow_dispatch).
+          git fetch --no-tags origin '+refs/heads/main:refs/remotes/origin/main'
+          COMMIT=$(git rev-list -n 1 "refs/tags/$TAG")
+          if ! git merge-base --is-ancestor "$COMMIT" origin/main; then
+            echo "::error::Le tag $TAG n'est pas sur main : merge d'abord la branche milestone sur main puis retag"
+            exit 1
+          fi
+          echo "Tag $TAG sur main : OK"
+
+      - name: Vérifier la présence du secret LEAK_PATTERNS
+        env:
+          LEAK_PATTERNS: ${{ secrets.LEAK_PATTERNS }}
+        run: |
+          if [ -z "${LEAK_PATTERNS//[[:space:]]/}" ]; then
+            echo "::error::Secret LEAK_PATTERNS absent ou vide : publication refusée (scan anti-fuite incomplet)"
+            exit 1
+          fi
+
+      - name: Contrôles (validité + anti-fuite + version)
+        env:
+          LEAK_PATTERNS: ${{ secrets.LEAK_PATTERNS }}
+          CI: 'true'
+        run: |
+          # Un contrôle par type d'artefact, chemin pris dans ARTIFACTS (pas de chemin en dur).
+          # check_pptx.py : sortie = fichier XML + numéro de motif, jamais le texte trouvé.
+          # Les attendus (nombre de slides, slides masquées) sont gérés par check_pptx.py
+          # (tests/slides/expected.json) : le workflow n'a rien à adapter si ces valeurs changent.
+          # v0.2.0 : ajouter ici un cas `*.zip|*.html)` pour le contrôle du HTML.
+          while IFS='|' read -r src asset; do
+            [ -z "$src" ] && continue
+            case "$src" in
+              *.pptx)
+                python3 tests/slides/check_pptx.py "$src"
+                python3 - "$src" <<'PY'
+          import os, re, sys
+          sys.path.insert(0, "tests/slides")
+          from pptx_reader import Deck
+
+          tag = os.environ["TAG"]
+          version = tag.lstrip("v")
+          try:
+              text = Deck(sys.argv[1]).slide(2).text
+          except Exception:
+              print("::error::Lecture de la slide 2 impossible (PPTX invalide ?)")
+              sys.exit(1)
+          if re.search(r"(?<![\d.])" + re.escape(version) + r"(?![\d.])", text):
+              print("Version slide 2 : OK")
+          elif tag == "v0.1.0":
+              # TEMPORAIRE : rattrapage de v0.1.0 dont la slide 2 affiche « V6 » ; à retirer ensuite.
+              print("::warning::Slide 2 ne mentionne pas la version v0.1.0 (rattrapage toléré)")
+          else:
+              print("::error::La slide 2 n'affiche pas la version " + tag)
+              sys.exit(1)
+          PY
+                ;;
+              *)
+                echo "::error::Aucun contrôle défini pour cet artefact"
+                exit 1
+                ;;
+            esac
+          done <<< "$ARTIFACTS"
+
+      - name: Préparer les assets
+        run: |
+          mkdir -p dist-release
+          while IFS='|' read -r src asset; do
+            [ -z "$src" ] && continue
+            asset="${asset//\$\{TAG\}/$TAG}"
+            cp "$src" "dist-release/$asset"
+          done <<< "$ARTIFACTS"
+          ls -1 dist-release
+
+      - name: Créer ou mettre à jour la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            echo "Release $TAG existante : assets remplacés (--clobber) :"
+            ls -1 dist-release
+            gh release upload "$TAG" dist-release/* --clobber --repo "$REPO"
+          else
+            NOTES=""
+            if [ -f CHANGELOG.md ]; then
+              # En-tête exact `## [X.Y.Z]` ou `## X.Y.Z` (suffixe éventuel après un espace ou `]`)
+              NOTES=$(V="${TAG#v}" awk '
+                BEGIN { v = ENVIRON["V"] }
+                /^## / {
+                  if (found) exit
+                  h = $2; gsub(/[\[\]]/, "", h)
+                  if (h == v) { found = 1; next }
+                }
+                found { print }' CHANGELOG.md)
+            fi
+            if [ -n "${NOTES//[[:space:]]/}" ]; then
+              printf '%s\n' "$NOTES" > release-notes.md
+              gh release create "$TAG" dist-release/* --title "$TAG" --notes-file release-notes.md --verify-tag --repo "$REPO"
+            else
+              gh release create "$TAG" dist-release/* --title "$TAG" --generate-notes --verify-tag --repo "$REPO"
+            fi
+          fi
