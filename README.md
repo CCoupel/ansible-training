@@ -68,7 +68,7 @@ git push origin v0.1.1
 
 ### Workflow de Release (`.github/workflows/release.yml`)
 
-À partir de v0.2.0, le workflow publie deux artefacts : le PPTX et le zip HTML. Étapes :
+À partir de v0.2.0, le workflow publie trois artefacts : le PPTX, le zip HTML et sa somme de contrôle. Étapes :
 
 1. **Validation du tag** : format `vX.Y.Z` requis ; doit être posé sur `main` (garde-fou CI)
 2. **Environnement** : Node 22, Python 3.12, secret `LEAK_PATTERNS` présent
@@ -77,9 +77,12 @@ git push origin v0.1.1
    - Obsolescence PPTX (`LOTS_STRICT=1`, 42 tests)
    - Structure (`validate.js`), version dans `meta.js` (`sync-meta --check --version`)
 4. **Contrôles par artefact** :
-   - **PPTX** : validité, anti-fuite (`LEAK_PATTERNS`), slide 2 affiche version du tag
-   - **Zip HTML** : archive valide, contenu complet (index.html, assets/, modules/, PPTX), PPTX embarqué identique au PPTX du tag, `meta.js` affiche version du tag, anti-fuite du contenu
-5. **Publication** : création/mise à jour de la release GitHub avec deux assets : `Ansible-Training-vX.Y.Z.pptx` et `Ansible-Training-HTML-vX.Y.Z.zip`
+   - **PPTX** : validité, anti-fuite (`LEAK_PATTERNS`), slide 2 affiche version et date du tag
+   - **Zip HTML** : archive valide, contenu complet (index.html, assets/, modules/, PPTX), PPTX embarqué identique au PPTX du tag, `meta.js` affiche version et date du tag, **date de meta.js doit être identique à date de la slide 2**, anti-fuite du contenu
+5. **Publication** : création/mise à jour de la release GitHub avec trois assets :
+   - `Ansible-Training-vX.Y.Z.pptx`
+   - `Ansible-Training-HTML-vX.Y.Z.zip`
+   - `Ansible-Training-HTML-vX.Y.Z.zip.sha256` (somme de contrôle, téléchargeable)
 
 ### Prérequis avant Release v0.2.0+
 
@@ -96,16 +99,16 @@ git push origin v0.1.1
    ```
    **Sans ce secret**, le workflow échoue volontairement (protection contre publication accidentelle avec termes sensibles).
 
-2. **Date de livraison** : fixer dans `assets/meta.js`
-   ```bash
-   node tools/sync-meta.js --date 07/10/2026  # ou date cible
-   git add assets/meta.js && git commit -m "..."  # commiter
-   ```
-   Le workflow ne contrôle pas la date, seule la version (du tag) est vérifiée.
+2. **Date de livraison** — **cohérence requise** (workflow la contrôle) :
+   - `assets/meta.js` : `"date": "07/10/2026"` (commit `6596dbf`, fixée pour v0.2.0)
+   - Slide 2 du PPTX : doit afficher `07/10/2026` (commit `0d8552a`, OK)
+   - **Le workflow échoue si les deux dates diffèrent**
+   - Si date différente : `node tools/sync-meta.js --date JJ/MM/AAAA` + commiter + slide 2 alignée
 
-3. **Slide 2 du PPTX** : doit afficher version v0.2.0 (ou vX.Y.Z du tag) et la date de livraison
-   - Version : ✓ (commit `0d8552a` pour v0.2.0)
-   - Date : aligner sur `meta.js`
+3. **Slide 2 du PPTX** — **cohérence requise** (workflow la contrôle) :
+   - Doit afficher version v0.2.0 (ou vX.Y.Z du tag) : ✓ (commit `0d8552a` pour v0.2.0)
+   - Doit afficher date de livraison (JJ/MM/AAAA) : ✓ (commit `0d8552a`)
+   - **Date doit être identique à celle de `assets/meta.js`**
 
 4. **Branche mergée** : `milestone/vX.Y.Z` doit être mergée sur `main` avant le tag
    ```bash
@@ -125,6 +128,19 @@ git push origin v0.1.1
    node tools/package.js && unzip -t build/Ansible-Training-HTML.zip > /dev/null
    ```
    Utiliser Node 22 et Python 3.12 ; `node` Linux (wrapper Windows donne faux échecs).
+
+### Vérification de l'intégrité (après release)
+
+Une fois la release publiée, vérifier l'intégrité du zip :
+
+```bash
+# Télécharger Ansible-Training-HTML-vX.Y.Z.zip et .sha256 de la release GitHub
+# Dans le même dossier :
+sha256sum -c Ansible-Training-HTML-vX.Y.Z.zip.sha256
+# Affiche : "Ansible-Training-HTML-vX.Y.Z.zip: OK" en cas de succès
+```
+
+Le fichier `.sha256` est généré automatiquement par le workflow et permet la vérification locale sans accès au git.
 
 ### Extensibilité (v0.2.0)
 
