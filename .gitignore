@@ -66,3 +66,4 @@ build/
 # Fichiers de verrou LibreOffice
 .~lock.*#
 .claude/worktrees/
+__pycache__/

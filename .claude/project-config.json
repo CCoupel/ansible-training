@@ -4,7 +4,7 @@
   "org": "",
   "project": "ansible-training",
   "description": "Support de cours de formation Ansible (PPTX), version generique sans references a l'organisation d'origine, avec exemples de playbooks/roles et labs de TP",
-  "version": "0.1.1",
+  "version": "0.2.0.0",
   "reference_version": {
     "ansible_core": "2.20",
     "python_controller_min": "3.12",
