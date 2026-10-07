@@ -228,7 +228,11 @@
     el.innerHTML = `<div class="slide-inner">${renderBody(cur)}</div>`;
     hardenLinks(el);
     el.scrollTop = 0;
-    if (curIdx !== prevIdx && el.focus) el.focus({ preventScroll: true }); // annonce/lecture depuis le début de la slide
+    // Focus sur la slide (lecture depuis le début) sauf au 1er affichage et si l'utilisateur navigue déjà
+    // au clavier avec les boutons ou le sommaire : on ne lui retire pas le focus.
+    const ae = document.activeElement;
+    const keepFocus = ae && ae.closest && ae.closest('#next, #prev, #navlist');
+    if (prevIdx >= 0 && curIdx !== prevIdx && !keepFocus && el.focus) el.focus({ preventScroll: true });
     frags = $$('.frag', el); fragIdx = 0;
     if (back) { frags.forEach(x => x.classList.add('show')); fragIdx = frags.length; }
     else if (keepFrags) { fragIdx = Math.min(keepFrags, frags.length); frags.slice(0, fragIdx).forEach(x => x.classList.add('show')); }
@@ -244,9 +248,11 @@
     return t('nav.next');
   }
 
+  let lastCrumb = null;
   function updateChrome() {
     const m = cur.mod;
-    $('#crumb').innerHTML = m ? `${m.emoji} <b>${pad(m.num)} ${esc(m.title)}</b> › ${esc(cur.title)}` : `${esc(t('icon.home'))} <b>${esc(t('nav.home'))}</b>`;
+    const crumb = m ? `${m.emoji} <b>${pad(m.num)} ${esc(m.title)}</b> › ${esc(cur.title)}` : `${esc(t('icon.home'))} <b>${esc(t('nav.home'))}</b>`;
+    if (crumb !== lastCrumb) { $('#crumb').innerHTML = crumb; lastCrumb = crumb; } // évite la relecture aria-live à chaque fragment
     const inMod = m ? flat.filter(f => f.mod === m) : [];
     $('#counter').textContent = m ? `${inMod.indexOf(cur) + 1} / ${inMod.length}` : '';
     $('#progress i').style.width = (flat.length > 1 ? curIdx / (flat.length - 1) * 100 : 0) + '%';
@@ -288,6 +294,8 @@
   function textOf(o, out) {
     if (typeof o === 'string') out.push(strip(o));
     else if (Array.isArray(o)) o.forEach(x => textOf(x, out));
+    else if (o && o.t === 'code') { out.push(String(o.code || '')); textOf(o.caption, out); } // texte brut : pas de strip()
+    else if (o && o.t === 'cmds') (o.items || []).forEach(c => { out.push(String(c[0] || '')); textOf(c[1], out); });
     else if (o && typeof o === 'object') Object.keys(o).forEach(k => { if (!NO_TEXT.has(k)) textOf(o[k], out); });
     return out;
   }
@@ -416,7 +424,10 @@
         case 'm': toggleMenu(); break;
         case 'n': toggleNotes(); break;
         case 't': toggleTheme(); break;
-        case '/': e.preventDefault(); document.body.classList.remove('menu-closed'); $('#search').focus(); break;
+        case '/':
+          e.preventDefault(); document.body.classList.remove('menu-closed');
+          if (window.matchMedia('(max-width: 900px)').matches) document.body.classList.add('menu-open'); // sidebar masquée sur mobile
+          $('#search').focus(); break;
       }
     });
     let x0 = null, y0 = 0;
