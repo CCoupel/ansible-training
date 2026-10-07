@@ -2,7 +2,9 @@ name: release
 
 # Publication du support de formation sur la release GitHub du tag vX.Y.Z.
 # - tag poussé (v*.*.*) ou lancement manuel (input `tag`, ex. rattrapage de v0.1.0)
-# - le scan anti-fuite (tests/slides/check_pptx.py) est bloquant : sans secret LEAK_PATTERNS, aucune publication
+# - deux assets par release : le PPTX et le zip du site HTML (build/Ansible-Training-HTML.zip, tools/package.js)
+# - les scans anti-fuite (tests/slides/check_pptx.py, tests/site/check_site.py) sont bloquants : sans secret
+#   LEAK_PATTERNS, aucune publication
 # - ne jamais afficher un terme interdit dans les logs (dépôt public)
 
 on:
@@ -30,10 +32,11 @@ jobs:
     env:
       TAG: ${{ github.event.inputs.tag || github.ref_name }}
       # Artefacts à publier, un par ligne : <fichier source>|<asset>  (${TAG} remplacé à l'exécution).
-      # v0.2.0 : ajouter ici le HTML (ex. `dist/ansible-training-html.zip|Ansible-Training-HTML-${TAG}.zip`)
-      # et le contrôle correspondant dans l'étape « Contrôles ».
+      # Chaque ligne doit avoir son cas dans l'étape « Contrôles » (sinon échec). Le zip HTML est produit par
+      # l'étape « Construire le zip HTML » (déterministe, depuis les fichiers suivis par git du tag).
       ARTIFACTS: |
         Ansible Training.pptx|Ansible-Training-${TAG}.pptx
+        build/Ansible-Training-HTML.zip|Ansible-Training-HTML-${TAG}.zip
     steps:
       - name: Valider le tag
         run: |
@@ -70,6 +73,42 @@ jobs:
             exit 1
           fi
 
+      - name: Installer Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Installer Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Tests du site et de l'obsolescence (bloquants)
+        env:
+          LEAK_PATTERNS: ${{ secrets.LEAK_PATTERNS }}
+          CI: 'true'
+          PARITY_STRICT: '1'
+          LOTS_STRICT: '1'
+          RELEASE_TAG: ${{ env.TAG }}
+        run: |
+          # RELEASE_TAG active les contrôles de version (slide 2 et assets/meta.js affichent X.Y.Z du tag).
+          python3 -m unittest discover -s tests/site
+          python3 -m unittest discover -s tests/slides/obsolescence
+
+      - name: Valider le site et assets/meta.js
+        run: |
+          node tools/validate.js
+          # meta.js est commité (le site s'ouvre en double-clic) : il doit déjà correspondre au tag.
+          # Aucune régénération en CI (le zip est construit depuis des fichiers commités uniquement).
+          node tools/sync-meta.js --check --version "${TAG#v}"
+
+      - name: Construire le zip HTML
+        run: |
+          # Refuse un arbre modifié ; entrées triées, dates fixes : même commit -> même sha256.
+          node tools/package.js
+          unzip -t build/Ansible-Training-HTML.zip > /dev/null
+          sha256sum build/Ansible-Training-HTML.zip
+
       - name: Contrôles (validité + anti-fuite + version)
         env:
           LEAK_PATTERNS: ${{ secrets.LEAK_PATTERNS }}
@@ -79,7 +118,9 @@ jobs:
           # check_pptx.py : sortie = fichier XML + numéro de motif, jamais le texte trouvé.
           # Les attendus (nombre de slides, slides masquées) sont gérés par check_pptx.py
           # (tests/slides/expected.json) : le workflow n'a rien à adapter si ces valeurs changent.
-          # v0.2.0 : ajouter ici un cas `*.zip|*.html)` pour le contrôle du HTML.
+          # Zip HTML : archive valide, PPTX embarqué identique à celui du tag, assets/meta.js à la version du tag,
+          # puis check_site.py (anti-fuite du contenu du zip, extrait dans un répertoire temporaire) et check_pptx.py
+          # sur le PPTX embarqué. --require-secret : échec si LEAK_PATTERNS absent.
           while IFS='|' read -r src asset; do
             [ -z "$src" ] && continue
             case "$src" in
@@ -106,6 +147,28 @@ jobs:
               print("::error::La slide 2 n'affiche pas la version " + tag)
               sys.exit(1)
           PY
+                ;;
+              *.zip)
+                unzip -t "$src" > /dev/null
+                TMP=$(mktemp -d)
+                unzip -q "$src" -d "$TMP"
+                for f in index.html assets/meta.js "Ansible Training.pptx"; do
+                  if [ ! -f "$TMP/$f" ]; then
+                    echo "::error::Zip HTML incomplet : fichier attendu absent ($f)"
+                    exit 1
+                  fi
+                done
+                if ! cmp -s "$TMP/Ansible Training.pptx" "Ansible Training.pptx"; then
+                  echo "::error::Le PPTX embarqué dans le zip diffère de celui du tag"
+                  exit 1
+                fi
+                if ! grep -Fq "\"version\": \"${TAG#v}\"" "$TMP/assets/meta.js"; then
+                  echo "::error::assets/meta.js du zip n'affiche pas la version $TAG"
+                  exit 1
+                fi
+                python3 tests/site/check_site.py --dir "$TMP" --require-secret
+                python3 tests/slides/check_pptx.py "$TMP/Ansible Training.pptx"
+                rm -rf "$TMP"
                 ;;
               *)
                 echo "::error::Aucun contrôle défini pour cet artefact"
