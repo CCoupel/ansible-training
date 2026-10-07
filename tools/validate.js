@@ -238,7 +238,7 @@ function checkSchema(file, mod) {
   });
   if (!quizzes) err(file, 'aucun quiz (1 à 3 attendus)');
   else if (quizzes > 3) warn(file, `${quizzes} quiz (3 maximum recommandés)`);
-  if (mod.slides.length < 6 || mod.slides.length > 24) warn(file, `${mod.slides.length} slides (6 à 24 attendues)`);
+  if (mod.slides.length < 6 || mod.slides.length > 26) warn(file, `${mod.slides.length} slides (6 à 26 attendues)`);
   console.log(`${errors > errorsBefore ? '…' : 'ok '}      ${base} : ${mod.slides.length} slides, ${quizzes} quiz, ${labs} lab`);
   return mod;
 }
