@@ -41,7 +41,7 @@ COURSE.add({
   - deploy-APP.yml` }
       ] },
     { title: 'Playbook example', src: [34, 35, 36, 37, 38, 39],
-      notes: ['The name fields are human-readable comments. Optional, but useful as comments to the playbook. These strings also show up in automation controller / AWX, so it is easy to correlate any failures in a long running playbook.', 'Inventory call-out', 'Variables can be handled in several different ways:', 'Directly in the playbook', 'As part of a separate vars file', 'Via the command line', 'As output from a previous play', 'Via automation controller / AWX', 'You are not required to use root as the remote user. You can have Ansible connect and run the playbook as any user or even multiple users – as long as that user has the permission to perform the tasks in the playbook. You can even use multiple users and specify different users for different plays or tasks.', 'Ansible supports sudo, su, powerbroker, and other privilege escalation mechanisms.'],
+      notes: ['Noms des tâches (slide 35) : The name fields are human-readable comments. Optional, but useful as comments to the playbook. These strings also show up in automation controller / AWX, so it is easy to correlate any failures in a long running playbook.', 'Inventaire (slide 36) : Inventory call-out', 'Variables (slide 37) : Variables can be handled in several different ways:', 'Directly in the playbook', 'As part of a separate vars file', 'Via the command line', 'As output from a previous play', 'Via automation controller / AWX', 'Utilisateur distant (slide 38) : You are not required to use root as the remote user. You can have Ansible connect and run the playbook as any user or even multiple users – as long as that user has the permission to perform the tasks in the playbook. You can even use multiple users and specify different users for different plays or tasks.', 'Ansible supports sudo, su, powerbroker, and other privilege escalation mechanisms.'],
       blocks: [
         { t: 'code', lang: 'yaml', code: `---
 - name: install and start apache
@@ -50,7 +50,6 @@ COURSE.add({
     http_port: 80
     max_clients: 200
   remote_user: root
-
   tasks:
   - name: install httpd
     ansible.builtin.dnf:
@@ -131,7 +130,7 @@ SRV-1                      : ok=3    changed=1    unreachable=0    failed=0    s
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'À quoi sert le champ <code>name</code> d\'une tâche ?',
-        options: ['Il est obligatoire et identifie le module appelé', 'Il définit l\'hôte cible de la tâche', 'Il documente la tâche et apparaît dans automation controller / AWX'], answer: 2,
+        options: ['Il est obligatoire et identifie le module appelé', 'Il définit l\'hôte cible de la tâche', 'Il documente la tâche et apparaît dans AWX'], answer: 2,
         explain: 'Les notes de la slide 35 : les champs <code>name</code> sont des commentaires lisibles, facultatifs mais utiles ; ces textes apparaissent aussi dans automation controller / AWX.', ref: [35] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
@@ -141,7 +140,7 @@ SRV-1                      : ok=3    changed=1    unreachable=0    failed=0    s
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Que garantit l\'idempotence d\'un playbook ?',
-        options: ['Appliquer plusieurs fois le même playbook ne change pas le système après la première application', 'Le playbook s\'exécute plus vite à chaque lancement', 'Les tâches s\'exécutent en parallèle sur tous les hôtes'], answer: 0,
+        options: ['Rejouer le playbook ne change plus le système après la première application', 'Le playbook s\'exécute plus vite à chaque nouveau lancement sur le même hôte', 'Les tâches du playbook s\'exécutent en parallèle sur tous les hôtes à la fois'], answer: 0,
         explain: 'Slide 31 : « Idempotency: Ensures that applying the same playbook multiple times will not change the system after the first application ».', ref: [31] }
     ] }
   ],
