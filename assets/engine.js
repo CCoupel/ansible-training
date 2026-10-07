@@ -278,11 +278,27 @@
     const on = $('#navlist a.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest' });
   }
 
+  /* Recherche : insensible à la casse et aux accents ; l'index ne contient que le texte affiché
+     (titres, champs de contenu, notes, objectifs, À retenir), jamais les noms de champs du schéma. */
+  const fold = x => String(x).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const NO_TEXT = new Set(['t', 'lang', 'kind', 'answer', 'ref', 'src', 'extra', 'layout', 'frag', 'wide', 'hl', 'base', 'file', 'id', 'num', 'emoji', 'day', 'tag']);
+  function textOf(o, out) {
+    if (typeof o === 'string') out.push(strip(o));
+    else if (Array.isArray(o)) o.forEach(x => textOf(x, out));
+    else if (o && typeof o === 'object') Object.keys(o).forEach(k => { if (!NO_TEXT.has(k)) textOf(o[k], out); });
+    return out;
+  }
+  function searchText(f) {
+    if (f.kind === 'cover') return textOf([f.mod.tagline, f.mod.objectives], []).join(' ');
+    if (f.kind === 'recap') return textOf(f.mod.takeaways, []).join(' ');
+    return textOf([f.slide.blocks, f.slide.notes], []).join(' ');
+  }
+
   let index = null;
   function renderSearch(q) {
-    if (!index) index = flat.filter(f => f.mod).map(f => ({ f, text: strip(JSON.stringify(f.slide || f.mod.takeaways || f.mod.objectives || '')).toLowerCase() }));
-    const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
-    const res = index.filter(x => terms.every(w => x.f.title.toLowerCase().includes(w) || x.text.includes(w))).slice(0, 40);
+    if (!index) index = flat.filter(f => f.mod).map(f => ({ f, title: fold(f.title), text: fold(searchText(f)) }));
+    const terms = fold(q).split(/\s+/).filter(Boolean);
+    const res = index.filter(x => terms.every(w => x.title.includes(w) || x.text.includes(w))).slice(0, 40);
     $('#navlist').innerHTML = res.length
       ? `<div class="search-res">${res.map(x => `<a href="#${x.f.uid}">${esc(x.f.title)}<small>${x.f.mod.emoji} ${pad(x.f.mod.num)} ${esc(x.f.mod.title)}</small></a>`).join('')}</div>`
       : `<div class="search-empty">${esc(t('search.empty'))}</div>`;
