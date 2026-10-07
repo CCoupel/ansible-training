@@ -2,7 +2,7 @@ name: release
 
 # Publication du support de formation sur la release GitHub du tag vX.Y.Z.
 # - tag poussé (v*.*.*) ou lancement manuel (input `tag`, ex. rattrapage de v0.1.0)
-# - deux assets par release : le PPTX et le zip du site HTML (build/Ansible-Training-HTML.zip, tools/package.js)
+# - assets par release : le PPTX, le zip du site HTML (build/Ansible-Training-HTML.zip, tools/package.js) et sa somme .sha256
 # - les scans anti-fuite (tests/slides/check_pptx.py, tests/site/check_site.py) sont bloquants : sans secret
 #   LEAK_PATTERNS, aucune publication
 # - ne jamais afficher un terme interdit dans les logs (dépôt public)
@@ -118,7 +118,8 @@ jobs:
           # check_pptx.py : sortie = fichier XML + numéro de motif, jamais le texte trouvé.
           # Les attendus (nombre de slides, slides masquées) sont gérés par check_pptx.py
           # (tests/slides/expected.json) : le workflow n'a rien à adapter si ces valeurs changent.
-          # Zip HTML : archive valide, PPTX embarqué identique à celui du tag, assets/meta.js à la version du tag,
+          # Zip HTML : archive valide, PPTX embarqué identique à celui du tag, assets/meta.js à la version du tag
+          # et à la date de la slide 2,
           # puis check_site.py (anti-fuite du contenu du zip, extrait dans un répertoire temporaire) et check_pptx.py
           # sur le PPTX embarqué. --require-secret : échec si LEAK_PATTERNS absent.
           while IFS='|' read -r src asset; do
@@ -140,11 +141,13 @@ jobs:
               sys.exit(1)
           if re.search(r"(?<![\d.])" + re.escape(version) + r"(?![\d.])", text):
               print("Version slide 2 : OK")
-          elif tag == "v0.1.0":
-              # TEMPORAIRE : rattrapage de v0.1.0 dont la slide 2 affiche « V6 » ; à retirer ensuite.
-              print("::warning::Slide 2 ne mentionne pas la version v0.1.0 (rattrapage toléré)")
           else:
               print("::error::La slide 2 n'affiche pas la version " + tag)
+              sys.exit(1)
+          if re.search(r"(?<!\d)\d{2}/\d{2}/\d{4}(?!\d)", text):
+              print("Date slide 2 : OK")
+          else:
+              print("::error::La slide 2 n'affiche pas de date de livraison (JJ/MM/AAAA)")
               sys.exit(1)
           PY
                 ;;
@@ -166,6 +169,30 @@ jobs:
                   echo "::error::assets/meta.js du zip n'affiche pas la version $TAG"
                   exit 1
                 fi
+                if ! grep -Eq '"date": "[0-9]{2}/[0-9]{2}/[0-9]{4}"' "$TMP/assets/meta.js"; then
+                  echo "::error::assets/meta.js sans date de livraison (JJ/MM/AAAA)"
+                  exit 1
+                fi
+                python3 - "$TMP" <<'PY'
+          import os, re, sys
+          sys.path.insert(0, "tests/slides")
+          from pptx_reader import Deck
+
+          tmp = sys.argv[1]
+          meta = open(os.path.join(tmp, "assets", "meta.js"), encoding="utf-8").read()
+          m = re.search(r'"date":\s*"(\d{2}/\d{2}/\d{4})"', meta)
+          try:
+              text = Deck(os.path.join(tmp, "Ansible Training.pptx")).slide(2).text
+          except Exception:
+              print("::error::Lecture de la slide 2 du PPTX embarqué impossible")
+              sys.exit(1)
+          dates = re.findall(r"(?<!\d)\d{2}/\d{2}/\d{4}(?!\d)", text)
+          if m and m.group(1) in dates:
+              print("Date de livraison (meta.js = slide 2) : OK")
+          else:
+              print("::error::La date de assets/meta.js diffère de celle de la slide 2")
+              sys.exit(1)
+          PY
                 python3 tests/site/check_site.py --dir "$TMP" --require-secret
                 python3 tests/slides/check_pptx.py "$TMP/Ansible Training.pptx"
                 rm -rf "$TMP"
@@ -184,6 +211,13 @@ jobs:
             [ -z "$src" ] && continue
             asset="${asset//\$\{TAG\}/$TAG}"
             cp "$src" "dist-release/$asset"
+            case "$asset" in
+              *.zip)
+                # Somme de contrôle (format sha256sum, nom d'asset publié) : `sha256sum -c <asset>.sha256`
+                # dans le dossier contenant le zip téléchargé.
+                (cd dist-release && sha256sum "$asset" > "$asset.sha256")
+                ;;
+            esac
           done <<< "$ARTIFACTS"
           ls -1 dist-release
 
