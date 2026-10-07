@@ -97,6 +97,36 @@
 
 **Tâche 0.2** : Obtention de l'agent (teamleader — à faire : `/end-session` + `/start-session`)
 
+### Batch 1 — Développement (🔄 EN COURS — partiellement)
+
+**Tâche 1.1** : Liens #50 (dev-slides)
+- État : **EN COURS, interrompu** — dev-slides a commencé la vérification HTTP des liens
+- Progression : slides 47, 120, 168, 169, 174 identifiées (liens docs.ansible.com → /projects/ansible/latest/)
+- État de reprise : dans `build/` (non versionné, ignoré par .gitignore)
+- PPTX : **pas encore modifié** — vérifications et corrections en attente
+- À reprendre : vérifications par lots espacés (HTTP HEAD/GET, Retry-After)
+
+**Tâche 1.2** : Extraction images (dev-slides)
+- État : ✅ **COMPLÉTÉE — commits b9367c5** 
+- Réalisation : 9 PNG copiés (métadonnées retirées), 19 WMF convertis en PNG (PowerShell Windows)
+- Sortie : `assets/img/sNN-*.png` + `assets/img/images.json`
+- Validation : ✅ Revue visuelle #1 par utilisateur (2026-10-07) — aucune fuite de référence organisation
+
+**Tâche 1.6** : Tests site (test-writer)
+- État : ✅ **COMPLÉTÉE — commit 5fdd31a**
+- Contenu : tests `tests/site/` (parité, check_site.py, meta.js, liens, package, hygiène repo)
+- Fixtures : dump-course.js, validate.js, sync-meta.js, package.js, images.json interfaces supposées
+
+**Tâche 1.3-1.5** : Moteur, outils, pilote m02 (course) — **À faire après 0.2**
+- Déblocage : après `/start-session` (spawn agent `course`)
+- Ressource : `docs/plans/v0.2.0/plan-v0.2.0.md` (révision 2, archivé)
+- Interfaces supposées : `docs/plans/v0.2.0/test-writer-20261007-140724.md`
+- Consigne supplémentaire : **i18n libellés dans `assets/i18n/fr.js`** (sans sélecteur ni anglais en v0.2.0, prépare v1.0.0)
+
+### Archivages complétés (avant purge `_work/`)
+- ✅ Maquettes validées v0.2.0 : `docs/mockup/v0.2.0/` (84038a7 — GATE 2)
+- ✅ Plan r2 + rapports Batch 0 : `docs/plans/v0.2.0/` (fe76490 — avant purge)
+
 ---
 
 ## Roadmap / Milestones
@@ -246,21 +276,45 @@ Module EDA + site multilingue (fr/en)
 
 ---
 
-## Prochaine Session — Cycle v0.2.0 (Batch 1 à débloquer)
+## Prochaine Session — Cycle v0.2.0, Batch 1 Continuation
 
-**Tâche 0.2 immédiate** (teamleader) : `/end-session` + `/start-session` → spawn agent `course`
+**Tâche 0.2 immédiate** (teamleader) : 
+```
+/end-session  (purge _work/, sauvegarde session)
+/start-session (spawn agents permanents, dont `course`)
+```
 
-Après 0.2, démarrer **Batch 1 (parallèle)** :
+**Reprise et continuation Batch 1** (parallèle) :
 
-1. **dev-slides 1.1-1.2** : liens #50 + extraction images (revue visuelle #1 avant commit)
-2. **course 1.3-1.5** : moteur/thème/manifeste/accueil → outils/conventions → pilote m02
-3. **test-writer 1.6** : tests site (`tests/site/`)
+1. **dev-slides 1.1** : reprendre liens #50 (vérifications HTTP, lot A/B/C espacés)
+   - État : en cours, pas de modif PPTX encore
+   - Ressource : `docs/plans/v0.2.0/dev-slides-20261007-140100.md`
+   
+2. **course 1.3-1.5** : après 0.2, moteur + outils + pilote m02
+   - Entrée : `docs/plans/v0.2.0/plan-v0.2.0.md` (révision 2)
+   - Interfaces : `docs/plans/v0.2.0/test-writer-20261007-140724.md` (supposées)
+   - **Consigne i18n** : libellés dans `assets/i18n/fr.js` dès v0.2.0 (FR uniquement, sans sélecteur)
+   - Adresse retour : `team-lead`, mots-clés COURSE DONE/BLOQUE/EN COURS
 
-Puis **GATE pilote** : code-reviewer + qa sur socle + m02 bonus, revue visuelle #2, relecture #R1
+3. **test-writer 1.6** : ✅ déjà fait (5fdd31a) ; compléments possibles en parallèle Batch 2
 
-**v1.0.0 à préparer** (après v0.2.0 release) :
+### Décisions utilisateur (v0.2.0, GATE 2)
+- ✅ Revue visuelle #1 : validée (images 1.2 commises b9367c5)
+- ✅ Maquettes : validées (archivées docs/mockup/v0.2.0/, 84038a7)
+- ✅ Agent course : instance `generic`, pas `dev-frontend` (contexte préservé, pas CLEAR mid-feature)
+- ✅ Pas de push avant GATE pilote (dépôt public)
+- ✅ Pages GitHub : activation confirmée seulement après confirmation utilisateur (tâche 3.5)
+- ❌ context-audit : refusé volontairement (non prioritaire)
+
+### GATE pilote (après Batch 1 1.3-1.5 complet)
+- code-reviewer revoit socle + m02 bonus
+- qa exécute tests site sur m02
+- Revue visuelle #2 (double-clic, clair/sombre, mobile)
+- Relecture humaine #R1 (objectifs/quiz/À retenir = étalon)
+
+**v1.0.0 après v0.2.0 release** :
 - Module EDA (#6-#9, #19)
-- Site multilingue (#51) : traduction des 15 modules (interface + contenu) en fr/en avec sélecteur
+- Site multilingue (#51) : traduction interface + contenu (fr/en), sélecteur de langue
 
 ---
 
@@ -297,16 +351,40 @@ Puis **GATE pilote** : code-reviewer + qa sur socle + m02 bonus, revue visuelle 
 
 ## Statut Global
 
-**✅ SESSION v0.1.1 COMPLÉTÉE**
+**✅ SESSION v0.1.1 COMPLÉTÉE | 🔄 v0.2.0.0 EN COURS (Batch 0/1)**
 
-- Version PROD : `0.1.1` (https://github.com/CCoupel/ansible-training/releases/tag/v0.1.1)
-- Version DEV : `0.2.0.0` (milestone/v0.2.0 créée)
-- Dépôt public : stable, branche par défaut `main`
-- Cycle actif : `milestone/v0.2.0` (développement)
-- Issues fermées : v0.1.1 complète (39 issues #10-#49 hors #19)
-- Pipeline v0.2.0 : 4 issues (#3, #4, #5, #50)
-- Pipeline v1.0.0 : 6 issues (#6-#9, #19, #51)
+### Versions
+- Version PROD : `0.1.1` (2026-10-07, https://github.com/CCoupel/ansible-training/releases/tag/v0.1.1)
+- Version DEV : `0.2.0.0` (milestone/v0.2.0, Batch 1 partiellement commencé)
 
-**Équipe opérationnelle** : tous agents testés et validés  
-**Adresse de retour** : team-lead (projet-spécifique)  
-**Prochaine action** : démarrer développement v0.2.0 (HTML conversion)
+### Dépôt & Branching
+- Branche par défaut : `main` (v0.1.1)
+- Développement : `milestone/v0.2.0` (Batch 0 ✅, Batch 1 🔄)
+- Politique : pas de push avant GATE pilote (dépôt public)
+
+### Cycle v0.2.0 Progression
+- **Batch 0** (Préparation) : ✅ COMPLÉTÉ
+  - Agent `course` spec (ece2825, f367905)
+  - Maquettes validées archivées (84038a7)
+  - MEMORY/docs mise à jour (714c7ce, fe76490)
+- **Batch 1** (Développement) : 🔄 PARTIELLEMENT COMMENCÉ
+  - 1.1 liens #50 : EN COURS (pas de modif PPTX encore)
+  - 1.2 images : ✅ COMPLÉTÉE (b9367c5, revue visuelle #1 validée)
+  - 1.6 tests : ✅ COMPLÉTÉE (5fdd31a)
+  - 1.3-1.5 course : À FAIRE (après 0.2, entrée : docs/plans/v0.2.0/plan-v0.2.0.md)
+
+### Issues & Pipeline
+- Issues fermées : v0.1.1 (39 #10-#49 hors #19)
+- Pipeline v0.2.0 : 4 issues (#3, #4, #5, #50) — Batch 1/2/3 en cours
+- Pipeline v1.0.0 : 6 issues (#6-#9, #19, #51) — après v0.2.0 release
+
+### Configuration Agents
+- Équipe : 8 permanents (planner, dev-slides, **course** (nouveau), test-writer, code-reviewer, qa, doc-updater, deployer) + ponctuels (security, marketing-release)
+- Adresse retour : `team-lead` (projet-spécifique, jamais `main`)
+- course : instance `generic`, contexte préservé, pas CLEAR mid-feature
+
+### Prochaine Action Immédiate
+- `/end-session` (purge _work/)
+- `/start-session` (spawn course, récupère docs/plans/v0.2.0/plan-v0.2.0.md)
+- Batch 1 continuation : 1.1 (dev-slides), 1.3-1.5 (course parallèle)
+- GATE pilote après socle complet + m02 bonus
