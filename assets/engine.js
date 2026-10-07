@@ -16,6 +16,7 @@
     set(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* stockage indisponible : le site reste utilisable */ } }
   };
   const state = Object.assign({ visited: {}, quiz: {}, theme: null, last: null, notes: false }, store.get());
+  ['visited', 'quiz'].forEach(k => { if (!state[k] || typeof state[k] !== 'object') state[k] = {}; });
   const save = () => store.set(state);
 
   /* ---------- Libellés (assets/i18n/fr.js) ---------- */
@@ -218,6 +219,7 @@
   function show(i, keepFrags) {
     if (i < 0 || i >= flat.length) i = 0;
     const back = keepFrags === undefined && i < curIdx;
+    const prevIdx = curIdx;
     curIdx = i; cur = flat[i];
     state.visited[cur.uid] = 1;
     if (cur.mod) state.last = cur.uid;
@@ -226,6 +228,7 @@
     el.innerHTML = `<div class="slide-inner">${renderBody(cur)}</div>`;
     hardenLinks(el);
     el.scrollTop = 0;
+    if (curIdx !== prevIdx && el.focus) el.focus({ preventScroll: true }); // annonce/lecture depuis le début de la slide
     frags = $$('.frag', el); fragIdx = 0;
     if (back) { frags.forEach(x => x.classList.add('show')); fragIdx = frags.length; }
     else if (keepFrags) { fragIdx = Math.min(keepFrags, frags.length); frags.slice(0, fragIdx).forEach(x => x.classList.add('show')); }
@@ -402,6 +405,9 @@
     document.addEventListener('keydown', e => {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (e.target.matches('input, textarea')) { if (e.key === 'Escape') e.target.blur(); return; }
+      // Espace sur un bouton / résumé / lien : action native (répondre à un quiz, déplier une solution…), pas de navigation.
+      if (e.key === ' ' && e.target.closest && e.target.closest('button, summary, a, select, [contenteditable]')) return;
+      if (e.key === 'Escape') { document.body.classList.remove('menu-open'); return; }
       switch (e.key) {
         case 'ArrowRight': case 'PageDown': case ' ': e.preventDefault(); next(); break;
         case 'ArrowLeft': case 'PageUp': e.preventDefault(); prev(); break;
@@ -413,13 +419,18 @@
         case '/': e.preventDefault(); document.body.classList.remove('menu-closed'); $('#search').focus(); break;
       }
     });
-    let x0 = null;
-    $('#slide').addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    let x0 = null, y0 = 0;
+    $('#slide').addEventListener('touchstart', e => {
+      // pas de changement de slide en faisant défiler un code, un tableau ou un schéma
+      x0 = e.target.closest && e.target.closest('pre, .tablewrap, .diagram') ? null : e.touches[0].clientX;
+      y0 = e.touches[0].clientY;
+    }, { passive: true });
     $('#slide').addEventListener('touchend', e => {
       if (x0 === null) return;
-      const dx = e.changedTouches[0].clientX - x0; x0 = null;
-      if (Math.abs(dx) > 70) (dx < 0 ? next : prev)();
+      const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (Math.abs(dx) > 70 && Math.abs(dx) > 2 * Math.abs(dy)) (dx < 0 ? next : prev)();
     }, { passive: true });
+    $('#scrim').addEventListener('click', () => document.body.classList.remove('menu-open'));
     if (window.matchMedia('(max-width: 900px)').matches) document.body.classList.remove('menu-closed');
     fromHash();
   }

@@ -8,6 +8,7 @@
 </head>
 <body>
 <div id="app">
+  <div id="scrim"></div>
   <aside id="sidebar" aria-label="Sommaire" data-i18n-attr="aria-label:nav.sidebar">
     <div class="side-head">
       <a href="#home" class="brand"><span class="logo">🅰️</span> <span data-i18n="course.brand">Ansible Training</span><small data-i18n="course.subtitle">Automation for everyone</small></a>
@@ -18,13 +19,13 @@
   <main id="main">
     <header id="topbar">
       <button id="menu" title="Sommaire (m)" aria-label="Sommaire" data-i18n-attr="title:nav.menu,aria-label:nav.sidebar">☰</button>
-      <div id="crumb"></div>
+      <div id="crumb" aria-live="polite"></div>
       <span id="counter"></span>
       <button id="notes-btn" type="button" title="Notes (n)" aria-pressed="false" hidden data-i18n-attr="title:nav.notesAria,aria-label:nav.notesAria"><span data-i18n="nav.notes">Notes (n)</span></button>
       <button id="theme" title="Thème (t)" aria-label="Changer de thème" data-i18n-attr="title:nav.theme,aria-label:nav.themeAria">🌓</button>
     </header>
     <div id="progress"><i></i></div>
-    <section id="slide" tabindex="-1" aria-live="polite"></section>
+    <section id="slide" tabindex="-1"></section>
     <footer id="nav">
       <button id="prev" data-i18n="nav.prev">← Précédent</button>
       <span id="hint" data-i18n="nav.hint">← → naviguer · m sommaire · n notes · t thème · / recherche</span>
