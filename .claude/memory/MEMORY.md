@@ -17,7 +17,7 @@
 | Branche par défaut | `main` |
 | Release PROD | https://github.com/CCoupel/ansible-training/releases/tag/v0.1.1 |
 | Tag PROD | `v0.1.1` (commit a120dab) |
-| Template | v3.12.0 |
+| Template | v3.13.1 |
 
 ---
 
@@ -27,7 +27,7 @@
 **Release** : https://github.com/CCoupel/ansible-training/releases/tag/v0.1.1  
 **Tag** : `v0.1.1` (commit `a120dab`)  
 **Asset** : `Ansible-Training-v0.1.1.pptx`  
-**Issues fermées** : 39 (#10-#49, hors #19 reportée v0.3.0)
+**Issues fermées** : 39 (#10-#49, hors #19 reportée v1.0.0)
 
 **Étapes complétées** :
 - ✅ Audit d'obsolescence (38 correctifs dans les 223 slides)
@@ -62,23 +62,40 @@
 
 ---
 
-## Cycle v0.2.0 — Initialisation (🔄 EN COURS)
+## Cycle v0.2.0 — Initialisation & Batch 0 Complété (🔄 EN COURS)
 
 ### Vue d'ensemble
 **Branche** : `milestone/v0.2.0` (créée, commit 73e4819)  
 **Version DEV** : `0.2.0.0`  
 **Objectif** : Format multi-canal (PowerPoint + HTML interactif)  
-**Issues** : #3, #4, #5, #50
+**Issues** : #3 (architecture), #4 (HTML), #5 (PPTX+HTML), #50 (docs.ansible.com)
 
-### Architecture HTML Décidée
-- **Base** : conversion des 223 slides en HTML interactif
+### Architecture HTML Décidée (GATE 2 intégré — 2026-10-07)
+- **Base** : conversion des 223 slides en HTML interactif (15 modules)
 - **Source de contenu** : PPTX anonymisé (référence stable)
-- **Décisions techniques prises** :
-  - Compagnon agent `generic.course.md` pour convertion HTML
-  - Accent bleu (palette de design)
+- **Site commité** : `index.html` racine + `assets/`, `modules/` (comme OpenShift, **plus de gh-pages**)
+- **Décisions GATE 2 (Q1-Q4)** :
+  - Q1 : Hébergement GitHub Pages via Actions à chaque release (activation après confirmation utilisateur)
+  - Q2 : Contenu additionnel = **quiz + objectifs + « À retenir »** (≈145-210 textes, dérivés du PPTX)
+  - Q3 : Slides masquées 193/210/217 **exclues** du HTML
+  - Q4 : Interface en **français** (contenu PPTX inchangé en anglais)
+- **Préparation i18n v1.0.0** : libellés interface isolés en `assets/i18n/fr.js` dès v0.2.0 (sans sélecteur ni anglais)
+- **Décisions techniques** :
+  - Compagnon agent `generic.course.md` (instance générique, rôle dev-course) pour conversion HTML
+  - Accent bleu Ansible (palette de design)
   - Référence centralisée `reference_version` (.claude/project-config.json)
   - Chemin local : `/mnt/c/Users/cyril/Documents/PROJETS/TRAINING/OPENSHIFT` (à consulter hors session)
   - Fichier d'étude : `docs/HOMOGENEISATION-OPENSHIFT.md` (local, non suivi git)
+
+### Batch 0 — Préparation de l'équipe (✅ COMPLÉTÉ — 2026-10-07)
+**Tâche 0.1** : Spécification de l'agent `course`  
+- Spec `.claude/agents/generic.course.md` (435 lignes, rôle dev-course, périmètre étendu)
+- Déclaration `agents.generic[]` dans `.claude/project-config.json`
+- Mise à jour table Agents Disponibles de `CLAUDE.md`
+- Routage `cdp.md` (mots-clés COURSE DONE/BLOQUE/EN COURS, contexte préservé)
+- Commits : `ece2825` (spec), `f367905` (routage cdp.md)
+
+**Tâche 0.2** : Obtention de l'agent (teamleader — à faire : `/end-session` + `/start-session`)
 
 ---
 
@@ -97,9 +114,9 @@ Correctifs contenu + CI PowerPoint
 Format multi-canal : PowerPoint + HTML ludique  
 **Issues** : #3 (architecture), #4 (HTML), #5 (exigence permanente PPTX+HTML), #50 (docs.ansible.com 429)
 
-### ⏳ v0.3.0 (À VENIR)
-Nouveau module : Event-Driven Ansible  
-**Issues** : #6-#9 (plan, slides, HTML, labs), #19 (obsolescence ansible-navigator/EE)
+### ⏳ v1.0.0 (À VENIR)
+Module EDA + site multilingue (fr/en)  
+**Issues** : #6-#9 (plan, slides, HTML, labs), #19 (obsolescence ansible-navigator/EE), #51 (site multilingue : interface + contenu en fr/en)
 
 ---
 
@@ -136,9 +153,9 @@ Nouveau module : Event-Driven Ansible
 ### Template & Infrastructure
 | Item | Statut | Détails |
 |------|--------|---------|
-| Template | v3.12.0 (sync depuis template global) | À jour |
+| Template | v3.13.1 (sync depuis template global) | À jour |
 | Initialisation | ✅ Complète | Agents reconfigurés, équipe testée |
-| Infra | ❌ Non applicable | Projet documents-only (PPTX + docs) |
+| Infra | ❌ Non applicable | Projet documents-only (PPTX + site HTML commité) |
 
 ### Équipe
 | Rôle | Statut | Notes |
@@ -229,12 +246,21 @@ Nouveau module : Event-Driven Ansible
 
 ---
 
-## Prochaine Session — Cycle v0.2.0 (Priorités)
+## Prochaine Session — Cycle v0.2.0 (Batch 1 à débloquer)
 
-1. **Conversion HTML** : démarrer #4 (agent generic.course.md)
-2. **Architure & design** : #3 (blueprint HTML)
-3. **Tests HTML** : #5 (exigence PPTX + HTML)
-4. **Résoudre #50** : docs.ansible.com 429 (vérifications manuelles + délai)
+**Tâche 0.2 immédiate** (teamleader) : `/end-session` + `/start-session` → spawn agent `course`
+
+Après 0.2, démarrer **Batch 1 (parallèle)** :
+
+1. **dev-slides 1.1-1.2** : liens #50 + extraction images (revue visuelle #1 avant commit)
+2. **course 1.3-1.5** : moteur/thème/manifeste/accueil → outils/conventions → pilote m02
+3. **test-writer 1.6** : tests site (`tests/site/`)
+
+Puis **GATE pilote** : code-reviewer + qa sur socle + m02 bonus, revue visuelle #2, relecture #R1
+
+**v1.0.0 à préparer** (après v0.2.0 release) :
+- Module EDA (#6-#9, #19)
+- Site multilingue (#51) : traduction des 15 modules (interface + contenu) en fr/en avec sélecteur
 
 ---
 
@@ -279,7 +305,7 @@ Nouveau module : Event-Driven Ansible
 - Cycle actif : `milestone/v0.2.0` (développement)
 - Issues fermées : v0.1.1 complète (39 issues #10-#49 hors #19)
 - Pipeline v0.2.0 : 4 issues (#3, #4, #5, #50)
-- Pipeline v0.3.0 : 5 issues (#6-#9, #19)
+- Pipeline v1.0.0 : 6 issues (#6-#9, #19, #51)
 
 **Équipe opérationnelle** : tous agents testés et validés  
 **Adresse de retour** : team-lead (projet-spécifique)  
