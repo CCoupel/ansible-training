@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.1] - à dater à la livraison
+## [0.1.1] - 2026-10-07
 
 Support de formation Ansible générique : audit et correction de 38 constats d'obsolescence (versions Ansible/Python, noms de produits, FQCN des modules, liens documentation) et mise en place du workflow de publication CI.
 
