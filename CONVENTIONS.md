@@ -120,7 +120,7 @@ Objectifs, « À retenir » et quiz n'existent que dans le HTML (jamais reporté
 | `node tools/validate.js [fichier.js…]` | schéma des modules, `plan.js`, `i18n`, `index.html`, images ; sans argument : contrôle global |
 | `node tools/sync-meta.js [--check] [--version X.Y.Z] [--date JJ/MM/AAAA]` | génère / contrôle `assets/meta.js` depuis `project-config.json` |
 | `node tools/dump-course.js [--extras]` | `build/course.json` (entrée de la parité) ; `--extras` : `build/extras-review.md` (relecture humaine) |
-| `node tools/package.js` | `build/Ansible-Training-HTML.zip` déterministe (fichiers suivis de `index.html`, `assets/`, `modules/`) |
+| `node tools/package.js` | `build/Ansible-Training-HTML.zip` déterministe : fichiers suivis de `index.html`, `assets/`, `modules/` **et** `Ansible Training.pptx` à la racine (le lien de téléchargement de l'accueil reste valable) ; refuse si ces chemins ont des modifications non commitées |
 | `python3 tools/check_links.py --offline` / `--online` | forme des URL (tests) / vérification HTTP à débit limité (jamais en CI) |
 | `python3 -m unittest discover -s tests/site` | tests du site (parité, contenu additionnel, livraison, outils) |
 

@@ -1,0 +1,7 @@
+# Octets stables entre plateformes (le zip HTML est déterministe, sha256 identique partout)
+*.js   text eol=lf
+*.css  text eol=lf
+*.html text eol=lf
+*.py   text eol=lf
+*.pptx binary
+*.png  binary

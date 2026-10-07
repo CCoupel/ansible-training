@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 /* MIT License — Copyright (c) 2026 CCoupel
-   Construit build/Ansible-Training-HTML.zip : le site (index.html, assets/, modules/) tel que commité.
+   Construit build/Ansible-Training-HTML.zip : le site (index.html, assets/, modules/) et le support PowerPoint
+   « Ansible Training.pptx » à la racine, à côté de index.html (le lien de téléchargement de l'accueil reste valable),
+   tels que commités.
+   Refuse de construire si ces chemins ont des modifications non commitées (le zip doit refléter le commit).
    Déterministe : mêmes fichiers → même sha256 (entrées triées, dates fixes 1980-01-01, permissions fixes 0644,
-   compression zlib niveau 9, aucun champ horodaté). Le PPTX n'y figure pas (asset de release séparé).
+   compression zlib niveau 9, aucun champ horodaté) ; à version de zlib identique. Lecture binaire (aucune conversion
+   de fin de ligne ; voir .gitattributes pour les octets stables entre plateformes).
    Usage : node tools/package.js [--out <fichier.zip>]    Node stdlib uniquement (zlib). */
 'use strict';
 const fs = require('fs');
@@ -17,11 +21,14 @@ const OUT = oi >= 0 ? path.resolve(argv[oi + 1]) : path.join(ROOT, 'build', 'Ans
 const fail = m => { console.error('ERREUR  package : ' + m); process.exit(1); };
 
 // Contenu = fichiers SUIVIS par git de ces chemins (jamais de fichier non commité ni de résidu local).
+const PATHS = ['index.html', 'assets', 'modules', 'Ansible Training.pptx'];
 let names;
 try {
-  names = execFileSync('git', ['-C', ROOT, 'ls-files', '-z', '--', 'index.html', 'assets', 'modules'], { encoding: 'utf8' })
+  const dirty = execFileSync('git', ['-C', ROOT, 'status', '--porcelain', '--', ...PATHS], { encoding: 'utf8' }).trim();
+  if (dirty) fail('modifications non commitées sur le contenu du zip (commit requis) :\n' + dirty);
+  names = execFileSync('git', ['-C', ROOT, 'ls-files', '-z', '--', ...PATHS], { encoding: 'utf8' })
     .split('\0').filter(Boolean);
-} catch (e) { fail('git ls-files a échoué : ' + e.message); }
+} catch (e) { fail('git a échoué : ' + e.message); }
 if (!names.length) fail('aucun fichier à empaqueter');
 names.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
@@ -33,7 +40,8 @@ const MODE = (0o100644 << 16) >>> 0;
 const locals = [], centrals = [];
 let offset = 0;
 for (const name of names) {
-  const data = fs.readFileSync(path.join(ROOT, name));
+  let data;
+  try { data = fs.readFileSync(path.join(ROOT, name)); } catch (e) { fail('fichier suivi illisible : ' + name); }
   const comp = zlib.deflateRawSync(data, { level: 9 });
   const crc = crc32(data), nameBuf = Buffer.from(name, 'utf8');
   const flags = 0x0800; // noms en UTF-8
