@@ -83,7 +83,7 @@ COURSE.add({
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Que signifie qu\'un module est idempotent ?',
-        options: ['Appliquer la même tâche plusieurs fois ne change pas le système après la première application', 'Le module s\'exécute sur le contrôleur et non sur les nœuds cibles', 'Le module ne peut être utilisé que dans un seul playbook'], answer: 0,
+        options: ['Rejouer la même tâche ne change pas le système après la première application', 'Le module s\'exécute sur le contrôleur et non sur les nœuds cibles du playbook', 'Le module ne peut être référencé que dans un seul playbook du projet'], answer: 0,
         explain: 'Slide 45 : « Idempotent: Modules ensure that applying the same task multiple times will not change the system after the first application ».', ref: [45] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [

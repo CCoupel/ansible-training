@@ -571,8 +571,8 @@ host_key_checking = False` },
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle syntaxe de boucle la slide 203 recommande-t-elle ?',
-        options: ['loop', 'with_item', 'with_dict'], answer: 0,
-        explain: 'Slide 203 : « Prefere “loop” instead of “with_item” » ; <code>with_dict</code> se remplace par <code>loop</code> et <code>dict2items</code>.', ref: [203] }
+        options: ['loop', 'with_items', 'with_dict'], answer: 0,
+        explain: 'Slide 203 : « Prefere “loop” instead of “with_item” » (le mot-clé est with_items ; la slide écrit with_item) ; <code>with_dict</code> se remplace par <code>loop</code> et <code>dict2items</code>.', ref: [203] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Comment éviter la collecte des facts quand ils ne sont pas nécessaires au play ?',
@@ -589,7 +589,7 @@ host_key_checking = False` },
     { html: 'Chiffrer une variable avec <code>ansible-vault encrypt_string</code> plutôt qu\'un fichier entier.', ref: [198] },
     { html: 'Préférer pousser un fichier complet construit avec un template Jinja2 plutôt que modifier un fichier existant.', ref: [200] },
     { html: 'Grouper les tâches qui ont le même comportement et les mêmes attributs de conditions avec <code>block</code>.', ref: [201] },
-    { html: 'Préférer <code>loop</code> à <code>with_item</code>.', ref: [203] },
+    { html: 'Préférer <code>loop</code> à with_items.', ref: [203] },
     { html: 'Les playbooks et les rôles se contrôlent avec Lint (yamllint et ansible-lint) et avec Molecule.', ref: [204] },
     { html: 'Désactiver la collecte des facts quand elle est inutile avec <code>gather_facts: False</code>.', ref: [211] }
   ]

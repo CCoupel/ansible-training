@@ -117,12 +117,12 @@ tasks:
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Que fait <code>delegate_to</code> ?',
-        options: ['Il charge les facts d\'un autre inventaire', 'Il exécute la tâche sur l\'hôte indiqué à la place de l\'hôte courant', 'Il délègue l\'exécution du playbook à un autre utilisateur'], answer: 1,
+        options: ['Il charge les facts d\'un autre inventaire', 'Il exécute la tâche sur l\'hôte indiqué, pas sur l\'hôte courant', 'Il délègue l\'exécution du playbook à un autre utilisateur'], answer: 1,
         explain: 'Slide 79 : « The task will be executed ont the server ‘host’ instead of the current one ».', ref: [79] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Comment considérer une tâche comme échouée d\'après sa sortie ?',
-        options: ['Avec failed_when et une condition sur le résultat enregistré', 'Avec changed_when', 'Avec become'], answer: 0,
+        options: ['Avec failed_when et une condition sur result', 'Avec changed_when et une condition sur result', 'Avec become_user et une condition sur result'], answer: 0,
         explain: 'Slide 72 : <code>failed_when</code> teste le contenu de <code>result.stdout</code> pour décider de l\'échec.', ref: [72] }
     ] }
   ],

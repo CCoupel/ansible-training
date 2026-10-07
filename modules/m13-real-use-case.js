@@ -131,12 +131,12 @@ COURSE.add({
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Quel résultat est positionné quand la destination est joignable en SSH mais que le port testé n\'est pas ouvert ?',
-        options: ['PORT CLOSED', 'DST ERROR', 'OK'], answer: 0,
+        options: ['PORT CLOSED', 'DST ERROR', 'SRC ERROR'], answer: 0,
         explain: 'Slide 190 : la tâche « DST Port not reachable » positionne <code>result="PORT CLOSED"</code>, alors que <code>result="DST ERROR"</code> est positionné dans <code>rescue</code> quand la destination n\'est pas joignable en SSH.', ref: [190] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Dans la matrice de sortie, quel statut est affiché pour un service privé inaccessible ?',
-        options: ['PORT CLOSED', 'SRC ERROR', 'NO ACCESS with private service'], answer: 2,
+        options: ['PORT CLOSED with private service', 'DST ERROR with private service', 'NO ACCESS with private service'], answer: 2,
         explain: 'Slide 187 : le premier flux (http, port 2222) a pour statut « NO ACCESS with private service ».', ref: [187] }
     ] }
   ],

@@ -248,7 +248,7 @@ ansible-galaxy collection publish \\
     --server https://galaxy-test.example.com/api/galaxy \\
     --ignore-certs \\
     --token xxx \\
-    my_namespace-miq-1.0.1.tar.gz`, caption: '<span class="glyph">https://galaxy-test.example.com/api/galaxy%20</span>' }
+    my_namespace-miq-1.0.1.tar.gz` }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quel appel de rôle est dynamique ?',

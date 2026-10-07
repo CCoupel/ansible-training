@@ -137,7 +137,7 @@ Key2=value2` },
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Comment la slide 59 accède-t-elle au premier élément du tableau <code>my_array</code> ?',
-        options: ['{{ my_array(0) }}', '{{ my_array.first }}', '{{ my_array[0] }} (ou {{ my_array.0 }})'], answer: 2,
+        options: ['{{ my_array(0) }} (ou {{ my_array.first }})', '{{ my_array{0} }} (ou {{ my_array.index(0) }})', '{{ my_array[0] }} (ou {{ my_array.0 }})'], answer: 2,
         explain: 'La slide 59 affiche <code>{{ my_array.0 }}</code> et <code>{{ my_array[0] }}</code>.', ref: [59] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [

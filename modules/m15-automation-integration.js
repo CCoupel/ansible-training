@@ -96,8 +96,8 @@ dependencies: []` }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Où les variables internes d\'un rôle doivent-elles être déclarées ?',
-        options: ['Dans l\'inventaire uniquement', 'Sur la ligne de commande avec -e uniquement', 'Dans default/main.yml, initialisées à partir des variables externes du rôle'], answer: 2,
-        explain: 'Slide 222 : « internal role vars MUST be declared in the default/main.yml and initialized from external role vars ».', ref: [222] }
+        options: ['Dans l\'inventaire, à partir des variables de groupe', 'Sur la ligne de commande, à partir des extra vars', 'Dans defaults/main.yml, à partir des variables externes'], answer: 2,
+        explain: 'Slide 222 : « internal role vars MUST be declared in the default/main.yml and initialized from external role vars » (la slide écrit default/main.yml ; le répertoire standard d\'un rôle s\'appelle defaults/).', ref: [222] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Quel mécanisme la slide 223 recommande-t-elle pour éviter plusieurs exécutions d\'une même tâche ?',
@@ -115,7 +115,7 @@ dependencies: []` }
     { html: 'Ne pas référencer les variables d\'environnement.', ref: [219] },
     { html: 'Les outils doivent être fournis sous forme de rôle, avec des métadonnées pour la documentation (<code>galaxy_info</code>).', ref: [221] },
     { html: 'Aucun secret dans les rôles ou les playbooks : utiliser Vault.', ref: [222] },
-    { html: 'Les variables internes d\'un rôle suivent le format <code>_&lt;role_name&gt;_&lt;var_name&gt;</code> et sont déclarées dans <code>default/main.yml</code>.', ref: [222] },
+    { html: 'Les variables internes d\'un rôle suivent le format <code>_&lt;role_name&gt;_&lt;var_name&gt;</code> et sont déclarées dans defaults/main.yml (la slide écrit « default/main.yml »).', ref: [222] },
     { html: 'Utiliser des conditions pour éviter les tâches inutiles, et des handlers pour éviter les exécutions multiples d\'une même tâche.', ref: [223] }
   ]
 });

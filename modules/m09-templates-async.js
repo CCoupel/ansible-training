@@ -139,7 +139,7 @@ https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_async.
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Dans l\'exemple de la slide 131, que signifient <code>async: 45</code> et <code>poll: 5</code> ?',
-        options: ['La tâche est limitée à 5 secondes avec 45 tentatives', 'La tâche peut durer jusqu\'à 45 secondes et son état est vérifié toutes les 5 secondes', 'La tâche attend 45 secondes puis s\'exécute 5 fois'], answer: 1,
+        options: ['Durée limitée à 5 s avec 45 tentatives de vérification', 'Durée maximale de 45 s, vérification toutes les 5 s', 'Attente de 45 s puis cinq exécutions de la tâche'], answer: 1,
         explain: 'Le commentaire de la slide 131 précise : « wait for up to 45 sec, poll every 5 sec ».', ref: [131] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [

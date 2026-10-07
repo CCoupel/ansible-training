@@ -90,12 +90,12 @@ PLAY RECAP *********************************************************************
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Pourquoi dit-on qu\'Ansible est « agentless » ?',
-        options: ['Il impose un agent uniquement sur les hôtes Windows', 'Il se connecte avec OpenSSH, WinRM ou PSRP, sans agent à installer ni à mettre à jour', 'Il installe un agent léger sur chaque hôte au premier lancement'], answer: 1,
+        options: ['Il impose un agent sur les hôtes Windows pour les connexions PSRP', 'Il se connecte avec OpenSSH, WinRM ou PSRP, sans agent à installer', 'Il installe un agent sur chaque hôte lors du premier lancement'], answer: 1,
         explain: 'La slide 6 indique « Agentless architecture », « Uses OpenSSH, WinRM & PSRP » et « No agents to exploit or update ».', ref: [6] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Dans quel(s) langage(s) un module Ansible peut-il être écrit, selon la slide 9 ?',
-        options: ['En Python uniquement', 'En Python, PowerShell ou tout autre langage', 'En YAML uniquement'], answer: 1,
+      { t: 'quiz', q: 'Que dit la slide 9 du langage dans lequel un module est écrit ?',
+        options: ['Il peut être écrit en Python, PowerShell ou tout autre langage', 'Il doit être écrit en Python, le langage du moteur', 'Il doit être écrit en YAML, comme les playbooks'], answer: 0,
         explain: 'La slide 9 présente les modules comme des « outils de la boîte à outils » : « Python, Powershell, or any language ».', ref: [9] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [

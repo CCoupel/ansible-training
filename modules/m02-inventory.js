@@ -296,7 +296,7 @@ srv2-12 ansible_host=192.168.1.212 ansible_user=root` }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Que fait l\'option <code>-l</code> dans <code>ansible-playbook -i my_Inventory_script.py -l Web my_playbook.yml</code> ?',
-        options: ['Elle limite l\'exécution aux hôtes du groupe Web', 'Elle liste les hôtes de l\'inventaire', 'Elle charge un fichier de journal'], answer: 0,
+        options: ['Elle limite l\'exécution aux hôtes du groupe Web', 'Elle affiche la liste complète des hôtes de l\'inventaire', 'Elle charge un fichier de journal pour l\'exécution'], answer: 0,
         explain: 'Sous « Limit Inventory », la slide 29 utilise <code>-l Web</code> pour limiter l\'inventaire ; la liste complète s\'obtient avec <code>ansible-inventory -i test_inventory --list</code>.', ref: [29] }
     ] }
   ],
