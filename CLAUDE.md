@@ -282,31 +282,83 @@ Le workflow valide que la version affichée sur la slide 2 correspond au tag ava
 
 ### Extensibilité (v0.2.0)
 
-Le workflow est conçu pour supporter d'autres artefacts (HTML, PDF, etc.) :
+À partir de v0.2.0, le workflow publie deux artefacts en parallèle :
 
-- Variable `ARTIFACTS` : ajouter une ligne `<fichier source>|<asset nommé>` pour chaque type
-- Étape « Contrôles » : ajouter un `case` pour chaque nouveau type (ex. `*.zip|*.html`)
+- **PPTX** : `Ansible Training.pptx` → `Ansible-Training-${TAG}.pptx` (inchangé depuis v0.1.1)
+- **HTML** : `build/Ansible-Training-HTML.zip` (généré par `node tools/package.js`) → `Ansible-Training-HTML-${TAG}.zip`
 
-Exemple pour v0.2.0 :
+**Configuration du workflow** (`.github/workflows/release.yml`) :
 
 ```bash
 ARTIFACTS: |
   Ansible Training.pptx|Ansible-Training-${TAG}.pptx
-  dist/html/index.html|Ansible-Training-HTML-${TAG}.zip
+  build/Ansible-Training-HTML.zip|Ansible-Training-HTML-${TAG}.zip
 ```
 
-### Tests et Validation
+**Contrôles adaptés par type** :
 
-Avant de tagguer une release :
+1. **PPTX** (existant) :
+   - Archive ZIP valide
+   - Anti-fuite (secret `LEAK_PATTERNS`)
+   - Slide 2 affiche la version correspondant au tag
+
+2. **HTML zip** (nouveau en v0.2.0) :
+   - Archive ZIP valide (51 fichiers : index.html, assets/, modules/, tools/, tests/site/, CONVENTIONS.md)
+   - Vérification de `assets/meta.js` contenant la version du tag
+   - Anti-fuite (site + PPTX embarqué + tools)
+
+**Génération et tests du zip** :
 
 ```bash
-# Tests d'obsolescence (doivent passer)
+# Générer le zip (déterministe, PPTX inclus)
+node tools/package.js
+
+# Vérifier la structure
+unzip -l build/Ansible-Training-HTML.zip | wc -l  # doit être 51+2 (dont central directory)
+
+# Tests du site
+PARITY_STRICT=1 python3 -m unittest discover -s tests/site
+
+# Validation de structure HTML
+node tools/validate.js
+
+# Audit des liens (mode hors-ligne, ignore URLs externes)
+python3 tools/check_links.py --offline
+```
+
+### Tests et Validation (v0.2.0)
+
+Avant de tagguer une release v0.2.0 ou supérieure :
+
+```bash
+# Tests du PPTX (slides 1-223, obsolescence)
 LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence
 
-# Scan local (sans secret)
+# Tests du site HTML (parité, accessibilité, structure)
+PARITY_STRICT=1 python3 -m unittest discover -s tests/site
+
+# Validation de structure HTML + SVG + quiz
+node tools/validate.js
+
+# Scan de validité et anti-fuite (PPTX)
 python3 tests/slides/check_pptx.py "Ansible Training.pptx"
 
-# Avec secret local (vérification complète)
+# Scan du site généré (avant packaging)
+python3 tools/check_links.py --offline
+
+# Packaging et vérification du zip
+node tools/package.js
+unzip -t build/Ansible-Training-HTML.zip > /dev/null
+
+# Avec secret local (vérification complète avant push/tag)
 export LEAK_PATTERNS="$(cat leak_patterns.txt)"
 python3 tests/slides/check_pptx.py "Ansible Training.pptx"
+python3 tools/check_links.py  # mode connecté (requête HTTP aux URLs externes)
 ```
+
+**Prérequis avant v0.2.0 et supérieur** :
+
+- Secret `LEAK_PATTERNS` configuré (voir section précédente)
+- Slide 2 du PPTX avec version v0.2.0 (ou vX.Y.Z correspondant au tag)
+- Site HTML testé avec `node` Linux (wrapper Windows donne faux échecs d'environnement)
+- Tous les tests ci-dessus doivent passer avant de poser le tag
