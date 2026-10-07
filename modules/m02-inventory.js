@@ -286,7 +286,7 @@ srv2-12 ansible_host=192.168.1.212 ansible_user=root` }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Où se trouve le fichier d\'inventaire par défaut d\'Ansible ?',
-        options: ['/var/lib/ansible/hosts', '<code>/etc/ansible/hosts</code>', '/etc/ansible/inventory.ini'], answer: 1,
+        options: ['/var/lib/ansible/hosts', '/etc/ansible/hosts', '/etc/ansible/inventory.ini'], answer: 1,
         explain: 'Le fichier d\'inventaire par défaut est <code>/etc/ansible/hosts</code> (cf. slide 14).', ref: [14] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
@@ -304,7 +304,7 @@ srv2-12 ansible_host=192.168.1.212 ansible_user=root` }
     { html: 'Un inventaire est la liste des nœuds gérés (les hôtes) qu\'Ansible configure ; les hôtes peuvent être organisés en groupes.', ref: [14] },
     { html: 'Le fichier d\'inventaire par défaut est <code>/etc/ansible/hosts</code>.', ref: [14] },
     { html: 'La section <code>:children</code> permet de construire une arborescence de groupes.', ref: [16, 25] },
-    { html: 'INI est simple mais limité à deux niveaux de hiérarchie ; YAML et JSON gèrent une hiérarchie complète, et JSON n\'accepte pas les commentaires.', ref: [17, 19, 23] },
+    { html: 'INI est simple mais sa structure de données est limitée à deux niveaux de hiérarchie (les groupes s\'imbriquent avec <code>:children</code>) ; YAML et JSON gèrent une hiérarchie complète, et JSON n\'accepte pas les commentaires.', ref: [16, 17, 19, 23] },
     { html: 'Un inventaire dynamique est généré par des plugins à partir de sources externes, par exemple <code>amazon.aws.aws_ec2</code> ou <code>netbox.netbox.nb_inventory</code>.', ref: [14, 28] },
     { html: '<code>ansible-inventory -i test_inventory --list</code> teste un inventaire ; l\'option <code>-l</code> (par exemple <code>-l Web</code>) limite l\'exécution.', ref: [29] }
   ]

@@ -100,7 +100,8 @@ Objectifs, « À retenir » et quiz n'existent que dans le HTML (jamais reporté
 
 - **Quantités par module** : 3-5 objectifs, 4-6 « À retenir », 1-3 quiz (3-4 options, une seule bonne réponse défendable).
 - **Source** : dérivé **uniquement** du contenu du module. Chaque objectif, point « À retenir » et quiz porte `ref: [N, …]` (slides PPTX du **même** module). Aucune commande, option, module Ansible, comportement ou version absent du PPTX.
-- **`<code>`** d'un texte additionnel : doit apparaître dans le texte PPTX (slides + notes) des slides `ref` (vérifié par test). Les distractors de quiz ne sont donc pas mis en `<code>`.
+- **`<code>`** d'un texte additionnel : doit apparaître dans le texte PPTX (slides + notes) des slides `ref` (vérifié par test).
+- **Options de quiz : mise en forme identique pour toutes** (aucune en `<code>`, y compris la bonne réponse) afin que la forme ne révèle jamais la réponse ; le `<code>` reste permis dans l'énoncé `q` et dans `explain`.
 - **Langue** : français ; termes techniques et identifiants dans leur forme d'origine.
 - **Objectifs** : à l'infinitif, mesurables (« Écrire… », « Comparer… »). **À retenir** : des faits issus des slides, pas de conseil nouveau.
 - **Quiz** : distracteurs plausibles mais faux selon le module ; `explain` obligatoire et cite la slide source (« cf. slide 14 ») ; une slide `extra: true` par quiz, en fin de module.
