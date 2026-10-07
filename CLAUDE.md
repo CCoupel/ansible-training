@@ -315,8 +315,10 @@ ARTIFACTS: |
 # Générer le zip (déterministe, PPTX inclus)
 node tools/package.js
 
-# Vérifier la structure
-unzip -l build/Ansible-Training-HTML.zip | wc -l  # doit être 51+2 (dont central directory)
+# Vérifier la structure (si unzip disponible)
+unzip -t build/Ansible-Training-HTML.zip > /dev/null  # valide l'archive sans décompression
+# ou
+unzip -l build/Ansible-Training-HTML.zip | tail -1  # affiche « 51 files, … octets »
 
 # Tests du site
 PARITY_STRICT=1 python3 -m unittest discover -s tests/site
