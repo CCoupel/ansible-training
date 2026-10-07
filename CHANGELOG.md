@@ -28,7 +28,7 @@ Version HTML interactive du support de formation : 15 modules répartis en 217 s
   - `tools/check_links.py` : audit des 100 URL externes du site et du PPTX
 - **Conventions de conversion PPTX → HTML** (`CONVENTIONS.md`) : verbatim du texte, blocs (code, bullets, table, lab/reveal, SVG, gallery, quiz), notes étiquetées du formateur, exceptions de parité (2 liens masqués)
 - **Tests du site** (`tests/site/`, 131 tests) : parité PPTX-HTML (slides couvertes, texte verbatim, `<code>` ⊆ PPTX, links), cohérence (quiz, SVG, metadata), accessibilité (alt, aria), structure (modules, fichiers, meta)
-- **Préparation pour workflow étendu** : architecture du workflow compatible avec deux artefacts (PPTX + HTML zip) ; variable `ARTIFACTS` et contrôles à adapter par type (archive, slide 2, anti-fuite) — tâche `deployer` avant tag v0.2.0
+- **Workflow adapté pour deux artefacts** (commit 43c826e, `.github/workflows/release.yml`) : variable `ARTIFACTS` pour PPTX et HTML zip, contrôles par type (validité, anti-fuite, version), tests bloquants (`PARITY_STRICT`, `LOTS_STRICT`, `RELEASE_TAG`), Node 22 et Python 3.12, deux SHA256 affichés dans le log CI
 
 ### Changed
 
@@ -50,10 +50,16 @@ Version HTML interactive du support de formation : 15 modules répartis en 217 s
 - Slides masquées 193, 210, 217 exclues du HTML (Q3 décidé)
 - Contenu PPTX inchangé entre v0.1.1 et v0.2.0 ; slide 2 mise à jour (commit `0d8552a`) avec version v0.2.0 et date provisoire (07/10/2026, à confirmer avant chaque tag)
 - Artefact HTML zip (51 fichiers : index.html, assets/, modules/, Ansible Training.pptx) publié sur release GitHub en parallèle du PPTX (déterministe, générés par `node tools/package.js`)
-- Avant la première release v0.2.0, confirmer :
-  - **Slide 2** : date de livraison confirmée par l'utilisateur (remplacer 07/10/2026)
-  - **Secret `LEAK_PATTERNS`** : configuré
-  - **`.github/workflows/release.yml`** : à adapter pour publier les deux artefacts (PPTX + HTML zip) avec contrôles respectifs (tâche `deployer`)
+- Workflow **adapté** pour v0.2.0 et supérieur (commit 43c826e) — **aucune exécution réelle** (pas de tag, pas de `workflow_dispatch`)
+
+### Avant la première release v0.2.0
+
+À valider et fixer (CI les vérifie) :
+1. **Secret `LEAK_PATTERNS`** : configuré (`gh secret list`)
+2. **Date de livraison** : fixer dans `assets/meta.js` via `node tools/sync-meta.js --date JJ/MM/AAAA`, commiter
+3. **Slide 2 du PPTX** : version v0.2.0 ✓ (commit `0d8552a`), date alignée sur meta.js
+4. **Branche `milestone/v0.2.0` mergée sur `main`** avant de poser le tag
+5. **Tests locaux** : tous les tests du CI doivent passer (`PARITY_STRICT`, `LOTS_STRICT`, `RELEASE_TAG=v0.2.0`)
 
 ## [0.1.1] - 2026-10-07
 
