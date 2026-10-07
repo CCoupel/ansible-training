@@ -88,12 +88,12 @@
     layers: b => `<div class="layers${fc(b)}${wide(b)}">${b.items.map(l =>
       `<div class="layer${l.hl ? ' hl' : ''}${l.base ? ' base' : ''}"><b>${l.name}</b><span>${l.desc || ''}</span></div>`).join('')}</div>`,
     quiz: (b, ctx) => `<div class="quiz${fc(b)}${wide(b)}" data-k="${ctx.uid}#${ctx.bi}" data-a="${b.answer}">
-      <div class="q">${b.q}</div>
+      <div class="q">${esc(t('icon.quiz'))} ${b.q}</div>
       <div class="opts">${b.options.map((o, i) => `<button type="button" class="opt" data-i="${i}">${o}</button>`).join('')}</div>
       <div class="explain">${b.explain || ''}</div>
       <button type="button" class="redo">${esc(t('block.redo'))}</button></div>`,
     reveal: b => `<details class="reveal${fc(b)}${wide(b)}"><summary>${b.label || esc(t('block.reveal'))}</summary><div>${b.html}</div></details>`,
-    lab: b => `<div class="lab${fc(b)}${wide(b)}"><h3>${b.title}</h3>${b.goal ? `<p class="goal">${b.goal}</p>` : ''}<ol>${
+    lab: b => `<div class="lab${fc(b)}${wide(b)}"><h3>${esc(t('icon.lab'))} ${b.title}</h3>${b.goal ? `<p class="goal">${b.goal}</p>` : ''}<ol>${
       b.steps.map(s => `<li><label><input type="checkbox"><span>${s}</span></label></li>`).join('')}</ol></div>`,
     diagram: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="diagram">${b.html}</div>${b.caption ? `<div class="dcap">${b.caption}</div>` : ''}</div>`,
     img: b => `<figure class="blk imgblk${fc(b)}${wide(b)}"><img src="${esc(b.file)}" alt="${esc(b.alt || '')}" loading="lazy">${b.caption ? `<figcaption>${b.caption}</figcaption>` : ''}</figure>`
@@ -141,7 +141,7 @@
 
   const badgeExtra = () => `<span class="stag bonus" title="${esc(t('badge.extraNote'))}">${esc(t('badge.extra'))}</span>`;
   const tagHtml = s => `${s.tag ? `<span class="stag">${esc(s.tag)}</span>` : ''}${s.extra ? badgeExtra() : ''}`;
-  const srcHtml = s => (s.src && s.src.length ? `<span class="src" title="PPTX">${esc(srcLabel(s.src))}</span>`
+  const srcHtml = s => (s.src && s.src.length ? `<span class="src" title="${esc(t('badge.pptxTitle'))}">${esc(srcLabel(s.src))}</span>`
     : (s.extra ? `<span class="src">${esc(t('badge.extraNote'))}</span>` : ''));
   const notesOf = s => (Array.isArray(s.notes) ? s.notes.join('<br>') : (s.notes || ''));
 
@@ -171,7 +171,7 @@
     ].join('');
     const start = cont ? `<a class="btn primary" href="#${cont.uid}">${esc(t('home.resume', { title: cont.mod.title }))}</a>`
       : `<a class="btn primary" href="#${modules[0] ? modules[0].id + '-0' : 'home'}">${esc(t('home.start'))}</a>`;
-    return `<div class="home"><div class="sub">Ansible</div><h1>${esc(t('course.subtitle'))}</h1>
+    return `<div class="home"><div class="sub">${esc(t('home.kicker'))}</div><h1>${esc(t('course.subtitle'))}</h1>
       <div class="meta">${pills}</div>
       <p class="homesub">${esc(t('home.modulesLoaded', { done: modules.length, total: modules.length + upcoming.length, seen }))}</p>
       <div class="actions">${start}<button class="btn" id="reset" type="button">${esc(t('home.reset'))}</button></div>
@@ -180,7 +180,7 @@
           <h3>${esc(m.title)}</h3><p>${esc(t('home.soon'))}</p></div>`
         : `<a class="mcard" href="#${m.id}-0"><div class="e">${m.emoji}</div><div class="n">${esc(t('home.module'))} ${pad(m.num)}</div>
           <h3>${esc(m.title)}</h3><p>${m.tagline || ''}</p><div class="bar"><i style="width:${modPct(m)}%"></i></div></a>`).join('')}</div>`).join('')}
-      <div class="dl">⬇️ <a href="Ansible%20Training.pptx" download>${esc(t('home.download'))}</a><small>${esc(t('home.downloadHint'))}</small></div></div>`;
+      <div class="dl">${esc(t('icon.download'))} <a href="Ansible%20Training.pptx" download>${esc(t('home.download'))}</a><small>${esc(t('home.downloadHint'))}</small></div></div>`;
   }
 
   function renderBody(f) {
@@ -189,13 +189,13 @@
     if (f.kind === 'cover') {
       return `<div class="cover"><div class="big">${m.emoji}</div><div class="num">${esc(t('cover.module'))} ${pad(m.num)}</div><h1>${esc(m.title)}</h1>
         <p class="tagline">${m.tagline || ''}</p>
-        ${m.objectives ? `<div class="obj"><h3>🎯 ${esc(t('cover.objectives'))} ${badgeExtra()}</h3><ul>${refItems(m.objectives)}</ul></div>` : ''}
+        ${m.objectives ? `<div class="obj"><h3>${esc(t('icon.objectives'))} ${esc(t('cover.objectives'))} ${badgeExtra()}</h3><ul>${refItems(m.objectives)}</ul></div>` : ''}
         <div class="meta">${esc(t('cover.slides', { n: m.slides.length }))}${m.duration ? ' · ' + m.duration : ''}${quizTotal(m) ? ' · ' + esc(t('cover.quiz', { n: quizTotal(m) })) : ''}</div></div>`;
     }
     if (f.kind === 'recap') {
       const qt = quizTotal(m);
-      return `<div class="recap"><h2>✅ ${esc(t('recap.title'))} ${badgeExtra()}</h2><ul>${refItems(m.takeaways)}</ul>
-        ${qt ? `<div class="score">🎯 ${esc(t('recap.score', { score: quizScore(m), total: qt }))}</div>` : ''}</div>`;
+      return `<div class="recap"><h2>${esc(t('icon.recap'))} ${esc(t('recap.title'))} ${badgeExtra()}</h2><ul>${refItems(m.takeaways)}</ul>
+        ${qt ? `<div class="score">${esc(t('icon.score'))} ${esc(t('recap.score', { score: quizScore(m), total: qt }))}</div>` : ''}</div>`;
     }
     const s = f.slide;
     const notes = notesOf(s);
@@ -246,7 +246,7 @@
 
   function updateChrome() {
     const m = cur.mod;
-    $('#crumb').innerHTML = m ? `${m.emoji} <b>${pad(m.num)} ${esc(m.title)}</b> › ${esc(cur.title)}` : `🏠 <b>${esc(t('nav.home'))}</b>`;
+    $('#crumb').innerHTML = m ? `${m.emoji} <b>${pad(m.num)} ${esc(m.title)}</b> › ${esc(cur.title)}` : `${esc(t('icon.home'))} <b>${esc(t('nav.home'))}</b>`;
     const inMod = m ? flat.filter(f => f.mod === m) : [];
     $('#counter').textContent = m ? `${inMod.indexOf(cur) + 1} / ${inMod.length}` : '';
     $('#progress i').style.width = (flat.length > 1 ? curIdx / (flat.length - 1) * 100 : 0) + '%';
@@ -266,7 +266,7 @@
     const q = $('#search').value.trim();
     if (q) return renderSearch(q);
     let lastDay = null;
-    $('#navlist').innerHTML = `<a class="nav-home ${cur.kind === 'home' ? 'on' : ''}" href="#home">🏠 ${esc(t('nav.home'))}</a>` + planList().map(m => {
+    $('#navlist').innerHTML = `<a class="nav-home ${cur.kind === 'home' ? 'on' : ''}" href="#home">${esc(t('icon.home'))} ${esc(t('nav.home'))}</a>` + planList().map(m => {
       const d = dayOf(m);
       const head = d !== lastDay ? `<div class="day">${esc(t('day.' + d))}</div>` : '';
       lastDay = d;
