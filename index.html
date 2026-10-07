@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ansible Training</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar" aria-label="Sommaire" data-i18n-attr="aria-label:nav.sidebar">
+    <div class="side-head">
+      <a href="#home" class="brand"><span class="logo">🅰️</span> <span data-i18n="course.brand">Ansible Training</span><small data-i18n="course.subtitle">Automation for everyone</small></a>
+      <input id="search" type="search" placeholder="Rechercher ( / )" aria-label="Rechercher dans le cours" data-i18n-attr="placeholder:search.placeholder,aria-label:search.aria">
+    </div>
+    <nav id="navlist"></nav>
+  </aside>
+  <main id="main">
+    <header id="topbar">
+      <button id="menu" title="Sommaire (m)" aria-label="Sommaire" data-i18n-attr="title:nav.menu,aria-label:nav.sidebar">☰</button>
+      <div id="crumb"></div>
+      <span id="counter"></span>
+      <button id="notes-btn" type="button" title="Notes (n)" aria-pressed="false" hidden data-i18n-attr="title:nav.notesAria,aria-label:nav.notesAria"><span data-i18n="nav.notes">Notes (n)</span></button>
+      <button id="theme" title="Thème (t)" aria-label="Changer de thème" data-i18n-attr="title:nav.theme,aria-label:nav.themeAria">🌓</button>
+    </header>
+    <div id="progress"><i></i></div>
+    <section id="slide" tabindex="-1" aria-live="polite"></section>
+    <footer id="nav">
+      <button id="prev" data-i18n="nav.prev">← Précédent</button>
+      <span id="hint" data-i18n="nav.hint">← → naviguer · m sommaire · n notes · t thème · / recherche</span>
+      <button id="next" data-i18n="nav.next">Suivant →</button>
+    </footer>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script src="assets/meta.js"></script>
+<script src="assets/engine.js"></script>
+<script src="assets/i18n/fr.js"></script>
+<script src="assets/plan.js"></script>
+<script>COURSE.start();</script>
+</body>
+</html>
