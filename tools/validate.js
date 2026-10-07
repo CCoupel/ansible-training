@@ -113,7 +113,7 @@ function checkHtml(file, where, field, text) {
 }
 // Attributs dangereux et liens : valables aussi pour le SVG des diagrammes.
 function checkAttrs(file, where, field, text) {
-  if (/<[^>]*\son[a-z]+\s*=/i.test(text)) err(file, `${where}, champ ${field} : gestionnaire d'événement (on…=) interdit`);
+  if (/<[^>]*[\s/]on[a-z]+\s*=/i.test(text)) err(file, `${where}, champ ${field} : gestionnaire d'événement (on…=) interdit`);
   if (/javascript:/i.test(text)) err(file, `${where}, champ ${field} : « javascript: » interdit`);
   if (/<\s*script/i.test(text)) err(file, `${where}, champ ${field} : balise script interdite`);
   for (const a of text.matchAll(/<a\b[^>]*>/gi)) {
