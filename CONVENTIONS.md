@@ -79,6 +79,7 @@ Tous acceptent `frag` et `wide`. Champs « HTML » : balises autorisées `b i em
 | `layers` | `items:[{name, desc, hl?, base?}]` | Pile de couches |
 | `diagram` | `html` (SVG), `caption?` | Schéma SVG responsive (`viewBox`, couleurs en variables CSS) ; ni script, ni `on…=` |
 | `img` | `file` (`assets/img/<fichier>`), `alt`, `caption?` | Image déclarée dans `assets/img/images.json` ; `alt` descriptif neutre |
+| `gallery` | `items:[{file, alt, caption?}]` | Rangée de petites images (pictogrammes d'une slide) ; chaque image déclarée comme un `img` |
 | `lab` | `title`, `goal?`, `steps:[html]` | Exercice à cocher |
 | `reveal` | `label?`, `html` | Contenu masqué (solution d'un exercice) |
 | `quiz` | `q`, `options` (3-4), `answer`, `explain`, `ref` | QCM, **uniquement** sur une slide `extra: true` |

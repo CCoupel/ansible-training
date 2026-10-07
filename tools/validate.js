@@ -18,7 +18,7 @@ const path = require('path');
 const vm = require('vm');
 
 // À garder synchronisé avec assets/engine.js (objet R) et le CSS.
-const BLOCKS = ['text', 'bullets', 'code', 'cmds', 'table', 'compare', 'callout', 'flow', 'layers', 'quiz', 'reveal', 'lab', 'diagram', 'img'];
+const BLOCKS = ['text', 'bullets', 'code', 'cmds', 'table', 'compare', 'callout', 'flow', 'layers', 'quiz', 'reveal', 'lab', 'diagram', 'img', 'gallery'];
 const CALLOUTS = ['tip', 'warn', 'trap', 'note', 'awx'];
 const DAYS = ['J1', 'J2', 'J3'];
 const HTML_TAGS = new Set(['b', 'i', 'em', 'strong', 'code', 'br', 'a', 'span', 'ul', 'ol', 'li', 'p', 'kbd', 'sub', 'sup', 'mark', 'small', 'pre']);
@@ -98,6 +98,7 @@ function rawHtmlFields(b) {
     case 'lab': add('title', b.title); add('goal', b.goal); add('steps', b.steps || []); break;
     case 'diagram': add('caption', b.caption); break; // `html` : SVG voulu, exempté de la liste blanche
     case 'img': add('caption', b.caption); break;
+    case 'gallery': (b.items || []).forEach((i, k) => add(`items[${k}].caption`, i && i.caption)); break;
   }
   return f;
 }
@@ -204,20 +205,23 @@ function checkSchema(file, mod) {
       if (!b || !BLOCKS.includes(b.t)) return err(file, `${bt} : type inconnu`);
       rawHtmlFields(b).forEach(([field, tx]) => checkHtml(file, bt, field, tx));
       const need = { text: ['html'], bullets: ['items'], code: ['code'], cmds: ['items'], table: ['head', 'rows'], compare: ['left', 'right'],
-        callout: ['kind', 'html'], flow: ['nodes'], layers: ['items'], quiz: ['q', 'options', 'answer'], reveal: ['html'], lab: ['title', 'steps'], diagram: ['html'], img: ['file', 'alt'] }[b.t];
+        callout: ['kind', 'html'], flow: ['nodes'], layers: ['items'], quiz: ['q', 'options', 'answer'], reveal: ['html'], lab: ['title', 'steps'], diagram: ['html'], img: ['file', 'alt'], gallery: ['items'] }[b.t];
       need.forEach(k => { if (b[k] === undefined || b[k] === '') err(file, `${bt} : champ "${k}" manquant`); });
       if (b.t === 'callout' && !CALLOUTS.includes(b.kind)) err(file, `${bt} : kind "${b.kind}" inconnu (${CALLOUTS.join(', ')})`);
       if (b.t === 'table' && Array.isArray(b.rows) && Array.isArray(b.head)) b.rows.forEach((r, k) => { if (r.length !== b.head.length) err(file, `${bt} : ligne ${k + 1} a ${r.length} colonnes pour ${b.head.length} en-têtes`); });
       if (b.t === 'cmds' && Array.isArray(b.items)) b.items.forEach((c, k) => { if (!Array.isArray(c) || c.length !== 2) err(file, `${bt} : item ${k + 1} doit être [cmd, desc]`); });
       if (b.t === 'diagram') checkAttrs(file, bt, 'html', String(b.html || ''));
-      if (b.t === 'img') {
-        const m = /^assets\/img\/([^/]+)$/.exec(String(b.file || ''));
-        if (!m) err(file, `${bt} : file doit être de la forme assets/img/<fichier>`);
-        else {
-          if (!fs.existsSync(path.join(ROOT, 'assets', 'img', m[1]))) err(file, `${bt} : fichier assets/img/${m[1]} absent`);
-          if (!IMAGES || !IMAGES.has(m[1])) err(file, `${bt} : image ${m[1]} non déclarée dans assets/img/images.json`);
-        }
-        if (typeof b.alt === 'string' && !b.alt.trim()) err(file, `${bt} : alt vide`);
+      if (b.t === 'img' || b.t === 'gallery') {
+        (b.t === 'img' ? [b] : (Array.isArray(b.items) ? b.items : [])).forEach((im, k) => {
+          const w = b.t === 'img' ? bt : `${bt} image ${k + 1}`;
+          const m = /^assets\/img\/([^/]+)$/.exec(String((im && im.file) || ''));
+          if (!m) err(file, `${w} : file doit être de la forme assets/img/<fichier>`);
+          else {
+            if (!fs.existsSync(path.join(ROOT, 'assets', 'img', m[1]))) err(file, `${w} : fichier assets/img/${m[1]} absent`);
+            if (!IMAGES || !IMAGES.has(m[1])) err(file, `${w} : image ${m[1]} non déclarée dans assets/img/images.json`);
+          }
+          if (!im || typeof im.alt !== 'string' || !im.alt.trim()) err(file, `${w} : alt obligatoire et non vide`);
+        });
       }
       if (b.t === 'quiz') {
         quizzes++;

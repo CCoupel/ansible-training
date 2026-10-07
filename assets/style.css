@@ -123,6 +123,8 @@ ul.bullets li::marker { color: var(--accent); }
 .frag:not(.show) { opacity: 0; visibility: hidden; transform: translateY(6px); pointer-events: none; }
 .imgblk { margin: 0; text-align: center; }
 .imgblk img { max-width: 100%; height: auto; border-radius: 10px; background: #fff; }
+.gallery { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: flex-end; justify-content: center; }
+.gallery .imgblk img { max-height: 84px; width: auto; max-width: 140px; }
 .imgblk figcaption { font-size: .85rem; color: var(--muted); margin-top: 6px; }
 
 /* Cover / home */

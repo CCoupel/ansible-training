@@ -96,7 +96,8 @@
     lab: b => `<div class="lab${fc(b)}${wide(b)}"><h3>${esc(t('icon.lab'))} ${b.title}</h3>${b.goal ? `<p class="goal">${b.goal}</p>` : ''}<ol>${
       b.steps.map(s => `<li><label><input type="checkbox"><span>${s}</span></label></li>`).join('')}</ol></div>`,
     diagram: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="diagram">${b.html}</div>${b.caption ? `<div class="dcap">${b.caption}</div>` : ''}</div>`,
-    img: b => `<figure class="blk imgblk${fc(b)}${wide(b)}"><img src="${esc(b.file)}" alt="${esc(b.alt || '')}" loading="lazy">${b.caption ? `<figcaption>${b.caption}</figcaption>` : ''}</figure>`
+    img: b => `<figure class="blk imgblk${fc(b)}${wide(b)}"><img src="${esc(b.file)}" alt="${esc(b.alt || '')}" loading="lazy">${b.caption ? `<figcaption>${b.caption}</figcaption>` : ''}</figure>`,
+    gallery: b => `<div class="gallery${fc(b)}${wide(b)}">${b.items.map(i => `<figure class="imgblk"><img src="${esc(i.file)}" alt="${esc(i.alt || '')}" loading="lazy">${i.caption ? `<figcaption>${i.caption}</figcaption>` : ''}</figure>`).join('')}</div>`
   };
 
   function renderBlocks(slide, uid) {
