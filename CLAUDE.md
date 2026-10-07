@@ -207,18 +207,25 @@ SendMessage({
 
 ### Workflow de Publication
 
-Chaque version est publiée automatiquement via GitHub Actions (`.github/workflows/release.yml`) lors d'un tag `vX.Y.Z` ou d'un lancement manuel (`workflow_dispatch`).
+Chaque version est publiée automatiquement via GitHub Actions (`.github/workflows/release.yml`) lors d'un tag `vX.Y.Z` posé sur `main` ou d'un lancement manuel (`workflow_dispatch`).
 
 **Déclenchement** :
 
 ```bash
-# Déploiement automatique (après merge/release sur main)
+# 1. Merger milestone/vX.Y.Z sur main
+git checkout main
+git merge milestone/v0.1.1
+
+# 2. Poser le tag sur main et pousser
 git tag v0.1.1
+git push origin main
 git push origin v0.1.1
 
 # Ou via dispatch (rattrapage, ex. v0.1.0)
 gh workflow run release.yml -f tag=v0.1.0
 ```
+
+**Règle critique** : le tag doit être posé sur `main` (ou en ancêtre de `main`). La CI vérifie avec `git merge-base --is-ancestor` que le commit du tag est dans l'historique de `origin/main` avant de publier. Sans cela, la release échoue avec un message explicite.
 
 ### Étapes du Workflow
 

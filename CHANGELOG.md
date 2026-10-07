@@ -17,7 +17,7 @@ Support de formation Ansible générique : audit et correction de 38 constats d'
 
 - Tests automatiques d'obsolescence (`tests/slides/obsolescence/`) : assertions sur les versions, modules, syntaxe YAML, termes dépassés (#10, #11, #12, #13, #14, #15, #16, #17, #18, #20, #21, #22, #23, #24, #25, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #40, #41, #42, #43, #44, #45, #46, #47, #48)
 - Scan de validité et anti-fuite (`tests/slides/check_pptx.py`) : archive ZIP, métadonnées, images, prévention de fuite de termes sensibles
-- Workflow de publication GitHub Actions (`.github/workflows/release.yml`) : déclenchement sur tag `vX.Y.Z` ou `workflow_dispatch`, contrôles de validité et anti-fuite, création/mise à jour de release avec asset versionné `Ansible-Training-vX.Y.Z.pptx` (#49)
+- Workflow de publication GitHub Actions (`.github/workflows/release.yml`) : déclenchement sur tag `vX.Y.Z` (posé sur `main`) ou `workflow_dispatch`, contrôles de validité et anti-fuite, vérification que le tag est ancêtre de `origin/main` (bloquant), création/mise à jour de release avec asset versionné `Ansible-Training-vX.Y.Z.pptx` (#49)
 - Configuration des versions de référence (`reference_version` dans `.claude/project-config.json`) : ansible-core 2.20, Python 3.12+, source et date d'audit
 
 ### Fixed
@@ -54,7 +54,7 @@ Support de formation Ansible générique : audit et correction de 38 constats d'
 
 - **Slide 47 (hyperliens)** : 3 liens de collections non vérifiés (HTTP 429 des serveurs) : `cisco/dnac`, `cisco/ise`, `cloud/common` — statut à confirmer manuellement ou via la CI
 - **Slides 120, 168, 169, 174** : préfixe `/ansible/latest/` conservé (redirections fonctionnelles, migration vers `/projects/ansible/latest/` à prévoir dans une future issue)
-- **Slide 11** : `dnf install ansible-core` mentionné dans les notes, présence à vérifier sur la doc officielle (absentdu guide d'installation ansible-documentation)
+- **Slide 11** : la mention de `dnf install ansible-core` pour RHEL n'a pas été ajoutée faute de source officielle dans le guide d'installation ; à vérifier
 
 ## [0.1.0] - version initiale
 

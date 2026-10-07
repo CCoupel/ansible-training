@@ -49,12 +49,22 @@ Les tests incluent :
 
 ## Publication et CI
 
-Chaque version est publiée automatiquement via GitHub Actions lors d'un tag `vX.Y.Z` :
+Chaque version est publiée automatiquement via GitHub Actions lors d'un tag `vX.Y.Z` posé sur la branche `main` :
 
 ```bash
+# 1. Merger la branche milestone sur main
+git checkout main
+git merge milestone/v0.1.1
+
+# 2. Poser le tag sur main
 git tag v0.1.1
+
+# 3. Pousser main et le tag
+git push origin main
 git push origin v0.1.1
 ```
+
+**Règle critique** : le tag doit être posé sur `main` (ou un ancêtre de main). La CI vérifie que le commit du tag est dans l'historique de `origin/main` avant de publier. Sans cela, la release échoue avec le message : « Le tag vX.Y.Z n'est pas sur main : merge d'abord la branche milestone sur main puis retag ».
 
 ### Workflow de Release (`.github/workflows/release.yml`)
 
