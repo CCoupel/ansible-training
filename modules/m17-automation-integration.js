@@ -99,21 +99,21 @@ dependencies: []` }
       { t: 'quiz', q: 'Où les variables internes d\'un rôle doivent-elles être déclarées ?', q_en: 'Where must the internal variables of a role be declared?',
         options: ['Dans l\'inventaire, à partir des variables de groupe', 'Sur la ligne de commande, à partir des extra vars', 'Dans defaults/main.yml, à partir des variables externes'],
         options_en: ['In the inventory, from group variables', 'On the command line, from extra vars', 'In defaults/main.yml, from external variables'], answer: 2,
-        explain: 'Slide 222 : « internal role vars MUST be declared in the default/main.yml and initialized from external role vars » (la slide écrit default/main.yml ; le répertoire standard d\'un rôle s\'appelle defaults/).',
+        explain: 'Slide 263 : « internal role vars MUST be declared in the default/main.yml and initialized from external role vars » (la slide écrit default/main.yml ; le répertoire standard d\'un rôle s\'appelle defaults/).',
         explain_en: 'Slide 263: “internal role vars MUST be declared in the default/main.yml and initialized from external role vars” (the slide writes default/main.yml; the standard directory of a role is called defaults/).', ref: [263] }
     ] },
     { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel mécanisme la slide 223 recommande-t-elle pour éviter plusieurs exécutions d\'une même tâche ?', q_en: 'Which mechanism does slide 264 recommend to avoid running the same task several times?',
+      { t: 'quiz', q: 'Quel mécanisme la slide 264 recommande-t-elle pour éviter plusieurs exécutions d\'une même tâche ?', q_en: 'Which mechanism does slide 264 recommend to avoid running the same task several times?',
         options: ['Les tags', 'Les handlers', 'ignore_errors'],
         options_en: ['Tags', 'Handlers', 'ignore_errors'], answer: 1,
-        explain: 'Slide 223 : « Use the handlers to avoid multiple runs of a single tache ».',
+        explain: 'Slide 264 : « Use the handlers to avoid multiple runs of a single tache ».',
         explain_en: 'Slide 264: “Use the handlers to avoid multiple runs of a single tache”.', ref: [264] }
     ] },
     { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Que faut-il utiliser à la place des VM dans les listes d\'hôtes d\'un playbook ?', q_en: 'What should be used instead of VMs in the host lists of a playbook?',
         options: ['Une intersection de groupes', 'Une liste d\'adresses IP', 'Un fichier d\'inventaire par VM'],
         options_en: ['A group intersection', 'A list of IP addresses', 'One inventory file per VM'], answer: 0,
-        explain: 'Slide 219 : « Don’t use VM in host lists, use group intersection » ; les VM sont regroupées par solution, environnement et fonction.',
+        explain: 'Slide 260 : « Don’t use VM in host lists, use group intersection » ; les VM sont regroupées par solution, environnement et fonction.',
         explain_en: 'Slide 260: “Don’t use VM in host lists, use group intersection”; VMs are grouped by solution, environment and function.', ref: [260] }
     ] }
   ],

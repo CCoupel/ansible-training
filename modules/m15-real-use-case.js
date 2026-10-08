@@ -126,24 +126,24 @@ COURSE.add({
  '{{Flux.Message}}', Status{{":"}} {{result}}, Result1{{":"}} {{test1.stdout_lines|default("")}}, Result2{{":"}} {{test2.stdout_lines|default("")}}}"` }
       ] },
     { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Dans l\'exemple de la slide 188, quel résultat est positionné quand le serveur source n\'est pas joignable en SSH ?', q_en: 'In the example on slide 229, which result is set when the source server is not reachable over SSH?',
+      { t: 'quiz', q: 'Dans l\'exemple de la slide 229, quel résultat est positionné quand le serveur source n\'est pas joignable en SSH ?', q_en: 'In the example on slide 229, which result is set when the source server is not reachable over SSH?',
         options: ['PORT CLOSED', 'SRC ERROR', 'DST ERROR'],
         options_en: ['PORT CLOSED', 'SRC ERROR', 'DST ERROR'], answer: 1,
-        explain: 'Dans le bloc <code>rescue</code> de la slide 188, la tâche « SRC not SSHable » positionne <code>result="SRC ERROR"</code>.',
+        explain: 'Dans le bloc <code>rescue</code> de la slide 229, la tâche « SRC not SSHable » positionne <code>result="SRC ERROR"</code>.',
         explain_en: 'In the <code>rescue</code> block of slide 229, the “SRC not SSHable” task sets <code>result="SRC ERROR"</code>.', ref: [229] }
     ] },
     { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Quel résultat est positionné quand la destination est joignable en SSH mais que le port testé n\'est pas ouvert ?', q_en: 'Which result is set when the destination is reachable over SSH but the tested port is not open?',
         options: ['PORT CLOSED', 'DST ERROR', 'SRC ERROR'],
         options_en: ['PORT CLOSED', 'DST ERROR', 'SRC ERROR'], answer: 0,
-        explain: 'Slide 190 : la tâche « DST Port not reachable » positionne <code>result="PORT CLOSED"</code>, alors que <code>result="DST ERROR"</code> est positionné dans <code>rescue</code> quand la destination n\'est pas joignable en SSH.',
+        explain: 'Slide 231 : la tâche « DST Port not reachable » positionne <code>result="PORT CLOSED"</code>, alors que <code>result="DST ERROR"</code> est positionné dans <code>rescue</code> quand la destination n\'est pas joignable en SSH.',
         explain_en: 'Slide 231: the “DST Port not reachable” task sets <code>result="PORT CLOSED"</code>, whereas <code>result="DST ERROR"</code> is set in <code>rescue</code> when the destination is not reachable over SSH.', ref: [231] }
     ] },
     { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Dans la matrice de sortie, quel statut est affiché pour un service privé inaccessible ?', q_en: 'In the output matrix, which status is displayed for an inaccessible private service?',
         options: ['PORT CLOSED with private service', 'DST ERROR with private service', 'NO ACCESS with private service'],
         options_en: ['PORT CLOSED with private service', 'DST ERROR with private service', 'NO ACCESS with private service'], answer: 2,
-        explain: 'Slide 187 : le premier flux (http, port 2222) a pour statut « NO ACCESS with private service ».',
+        explain: 'Slide 228 : le premier flux (http, port 2222) a pour statut « NO ACCESS with private service ».',
         explain_en: 'Slide 228: the first flow (http, port 2222) has the status “NO ACCESS with private service”.', ref: [228] }
     ] }
   ],
