@@ -237,9 +237,9 @@ class TestHaute(SlidesCase):
     def test_issue_10_versions_minimales(self):
         core, py = reference_version()
         self.absent(r"Ansible\s+2\.9\b|Python\s+3\.6\b|min_ansible_version\s*:\s*[\"“”']?2\.9\b")
-        self.present(r"ansible-core\s+%s\b" % re.escape(core), [220])
-        self.present(r"Python\s+%s\b" % re.escape(py), [220])
-        self.present(r"min_ansible_version\s*:\s*\"%s\"" % re.escape(core), [160, 221],
+        self.present(r"ansible-core\s+%s\b" % re.escape(core), [230])
+        self.present(r"Python\s+%s\b" % re.escape(py), [230])
+        self.present(r"min_ansible_version\s*:\s*\"%s\"" % re.escape(core), [160, 231],
                      why="(valeur entre guillemets droits : 2.20 non quoté vaut 2.2 en YAML)")
         # clés Galaxy en minuscules (constat planner)
         self.absent(r"Galaxy_info|^\s*(?:Author|Description|License|Version)\s*:", slides=[160],
@@ -247,7 +247,7 @@ class TestHaute(SlidesCase):
 
     def test_issue_11_plateformes_obsoletes(self):
         self.absent(r"\bxenial\b|\bbionic\b|CentOS\s*[78]\b", scope="both")
-        self.present_any(r"\bjammy\b|\bnoble\b", [221])
+        self.present_any(r"\bjammy\b|\bnoble\b", [231])
 
     def test_issue_12_python3(self):
         # print Python 2 en minuscule, sensible à la casse : « Print “...” » (étape de logigramme,
@@ -275,11 +275,11 @@ class TestHaute(SlidesCase):
         self.present(r"ansible\.builtin", [45])
 
     def test_issue_17_molecule_obsolete(self):
-        self.absent(r"^\s*lint\s*:", slides=[204])
+        self.absent(r"^\s*lint\s*:", slides=[214])
         self.absent(r"callback_whitelist", scope="both")
-        self.absent(r"\bubi8\b|ubi/ubi8", slides=[204])
-        self.present(r"callbacks_enabled", [204])
-        self.present(r"verifier\s*:\s*\n\s*name\s*:\s*ansible", [204])
+        self.absent(r"\bubi8\b|ubi/ubi8", slides=[214])
+        self.present(r"callbacks_enabled", [214])
+        self.present(r"verifier\s*:\s*\n\s*name\s*:\s*ansible", [214])
 
     def test_issue_18_tower(self):
         # Texte XML uniquement : « TOWER » reste visible dans image9.png / image36.png (décision Q2).
@@ -334,21 +334,21 @@ class TestMoyenne(SlidesCase):
         self.present(r"(?:pipx?\s+install|pip3?\s+install|dnf\s+install)\s+ansible", [11])
 
     def test_issue_23_fqcn_et_key_value(self):
-        modules = [34, 35, 36, 37, 38, 39, 93, 95, 101, 132, 134, 202, 216]
+        modules = [34, 35, 36, 37, 38, 39, 93, 95, 101, 132, 134, 212, 226]
         self.absent(r"^\s*(?:-\s+)?(?:yum|dnf|template|service|package|reboot|debug|async_status)\s*:",
                     slides=modules, why="(module sans FQCN)")
         self.absent(r"\b(?:pkg|name|state|src|dest)=[^\s]", slides=modules, why="(syntaxe key=value)")
-        self.absent(r"\byum\b|docker-io", slides=[34, 35, 36, 37, 38, 39, 93, 95, 132, 134, 202, 216])
+        self.absent(r"\byum\b|docker-io", slides=[34, 35, 36, 37, 38, 39, 93, 95, 132, 134, 212, 226])
         self.present(r"ansible\.builtin\.(?:dnf|template|service)", [34, 93])
 
     def test_issue_24_paquets_el5_6_7(self):
-        self.absent(r"<=\s*['\"]?[567]\b|\bEL\s*[567]\b|Vault-", slides=[197])
-        self.present(r"ansible\.builtin\.package", [197, 101])
+        self.absent(r"<=\s*['\"]?[567]\b|\bEL\s*[567]\b|Vault-", slides=[207])
+        self.present(r"ansible\.builtin\.package", [207, 101])
         # `ntp` reste légitime comme NOM DE TAG ou de play (« tags: ntp », « - name: NTP », slide 202) :
         # seuls le paquet/service (ntp en liste ou name: ntp en minuscule, ntpd), deltarpm et gpm sont interdits.
-        self.absent(r"\bntpd\b|\bdeltarpm\b|\bgpm\b|(?-i:name\s*:\s*ntp\s*$|^\s*-\s*ntp\s*$)", slides=[101, 202])
-        self.present(r"\bchrony", [101, 202])
-        self.absent(r"^\s*Tags\s*:|\bblock\.\s*:", slides=[202], flags=re.M,
+        self.absent(r"\bntpd\b|\bdeltarpm\b|\bgpm\b|(?-i:name\s*:\s*ntp\s*$|^\s*-\s*ntp\s*$)", slides=[101, 212])
+        self.present(r"\bchrony", [101, 212])
+        self.absent(r"^\s*Tags\s*:|\bblock\.\s*:", slides=[212], flags=re.M,
                     why="(clé « Tags: » capitalisée, sensible à la casse ; « tags: » est correct)")
 
     def test_issue_25_sorties_python2(self):
@@ -364,7 +364,7 @@ class TestMoyenne(SlidesCase):
     def test_issue_27_galaxy_build_init(self):
         self.present(r"ansible-galaxy\s+collection\s+build", [161])
         self.absent(r"ansible-galaxy\s+build\b|ansible-galaxy\s+init\b", scope="both")
-        self.present(r"ansible-galaxy\s+role\s+init", [207])
+        self.present(r"ansible-galaxy\s+role\s+init", [217])
         self.absent(r"collection\s+publish[^\n]*(?:--username|--password)", slides=[149])
         self.absent(r"(?:--username|--password)", slides=[149])
 
@@ -394,9 +394,9 @@ class TestMoyenne(SlidesCase):
         self.present(r"v2_playbook_on_stats", [172])
 
     def test_issue_33_schema_hub_image_historique(self):
-        self.present(r"capture\s+historique", [4, 209])
-        self.present(r"Galaxy\s*NG|automation\s+hub", [209])
-        self.absent(r"\bTower\b", slides=[209], scope="both")
+        self.present(r"capture\s+historique", [4, 219])
+        self.present(r"Galaxy\s*NG|automation\s+hub", [219])
+        self.absent(r"\bTower\b", slides=[219], scope="both")
 
     def test_issue_34_tirets_et_options(self):
         self.absent(r"(?:^|\s)[–—−‑]{1,2}[A-Za-z]", why="(tiret typographique devant une option)")
@@ -419,7 +419,7 @@ class TestMoyenne(SlidesCase):
 
     def test_issue_37_cloudforms_manageiq_fin_de_vie(self):
         # Décision actée : « legacy integration example » (pas de date de fin de vie officielle sourcée).
-        self.present(r"end\s+of\s+life|legacy|fin\s+de\s+vie", [28, 159, 160, 217, 219])
+        self.present(r"end\s+of\s+life|legacy|fin\s+de\s+vie", [28, 159, 160, 227, 229])
         self.absent(r"\bCCO\b", slides=[159, 160], scope="both")
 
 
@@ -449,11 +449,11 @@ class TestBasse(SlidesCase):
 
     def test_issue_42_mode_fichier_quote(self):
         self.absent(r"\bmode\s*:\s*0\d{3}\b")
-        self.present(r"\bmode\s*:\s*[\"']0640[\"']", [200])
+        self.present(r"\bmode\s*:\s*[\"']0640[\"']", [210])
 
     def test_issue_43_host_key_checking(self):
-        self.present(r"MITM|man-in-the-middle|spoof|usurpation", [212])
-        self.present(r"known_hosts", [212])
+        self.present(r"MITM|man-in-the-middle|spoof|usurpation", [222])
+        self.present(r"known_hosts", [222])
 
     def test_issue_44_psrp(self):
         self.present(r"\bPSRP\b", [6])
@@ -463,7 +463,7 @@ class TestBasse(SlidesCase):
         self.present(r"loop\s*:\s*\"\{\{\s*groups\['all'\]\s*\}\}\"", [109, 128])
 
     def test_issue_46_slide_masquee_datee(self):
-        self.absent(r"2021|\+0800|december", slides=[210])
+        self.absent(r"2021|\+0800|december", slides=[220])
 
     def test_issue_47_note_passe_partout(self):
         self.absent(r"The\s+real\s+work\.\s*General\s+format|<<\s*module\s*>>", scope="notes")
