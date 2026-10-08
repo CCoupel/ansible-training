@@ -151,7 +151,7 @@ Fixés pendant la traduction de m01 à m12 ; à reprendre tels quels pour m13 à
    plus, calculé en caractères sur la version anglaise).
 3. **Pas de « only » / « just » / « simply » réservés aux mauvaises réponses** (ni de « always » / « never »
    qui trahissent un distracteur). **Exception** : un nom de tag est un identifiant, pas un qualificatif
-   (`tagged`, `always`, `never`) : les formes « The never tag » et « The tag named always » sont admises
+   (`web`, `always`, `never`) : les formes « The never tag » et « The tag named always » sont admises
    (contrôlé par `tests/site/i18n`).
 4. **Aucun `<code>` dans les options** (y compris la bonne réponse) : la forme ne doit pas révéler la réponse ;
    `<code>` reste permis dans l'énoncé `q` et dans `explain`.
