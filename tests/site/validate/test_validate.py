@@ -243,5 +243,51 @@ class TestValidateJoursDuPlan(unittest.TestCase):
         self.assertEqual(self.validate().returncode, 1)
 
 
+class TestValidateTailleModule(unittest.TestCase):
+    """Avertissement de taille de `validate.js` : seules les slides de contenu (hors `extra: true`, donc hors quiz
+    du Bonus) comptent ; le maximum est de 35 slides de contenu. Un module de 30 slides + 3 quiz n'avertit pas,
+    un module de 36 slides de contenu avertit (sans échouer : un avertissement n'est pas une erreur)."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.dir = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+
+    def check(self, mod):
+        return S.node("tools/validate.js", write_module(self.dir, mod))
+
+    def sized_module(self, content):
+        mod = valid_module(98, (13, 14))
+        first = mod["slides"][0]
+        quiz = mod["slides"][2]
+        mod["slides"] = [dict(first, title="Contenu %d" % i, src=[13 + i]) for i in range(content)]
+        for k in range(3):  # 3 quiz = 3 slides `extra`
+            q = copy.deepcopy(quiz)
+            q["blocks"][0]["q"] = "Question %d ?" % k
+            mod["slides"].append(q)
+        mod["objectives"] = [dict(o, ref=[13]) for o in mod["objectives"]]
+        mod["takeaways"] = [dict(t, ref=[13]) for t in mod["takeaways"]]
+        for s in mod["slides"]:
+            for b in s["blocks"]:
+                if b.get("t") == "quiz":
+                    b["ref"] = [13]
+        return mod
+
+    def warnings(self, r):
+        m = re.search(r"(\d+) avertissement\(s\)", r.stdout + r.stderr)
+        self.assertIsNotNone(m, (r.stdout + r.stderr)[-400:])
+        return int(m.group(1))
+
+    def test_30_slides_de_contenu_et_3_quiz_sans_avertissement(self):
+        r = self.check(self.sized_module(30))
+        self.assertEqual(r.returncode, 0, (r.stdout + r.stderr)[-600:])
+        self.assertEqual(self.warnings(r), 0, (r.stdout + r.stderr)[-600:])
+
+    def test_36_slides_de_contenu_avertissent_sans_echouer(self):
+        r = self.check(self.sized_module(36))
+        self.assertEqual(r.returncode, 0, (r.stdout + r.stderr)[-600:])
+        self.assertEqual(self.warnings(r), 1, (r.stdout + r.stderr)[-600:])
+
+
 if __name__ == "__main__":
     unittest.main()
