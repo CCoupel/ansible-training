@@ -9,7 +9,7 @@ COURSE.add({
     { html: 'Définir un filtre : une fonction Jinja2 qui transforme et manipule des données dans les playbooks et les templates.', html_en: 'Define a filter: a Jinja2 function that transforms and manipulates data in playbooks and templates.', ref: [83] },
     { html: 'Utiliser des filtres de formatage, de valeur par défaut et d\'obligation (<code>to_json</code>, <code>default</code>, <code>mandatory</code>).', html_en: 'Use formatting, default-value and mandatory filters (<code>to_json</code>, <code>default</code>, <code>mandatory</code>).', ref: [83, 84, 85] },
     { html: 'Conditionner l\'exécution d\'une tâche avec <code>when</code> et <code>register</code>.', html_en: 'Make a task conditional with <code>when</code> and <code>register</code>.', ref: [92, 93] },
-    { html: 'Utiliser <code>failed_when</code> et <code>changed_when</code> pour définir l\'échec ou le changement d\'une tâche.', html_en: 'Use <code>failed_when</code> and <code>changed_when</code> to define the failure or the change of a task.', ref: [92] },
+    { html: 'Utiliser <code>failed_when</code> et <code>changed_when</code> pour définir l\'échec ou le changement d\'une tâche.', html_en: 'Use <code>failed_when</code> and <code>changed_when</code> to decide when a task counts as failed or changed.', ref: [92] },
     { html: 'Déclencher un redémarrage avec un handler appelé par <code>notify</code>.', html_en: 'Trigger a restart with a handler called by <code>notify</code>.', ref: [95] }
   ],
   slides: [

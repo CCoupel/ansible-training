@@ -7,9 +7,9 @@ COURSE.add({
   tagline_en: 'Reuse Ansible content with roles, collections and Ansible Galaxy.',
   objectives: [
     { html: 'Définir un rôle : un moyen d\'organiser tâches, variables, fichiers, templates et modules en unités réutilisables.', html_en: 'Define a role: a way to organize tasks, variables, files, templates and modules into reusable units.', ref: [142] },
-    { html: 'Appeler des rôles dans un play avec <code>roles</code> et distinguer <code>include_role</code> (dynamique) de <code>import_role</code> (statique).', html_en: 'Call roles in a play with <code>roles</code> and tell <code>include_role</code> (dynamic) from <code>import_role</code> (static).', ref: [145] },
+    { html: 'Appeler des rôles dans un play avec <code>roles</code> et distinguer <code>include_role</code> (dynamique) de <code>import_role</code> (statique).', html_en: 'Call roles in a play with <code>roles</code> and distinguish between <code>include_role</code> (dynamic) and <code>import_role</code> (static).', ref: [145] },
     { html: 'Décrire l\'arborescence d\'un rôle (<code>tasks</code>, <code>handlers</code>, <code>templates</code>, <code>files</code>, <code>vars</code>, <code>defaults</code>, <code>meta</code>).', html_en: 'Describe the directory structure of a role (<code>tasks</code>, <code>handlers</code>, <code>templates</code>, <code>files</code>, <code>vars</code>, <code>defaults</code>, <code>meta</code>).', ref: [146] },
-    { html: 'Définir une collection et la situer par rapport aux rôles.', html_en: 'Define a collection and place it in relation to roles.', ref: [143, 148] },
+    { html: 'Définir une collection et la situer par rapport aux rôles.', html_en: 'Define a collection and explain how it relates to roles.', ref: [143, 148] },
     { html: 'Installer des rôles depuis Galaxy avec <code>ansible-galaxy</code> et les déclarer dans <code>roles/requirements.yml</code>.', html_en: 'Install roles from Galaxy with <code>ansible-galaxy</code> and declare them in <code>roles/requirements.yml</code>.', ref: [155, 156] }
   ],
   slides: [

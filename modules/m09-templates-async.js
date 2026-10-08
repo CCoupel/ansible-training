@@ -10,7 +10,7 @@ COURSE.add({
     { html: 'Utiliser les variables <code>{{ ... }}</code>, les structures de contrôle <code>{% ... %}</code> et les filtres dans un template.', html_en: 'Use <code>{{ ... }}</code> variables, <code>{% ... %}</code> control structures and filters in a template.', ref: [121, 122] },
     { html: 'Écrire une boucle <code>for</code> et une condition <code>if</code> dans un template.', html_en: 'Write a <code>for</code> loop and an <code>if</code> condition in a template.', ref: [123, 124] },
     { html: 'Générer un fichier de configuration à partir d\'un template avec le module <code>template</code>.', html_en: 'Generate a configuration file from a template with the <code>template</code> module.', ref: [126] },
-    { html: 'Lancer une tâche en arrière-plan avec <code>async</code> et <code>poll</code>, puis suivre son état avec <code>async_status</code>.', html_en: 'Run a task in the background with <code>async</code> and <code>poll</code>, then follow its status with <code>async_status</code>.', ref: [131, 132] }
+    { html: 'Lancer une tâche en arrière-plan avec <code>async</code> et <code>poll</code>, puis suivre son état avec <code>async_status</code>.', html_en: 'Run a task in the background with <code>async</code> and <code>poll</code>, then check its status with <code>async_status</code>.', ref: [131, 132] }
   ],
   slides: [
     { title: 'Templates', src: [120],

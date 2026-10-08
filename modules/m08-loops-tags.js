@@ -253,7 +253,7 @@ item=['user3', 'group3']
     { html: 'Dans une boucle, l\'élément courant est lu avec <code>item</code>.', html_en: 'Inside a loop, the current item is read with <code>item</code>.', ref: [101] },
     { html: '<code>until</code> répète une tâche jusqu\'à ce qu\'une condition soit remplie, avec <code>retries</code> et <code>delay</code>.', html_en: '<code>until</code> repeats a task until a condition is met, with <code>retries</code> and <code>delay</code>.', ref: [100, 106] },
     { html: 'Les tags étiquettent des tâches pour les exécuter ou les ignorer de manière sélective.', html_en: 'Tags label tasks so they can be run or skipped selectively.', ref: [114] },
-    { html: '<code>--tags</code> n\'exécute que les tâches portant le tag ; <code>--skip-tags</code> les ignore, et il l\'emporte si une tâche a les deux.', html_en: '<code>--tags</code> runs only the tasks that have the tag; <code>--skip-tags</code> skips them, and it wins if a task has both.', ref: [116] },
+    { html: '<code>--tags</code> n\'exécute que les tâches portant le tag ; <code>--skip-tags</code> les ignore, et il l\'emporte si une tâche a les deux.', html_en: '<code>--tags</code> runs only the tasks that have the tag; <code>--skip-tags</code> skips them and takes precedence if a task has both.', ref: [116] },
     { html: 'Le tag spécial <code>always</code> s\'exécute même quand d\'autres tags sont demandés ; <code>never</code> ne s\'exécute que s\'il est demandé explicitement.', html_en: 'The special tag <code>always</code> runs even when other tags are requested; <code>never</code> runs only when it is explicitly requested.', ref: [117] }
   ]
 });

@@ -239,7 +239,7 @@ def TCP(IP, PORT) :
     { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Que fait <code>run_once</code> ?', q_en: 'What does <code>run_once</code> do?',
         options: ['La tâche est exécutée sur tous les hôtes en parallèle', 'La tâche n\'est exécutée que sur le premier hôte du lot', 'La tâche n\'est exécutée qu\'une fois par jour'],
-        options_en: ['The task runs on every host of the batch in parallel', 'The task runs only on the first host of the batch', 'The task runs only once a day'], answer: 1,
+        options_en: ['The task runs on all hosts in parallel', 'The task runs only on the first host of the batch', 'The task runs only once a day, and no more often'], answer: 1,
         explain: 'Slide 166 : « Run_Once: The task is run only on the FIRST host of the batch ».',
         explain_en: 'Slide 166: “Run_Once: The task is run only on the FIRST host of the batch”.', ref: [166] }
     ] },
