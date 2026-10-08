@@ -1,6 +1,6 @@
 /* Libellés de l'interface du site (français). MIT License — Copyright (c) 2026 CCoupel.
    Tous les textes d'interface sont ici (jamais en dur dans engine.js / index.html) : la traduction
-   éventuelle de l'interface (#51) se fera en ajoutant assets/i18n/<langue>.js sans toucher au moteur.
+   de l'interface (#51) : assets/i18n/en.js porte les mêmes clés et les mêmes paramètres (contrôlé par tools/validate.js).
    Le contenu des slides (modules/*.js) n'est PAS traduit : il reprend le texte du support PowerPoint.
    Paramètres : {nom} remplacé à l'affichage ; clés vérifiées par tools/validate.js. */
 COURSE.i18n = COURSE.i18n || {};
@@ -20,8 +20,13 @@ COURSE.i18n['fr'] = {
   'nav.next': 'Suivant →',
   'nav.start': 'Commencer →',
   'nav.nextModule': 'Module {num} →',
-  'nav.hint': '← → naviguer · m sommaire · n notes · t thème · / recherche',
+  'nav.lang': 'Langue (l)',
+  'nav.langAria': 'Langue : English',
+  'nav.hint': '← → naviguer · m sommaire · n notes · t thème · l langue · / recherche',
   'nav.soon': 'à venir',
+
+  'lang.fr': 'Français',
+  'lang.en': 'English',
 
   'search.placeholder': 'Rechercher ( / )',
   'search.aria': 'Rechercher dans le cours',

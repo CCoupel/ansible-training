@@ -15,17 +15,33 @@
     get() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } },
     set(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* stockage indisponible : le site reste utilisable */ } }
   };
-  const state = Object.assign({ visited: {}, quiz: {}, theme: null, last: null, notes: false }, store.get());
+  const state = Object.assign({ visited: {}, quiz: {}, theme: null, last: null, notes: false, lang: null }, store.get());
   ['visited', 'quiz'].forEach(k => { if (!state[k] || typeof state[k] !== 'object') state[k] = {}; });
   const save = () => store.set(state);
 
-  /* ---------- Libellés (assets/i18n/fr.js) ---------- */
-  // t('clé', { param }) : repli sur la clé elle-même si le libellé est absent.
+  /* ---------- Langue et libellés (assets/i18n/fr.js, en.js) ---------- */
+  // LANG : langue de l'interface et du contenu Bonus. Résolution (resolveLang) : ?lang= > choix mémorisé > navigateur.
+  const LANGS = ['fr', 'en'];
+  let LANG = 'fr';
+  // t('clé', { param }) : langue courante, sinon français, sinon la clé elle-même.
   function t(key, vars) {
-    const all = (window.COURSE && COURSE.i18n && COURSE.i18n['fr']) || {};
-    let v = all[key] !== undefined ? all[key] : key;
+    const all = (window.COURSE && COURSE.i18n) || {};
+    const cur = all[LANG] || {}, fr = all['fr'] || {};
+    let v = cur[key] !== undefined ? cur[key] : (fr[key] !== undefined ? fr[key] : key);
     if (vars) v = v.replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
     return v;
+  }
+  // L(obj, 'champ') : `champ_en` si la langue est l'anglais et qu'il est renseigné, sinon `champ` (repli sur le français).
+  const hasEn = (o, f) => { const v = o && o[f + '_en']; return Array.isArray(v) ? v.length > 0 : (typeof v === 'string' ? v.trim() !== '' : (v !== undefined && v !== null)); };
+  const L = (o, f) => (LANG === 'en' && hasEn(o, f) ? o[f + '_en'] : (o ? o[f] : undefined));
+  // Options d'un quiz : options_en seulement si elle a autant d'entrées que options (sinon repli complet sur le français).
+  const quizOptions = b => (LANG === 'en' && Array.isArray(b.options_en) && b.options_en.length === (b.options || []).length ? b.options_en : b.options);
+  function resolveLang() {
+    const m = /[?&]lang=(fr|en)\b/i.exec(location.search || '');
+    if (m) return m[1].toLowerCase();
+    if (LANGS.includes(state.lang)) return state.lang;
+    const nav = (typeof navigator !== 'undefined' && navigator.language) || '';
+    return nav ? (/^fr\b/i.test(nav) ? 'fr' : 'en') : 'fr';
   }
   const META = () => window.COURSE_META || {};
 
@@ -45,7 +61,7 @@
   }
   const refLabel = list => (list && list.length > 1 ? t('badge.refMany', { list: fmtNums(list) }) : t('badge.ref', { list: fmtNums(list) }));
   const srcLabel = list => (list.length > 1 ? t('badge.pptxMany', { list: fmtNums(list) }) : t('badge.pptx', { n: fmtNums(list) }));
-  const itemHtml = x => (typeof x === 'string' ? x : x.html);
+  const itemHtml = x => (typeof x === 'string' ? x : L(x, 'html'));
   const itemRef = x => (typeof x === 'object' && x && Array.isArray(x.ref) ? x.ref : []);
 
   /* ---------- Rendu des blocs ---------- */
@@ -64,12 +80,22 @@
     }).join('\n');
   }
 
+  // Schéma SVG : en anglais, `svg_en: { title, desc }` remplace le contenu des balises <title> et <desc> du SVG.
+  function svgText(b) {
+    const e = LANG === 'en' && b.svg_en;
+    if (!e) return b.html;
+    let h = String(b.html);
+    if (e.title) h = h.replace(/(<title\b[^>]*>)[\s\S]*?(<\/title>)/, (m, a, z) => a + e.title + z);
+    if (e.desc) h = h.replace(/(<desc\b[^>]*>)[\s\S]*?(<\/desc>)/, (m, a, z) => a + e.desc + z);
+    return h;
+  }
+
   const R = {
     text: b => `<div class="blk text${fc(b)}${wide(b)}">${b.html}</div>`,
     bullets: b => `<ul class="blk bullets${wide(b)}">${b.items.map(i => `<li class="${b.frag ? 'frag' : ''}">${i}</li>`).join('')}</ul>`,
     code: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="codebox">
       <div class="codebar"><span class="dots"><i></i><i></i><i></i></span><span class="fn">${esc(b.file || b.lang || '')}</span><button class="copy" type="button">${esc(t('block.copy'))}</button></div>
-      <pre>${codeHtml(b.code, b.lang)}</pre></div>${b.caption ? `<div class="codecap">${b.caption}</div>` : ''}</div>`,
+      <pre>${codeHtml(b.code, b.lang)}</pre></div>${L(b, 'caption') ? `<div class="codecap">${L(b, 'caption')}</div>` : ''}</div>`,
     cmds: b => `<div class="cmds${fc(b)}${wide(b)}">${b.items.map(([c, d]) => `<div class="cm">${esc(c)}</div><div>${d}</div>`).join('')}</div>`,
     table: b => `<div class="tablewrap${fc(b)}${wide(b)}"><table><thead><tr>${b.head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${
       b.rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`,
@@ -84,22 +110,22 @@
     flow: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="flow">${b.nodes.map((n, i) => {
       const o = typeof n === 'string' ? { label: n } : n;
       return (i ? '<span class="farrow">→</span>' : '') + `<div class="fnode${o.hl ? ' hl' : ''}"><b>${o.label}</b>${o.sub ? `<small>${o.sub}</small>` : ''}</div>`;
-    }).join('')}</div>${b.caption ? `<div class="flowcap">${b.caption}</div>` : ''}</div>`,
+    }).join('')}</div>${L(b, 'caption') ? `<div class="flowcap">${L(b, 'caption')}</div>` : ''}</div>`,
     layers: b => `<div class="layers${fc(b)}${wide(b)}">${b.items.map(l =>
       `<div class="layer${l.hl ? ' hl' : ''}${l.base ? ' base' : ''}"><b>${l.name}</b><span>${l.desc || ''}</span></div>`).join('')}</div>`,
     quiz: (b, ctx) => `<div class="quiz${fc(b)}${wide(b)}" data-k="${ctx.uid}#${ctx.bi}" data-a="${b.answer}">
-      <div class="q">${esc(t('icon.quiz'))} ${b.q}</div>
-      <div class="opts">${b.options.map((o, i) => `<button type="button" class="opt" data-i="${i}">${o}</button>`).join('')}</div>
-      <div class="explain">${b.explain || ''}</div>
+      <div class="q">${esc(t('icon.quiz'))} ${L(b, 'q')}</div>
+      <div class="opts">${quizOptions(b).map((o, i) => `<button type="button" class="opt" data-i="${i}">${o}</button>`).join('')}</div>
+      <div class="explain">${L(b, 'explain') || ''}</div>
       <button type="button" class="redo">${esc(t('block.redo'))}</button></div>`,
     // Les <pre> d'une solution sont rendus comme des blocs de code (fond thémé, défilement horizontal, bouton Copier).
     reveal: b => `<details class="reveal${fc(b)}${wide(b)}"><summary>${b.label || esc(t('block.reveal'))}</summary><div>${String(b.html).replace(/<pre>([\s\S]*?)<\/pre>/g,
       (m, inner) => `<div class="codebox"><div class="codebar"><span class="fn"></span><button class="copy" type="button">${esc(t('block.copy'))}</button></div><pre>${inner}</pre></div>`)}</div></details>`,
     lab: b => `<div class="lab${fc(b)}${wide(b)}"><h3>${esc(t('icon.lab'))} ${b.title}</h3>${b.goal ? `<p class="goal">${b.goal}</p>` : ''}<ol>${
       b.steps.map(s => `<li><label><input type="checkbox"><span>${s}</span></label></li>`).join('')}</ol></div>`,
-    diagram: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="diagram">${b.html}</div>${b.caption ? `<div class="dcap">${b.caption}</div>` : ''}</div>`,
-    img: b => `<figure class="blk imgblk${fc(b)}${wide(b)}"><img src="${esc(b.file)}" alt="${esc(b.alt || '')}" loading="lazy">${b.caption ? `<figcaption>${b.caption}</figcaption>` : ''}</figure>`,
-    gallery: b => `<div class="gallery${fc(b)}${wide(b)}">${b.items.map(i => `<figure class="imgblk"><img src="${esc(i.file)}" alt="${esc(i.alt || '')}" loading="lazy">${i.caption ? `<figcaption>${i.caption}</figcaption>` : ''}</figure>`).join('')}</div>`
+    diagram: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="diagram">${svgText(b)}</div>${L(b, 'caption') ? `<div class="dcap">${L(b, 'caption')}</div>` : ''}</div>`,
+    img: b => `<figure class="blk imgblk${fc(b)}${wide(b)}"><img src="${esc(b.file)}" alt="${esc(L(b, 'alt') || '')}" loading="lazy">${L(b, 'caption') ? `<figcaption>${L(b, 'caption')}</figcaption>` : ''}</figure>`,
+    gallery: b => `<div class="gallery${fc(b)}${wide(b)}">${b.items.map(i => `<figure class="imgblk"><img src="${esc(i.file)}" alt="${esc(L(i, 'alt') || '')}" loading="lazy">${L(i, 'caption') ? `<figcaption>${L(i, 'caption')}</figcaption>` : ''}</figure>`).join('')}</div>`
   };
 
   function renderBlocks(slide, uid) {
@@ -108,8 +134,11 @@
       if (!fn) return `<div class="callout warn"><p>${esc(t('block.unknown', { type: b.t }))}</p></div>`;
       return fn(b, { uid, bi });
     }).join('');
-    return `<div class="blocks${slide.layout === 'two' ? ' two' : ''}">${html}</div>`;
+    return `<div class="blocks${slide.layout === 'two' ? ' two' : ''}"${verb(slide)}>${html}</div>`;
   }
+
+  // Texte verbatim du PPTX (anglais) : quand l'interface est en français, il est balisé lang="en" pour les lecteurs d'écran.
+  const verb = s => (LANG === 'fr' && !s.extra ? ' lang="en"' : '');
 
   /* ---------- Liste plate des slides ---------- */
   let modules = [];   // modules chargés, triés
@@ -126,7 +155,7 @@
     flat = [{ kind: 'home', title: t('nav.home'), uid: 'home' }];
     modules.forEach(m => {
       flat.push({ kind: 'cover', mod: m, title: t('cover.objectives'), uid: m.id + '-0' });
-      m.slides.forEach((s, i) => flat.push({ kind: 'slide', mod: m, slide: s, title: s.title, uid: m.id + '-' + (i + 1) }));
+      m.slides.forEach((s, i) => flat.push({ kind: 'slide', mod: m, slide: s, title: s.extra ? L(s, 'title') : s.title, uid: m.id + '-' + (i + 1) }));
       if (m.takeaways && m.takeaways.length) flat.push({ kind: 'recap', mod: m, title: t('recap.title'), uid: m.id + '-' + (m.slides.length + 1) });
     });
   }
@@ -182,7 +211,7 @@
         ? `<div class="mcard soon" aria-disabled="true"><div class="e">${m.emoji}</div><div class="n">${esc(t('home.module'))} ${pad(m.num)}</div>
           <h3>${esc(m.title)}</h3><p>${esc(t('home.soon'))}</p></div>`
         : `<a class="mcard" href="#${m.id}-0"><div class="e">${m.emoji}</div><div class="n">${esc(t('home.module'))} ${pad(m.num)}</div>
-          <h3>${esc(m.title)}</h3><p>${m.tagline || ''}</p><div class="bar"><i style="width:${modPct(m)}%"></i></div></a>`).join('')}</div>`).join('')}
+          <h3>${esc(m.title)}</h3><p>${L(m, 'tagline') || ''}</p><div class="bar"><i style="width:${modPct(m)}%"></i></div></a>`).join('')}</div>`).join('')}
       <div class="dl">${esc(t('icon.download'))} <a href="Ansible%20Training.pptx" download>${esc(t('home.download'))}</a><small>${esc(t('home.downloadHint'))}</small></div></div>`;
   }
 
@@ -191,7 +220,7 @@
     const m = f.mod;
     if (f.kind === 'cover') {
       return `<div class="cover"><div class="big">${m.emoji}</div><div class="num">${esc(t('cover.module'))} ${pad(m.num)}</div><h1>${esc(m.title)}</h1>
-        <p class="tagline">${m.tagline || ''}</p>
+        <p class="tagline">${L(m, 'tagline') || ''}</p>
         ${m.objectives ? `<div class="obj"><h3>${esc(t('icon.objectives'))} ${esc(t('cover.objectives'))} ${badgeExtra()}</h3><ul>${refItems(m.objectives)}</ul></div>` : ''}
         <div class="meta">${esc(t('cover.slides', { n: m.slides.length }))}${m.duration ? ' · ' + m.duration : ''}${quizTotal(m) ? ' · ' + esc(t('cover.quiz', { n: quizTotal(m) })) : ''}</div></div>`;
     }
@@ -202,8 +231,8 @@
     }
     const s = f.slide;
     const notes = notesOf(s);
-    return `<h2 class="stitle">${esc(s.title)}${tagHtml(s)}</h2>${srcHtml(s)}${renderBlocks(s, f.uid)}${
-      notes ? `<aside class="notes${state.notes ? ' on' : ''}" id="notes"><b>${esc(t('notes.title'))}</b> — ${notes}</aside>` : ''}`;
+    return `<h2 class="stitle"${verb(s)}>${esc(f.title)}${tagHtml(s)}</h2>${srcHtml(s)}${renderBlocks(s, f.uid)}${
+      notes ? `<aside class="notes${state.notes ? ' on' : ''}" id="notes"${verb(s)}><b>${esc(t('notes.title'))}</b> — ${notes}</aside>` : ''}`;
   }
 
   /* ---------- Affichage ---------- */
@@ -297,13 +326,18 @@
   function textOf(o, out) {
     if (typeof o === 'string') out.push(strip(o));
     else if (Array.isArray(o)) o.forEach(x => textOf(x, out));
-    else if (o && o.t === 'code') { out.push(String(o.code || '')); textOf(o.caption, out); } // texte brut : pas de strip()
+    else if (o && o.t === 'code') { out.push(String(o.code || '')); textOf(L(o, 'caption'), out); } // texte brut : pas de strip()
     else if (o && o.t === 'cmds') (o.items || []).forEach(c => { out.push(String(c[0] || '')); textOf(c[1], out); });
-    else if (o && typeof o === 'object') Object.keys(o).forEach(k => { if (!NO_TEXT.has(k)) textOf(o[k], out); });
+    else if (o && typeof o === 'object') Object.keys(o).forEach(k => {
+      if (NO_TEXT.has(k)) return;
+      if (k.endsWith('_en')) { if (LANG === 'en') textOf(o[k], out); return; }   // champs anglais : seulement en anglais
+      if (LANG === 'en' && hasEn(o, k)) return;                                    // le français est remplacé par son `_en`
+      textOf(o[k], out);
+    });
     return out;
   }
   function searchText(f) {
-    if (f.kind === 'cover') return textOf([f.mod.tagline, f.mod.objectives], []).join(' ');
+    if (f.kind === 'cover') return textOf([L(f.mod, 'tagline'), f.mod.objectives], []).join(' ');
     if (f.kind === 'recap') return textOf(f.mod.takeaways, []).join(' ');
     return textOf([f.slide.blocks, f.slide.notes], []).join(' ');
   }
@@ -374,12 +408,31 @@
   }
 
   function applyStatic() {
-    document.documentElement.lang = 'fr';
+    document.documentElement.lang = LANG;
     $$('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
     $$('[data-i18n-attr]').forEach(el => el.dataset.i18nAttr.split(',').forEach(p => {
       const [a, k] = p.split(':'); el.setAttribute(a.trim(), t(k.trim()));
     }));
+    const lb = $('#lang');
+    if (lb) {
+      lb.innerHTML = `<span class="${LANG === 'fr' ? 'on' : ''}" title="${esc(t('lang.fr'))}">FR</span><span class="bar" aria-hidden="true">|</span><span class="${LANG === 'en' ? 'on' : ''}" title="${esc(t('lang.en'))}">EN</span>`;
+      lb.setAttribute('aria-label', t('nav.langAria'));
+      lb.title = t('nav.lang');
+    }
   }
+
+  // Changement de langue sans rechargement : choix mémorisé, libellés, liste plate, recherche et slide courante recalculés ;
+  // l'ancre (#mNN-i), les fragments déjà affichés, la progression et les scores de quiz sont conservés.
+  function setLang(l) {
+    if (!LANGS.includes(l) || l === LANG) return;
+    LANG = l; state.lang = l; save();
+    index = null; lastCrumb = null;
+    build();
+    applyStatic();
+    const i = cur ? flat.findIndex(f => f.uid === cur.uid) : 0;
+    show(i < 0 ? 0 : i, fragIdx);
+  }
+  const toggleLang = () => setLang(LANG === 'fr' ? 'en' : 'fr');
 
   function toggleMenu() {
     if (window.matchMedia('(max-width: 900px)').matches) document.body.classList.toggle('menu-open');
@@ -401,6 +454,8 @@
   }
 
   function start() {
+    LANG = resolveLang();
+    if (/[?&]lang=(fr|en)\b/i.test(location.search || '') && state.lang !== LANG) { state.lang = LANG; save(); } // ?lang= est ensuite mémorisé
     build();
     applyStatic();
     applyTheme();
@@ -409,6 +464,7 @@
     $('#prev').addEventListener('click', prev);
     $('#menu').addEventListener('click', toggleMenu);
     $('#theme').addEventListener('click', toggleTheme);
+    if ($('#lang')) $('#lang').addEventListener('click', toggleLang);
     $('#notes-btn').addEventListener('click', toggleNotes);
     $('#search').addEventListener('input', () => renderNav());
     $('#navlist').addEventListener('click', () => document.body.classList.remove('menu-open'));
@@ -427,6 +483,7 @@
         case 'm': toggleMenu(); break;
         case 'n': toggleNotes(); break;
         case 't': toggleTheme(); break;
+        case 'l': toggleLang(); break;
         case '/':
           e.preventDefault(); document.body.classList.remove('menu-closed');
           if (window.matchMedia('(max-width: 900px)').matches) document.body.classList.add('menu-open'); // sidebar masquée sur mobile

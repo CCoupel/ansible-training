@@ -81,6 +81,12 @@ body.menu-closed #sidebar { display: none; }
 #topbar button { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px; }
 #topbar button:hover { background: var(--surface2); }
 #topbar #notes-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+/* Sélecteur de langue : un seul bouton, deux segments, la langue active surlignée */
+#topbar #lang { display: inline-flex; align-items: stretch; padding: 0; overflow: hidden; font-size: .75rem; font-weight: 700; letter-spacing: .04em; cursor: pointer; color: var(--text); }
+#lang span { padding: 4px 8px; color: var(--muted); }
+#lang span.on { background: var(--accent); color: #fff; }
+#lang .bar { padding: 4px 0; color: var(--border); }
+#topbar #lang:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 2px; }
 #crumb { flex: 1; font-size: .9rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #crumb b { color: var(--text); }
 #counter { font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
