@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* MIT License — Copyright (c) 2026 CCoupel
-   Construit build/Ansible-Training-HTML.zip : le site (index.html, assets/, modules/) et le support PowerPoint
+   Construit build/Ansible-Training-HTML.zip : le site (index.html, assets/, modules/), les exemples et labs (examples/, labs/) et le support PowerPoint
    « Ansible Training.pptx » à la racine, à côté de index.html (le lien de téléchargement de l'accueil reste valable),
    tels que commités.
    Refuse de construire si des fichiers SUIVIS de ces chemins ont des modifications non commitées (le zip doit refléter
@@ -22,7 +22,7 @@ const OUT = oi >= 0 ? path.resolve(argv[oi + 1]) : path.join(ROOT, 'build', 'Ans
 const fail = m => { console.error('ERREUR  package : ' + m); process.exit(1); };
 
 // Contenu = fichiers SUIVIS par git de ces chemins (jamais de fichier non commité ni de résidu local).
-const PATHS = ['index.html', 'assets', 'modules', 'Ansible Training.pptx'];
+const PATHS = ['index.html', 'assets', 'modules', 'examples', 'labs', 'Ansible Training.pptx'];
 let names;
 try {
   const dirty = execFileSync('git', ['-C', ROOT, 'status', '--porcelain', '--untracked-files=no', '--', ...PATHS], { encoding: 'utf8' }).trim();
