@@ -61,7 +61,7 @@ Normalement, un agent générique ne touche pas au code applicatif. **Dérogatio
 | `assets/style.css` | Thème et couleurs (bleu Ansible) | CSS, variables `--accent`, dark mode |
 | `assets/plan.js` | Manifeste : liste des 15 modules | JavaScript `COURSE.plan = [...]` |
 | `assets/meta.js` | **Généré** et **commité** (seul fichier généré suivi) | JS `{version, reference_version, date}` depuis `project-config.json` |
-| `modules/m01-introduction.js` … `modules/m15-automation-integration.js` | Contenu : 15 modules × conversion + bonus | JS `COURSE.add({...})`, règles CONVENTIONS |
+| `modules/m01-introduction.js` … `modules/m17-automation-integration.js` | Contenu : modules × conversion + bonus | JS `COURSE.add({...})`, règles CONVENTIONS |
 | `tools/validate.js` | Validateur de schéma (porté + adapté) | JavaScript, Node stdlib |
 | `tools/sync-meta.js` | Génère `assets/meta.js` depuis `project-config.json` | JavaScript, options `--check`, `--version X.Y.Z` |
 | `tools/dump-course.js` | Exporte en `build/course.json` (non commité) pour parité | JavaScript, entre de la parité |

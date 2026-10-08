@@ -153,6 +153,11 @@ Toute insertion de slides suit cet ordre, **dans le même lot** que le module HT
 4. **Contenu** : rédiger les slides (`dev-slides`), puis le module HTML (`course`) ; l'entrée du module est ajoutée à `assets/plan.js` (le contrôle de contiguïté des plages le rappelle).
 5. **Release** : test strict « aucun module à venir » (chaque module de `plan.js` est chargé par `index.html`) ; la slide 2 et `assets/meta.js` portent la même version et date.
 
+**Reprise et limites de `renumber.py`.**
+- `--apply` interrompu (erreur, coupure) : ne jamais commiter l'état partiel. Restaurer les cibles (`git checkout -- modules assets tests/slides`, hors PPTX) puis relancer `--apply`. `slide_index.json` est écrit en dernier : tant qu'il est inchangé, la relance repart du même point.
+- Si l'ancien PPTX est introuvable dans l'historique git, `--apply` échoue ; `--no-text-check` accepte explicitement de sauter le contrôle du texte avant/après (à justifier dans le rapport). `--check` ne fait que le signaler.
+- Non couvert, signalé à la main (liste « prose » de `build/renumber-plan.md`) : dans les tests d'obsolescence, seuls les entiers littéraux des listes de slides sont remplacés (pas les constantes ni les expressions) ; dans les modules, les commentaires `/* … */` et les `//` situés après une URL sur la même ligne ne sont pas distingués du code (relire le diff).
+
 ## Version et date
 
 La version et les versions de référence affichées sur l'accueil viennent de `assets/meta.js` (jamais saisies à la main). À la release, `node tools/sync-meta.js --version X.Y.Z --date JJ/MM/AAAA` est lancé dans le même commit que la slide 2 du PPTX.
