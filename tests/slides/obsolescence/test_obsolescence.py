@@ -325,6 +325,7 @@ class TestMoyenne(SlidesCase):
 
     def test_issue_7_eda_notions_et_syntaxe_presentes(self):
         slides = self._eda_slides()
+        missing = []  # pas de subTest : le mécanisme « lot non fait » ne voit que l'échec du test lui-même
         for motif, label in ((r"ansible-rulebook", "ansible-rulebook"),
                              (r"ansible\.eda\.webhook", "ansible.eda.webhook"),
                              (r"^\s*(?:-\s+)?rules\s*:", "rules:"),
@@ -335,8 +336,10 @@ class TestMoyenne(SlidesCase):
                              (r"once_within", "once_within"),
                              (r"decision[\s-]+environment", "decision environment"),
                              (r"ansible_eda\.event|event\.payload|ansible_eda", "ansible_eda.event")):
-            with self.subTest(attendu=label):
-                self.present_any(motif, slides)
+            rx = re.compile(motif, FLAGS)
+            if not any(rx.search(t) for _, t in _texts("slides", slides)):
+                missing.append(label)
+        self.assertEqual(missing, [], "motif(s) attendu(s) absent(s) de toutes les slides du module : %s" % missing)
 
     def test_issue_7_eda_formes_obsoletes_absentes(self):
         slides = self._eda_slides()
