@@ -732,19 +732,19 @@ curl -H 'Content-Type: application/json' -d '{"service": "my_service", "status":
         { t: 'text', html: 'ansible-rulebook, the ansible.eda collection and the EDA controller each have their own repository' }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle clé d\'un ruleset indique d\'où viennent les événements ?',
-        options: ['hosts', 'sources', 'rules', 'name'], answer: 1,
-        explain: 'Slide 198 : « sources: where events come from » ; <code>rules</code> contient les conditions et les actions.', ref: [198] }
+      { t: 'quiz', q: 'Quelle clé d\'un ruleset contient les conditions et les actions ?',
+        options: ['hosts', 'rules', 'sources', 'name'], answer: 1,
+        explain: 'Slide 198 : « rules: condition + action » ; <code>sources</code> indique d\'où viennent les événements.', ref: [198] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Avec <code>throttle</code>, que fait <code>once_within</code> ?',
-        options: ['Il attend, puis agit une seule fois sur le groupe d\'événements', 'Il agit sur chaque événement après un délai fixe', 'Il agit sur le premier événement et ignore les suivants pendant le délai'], answer: 2,
+        options: ['Il attend la fin du délai, puis exécute l\'action une fois pour le groupe', 'Il exécute l\'action sur chaque événement, en les espaçant du délai indiqué', 'Il agit sur le premier événement, puis ignore les suivants durant le délai'], answer: 2,
         explain: 'Slide 209 : « once_within: act on the first, ignore the next ones for the delay » ; <code>once_after</code> attend puis agit une fois sur le groupe.', ref: [209] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle action lance un job template d\'un contrôleur, par exemple AWX ?',
-        options: ['run_job_template', 'run_playbook', 'run_module', 'post_event'], answer: 0,
-        explain: 'Slide 214 : « Runs a job template of a controller (for example AWX) » ; <code>run_playbook</code> lance un playbook local (slide 211).', ref: [210, 211, 214] }
+      { t: 'quiz', q: 'Que fait l\'action <code>run_job_template</code> ?',
+        options: ['Elle lance un job template sur un contrôleur comme AWX', 'Elle lance un playbook situé à côté du rulebook', 'Elle envoie un nouvel événement au même ruleset', 'Elle affiche l\'événement reçu dans la console'], answer: 0,
+        explain: 'Slide 214 : « Runs a job template of a controller (for example AWX) » ; un playbook se lance avec <code>run_playbook</code> (slide 211), un nouvel événement s\'envoie avec <code>post_event</code> (slide 213).', ref: [210, 211, 214] }
     ] }
   ],
   takeaways: [
