@@ -1,8 +1,8 @@
 # MEMORY.md — Ansible Training Project
 
-**Dernière mise à jour** : 2026-10-07 (fin de session v0.1.1)  
+**Dernière mise à jour** : 2026-10-08 (fin de session v0.2.0)  
 **Projet** : Ansible Training  
-**Team** : ansible-training-team
+**Team** : ansible-training-team (8 permanents, 2 ponctuels)
 
 ---
 
@@ -10,378 +10,119 @@
 
 | Paramètre | Valeur |
 |-----------|--------|
-| Version (PROD) | `0.1.1` (livrée 2026-10-07) |
-| Version (DEV) | `0.2.0.0` (cycle v0.2.0 en cours) |
-| Environnement | PROD (v0.1.1 released) |
-| Branche active | `milestone/v0.2.0` (développement) |
-| Branche par défaut | `main` |
-| Release PROD | https://github.com/CCoupel/ansible-training/releases/tag/v0.1.1 |
-| Tag PROD | `v0.1.1` (commit a120dab) |
+| Version (PROD) | `0.2.0` (livrée 2026-10-08) |
+| Release | https://github.com/CCoupel/ansible-training/releases/tag/v0.2.0 |
+| Assets | 3 : PPTX, zip HTML 51 entrées, .sha256 |
+| Commit | b4b67b2 (docs(readme): aligner workflow release...) |
+| Branch main | v0.2.0 merged, stable |
 | Template | v3.13.1 |
 
 ---
 
-## Cycle v0.1.1 — Clôture (✅ LIVRÉE EN PROD — 2026-10-07)
+## Cycle v0.2.0 — Clôture (✅ LIVRÉE EN PROD — 2026-10-08)
 
-### Livrables Complétés
-**Release** : https://github.com/CCoupel/ansible-training/releases/tag/v0.1.1  
-**Tag** : `v0.1.1` (commit `a120dab`)  
-**Asset** : `Ansible-Training-v0.1.1.pptx`  
-**Issues fermées** : 39 (#10-#49, hors #19 reportée v1.0.0)
+### Livrables
+- ✅ **Site HTML** : 15 modules, 217 slides (hors 193/210/217 masquées), 45 quiz (15/15/15), objectifs, « À retenir »
+- ✅ **Outils** : validate.js, sync-meta.js, dump-course.js, package.js, check_links.py
+- ✅ **Tests** : 131 tests site (parité, anti-fuite, structure)
+- ✅ **Workflow durci** : 3 assets, contrôle version + date, retrait exception v0.1.0
+- ✅ **PPTX slide 2** : v0.2.0, date 07/10/2026 (fixée, = meta.js)
+- ✅ **Documentation** : CHANGELOG [0.2.0], README V HTML, CLAUDE.md (Release, Extensibilité, Prérequis)
 
-**Étapes complétées** :
-- ✅ Audit d'obsolescence (38 correctifs dans les 223 slides)
-  - Syntaxe YAML, versions Ansible, noms de produits (Tower → automation controller)
-  - Modules FQCN, gestion de packages, Galaxy/Molecule
-  - Liens documentation mis à jour (docs.ansible.com/projects/ansible/latest/)
-  - Sorties d'exemple renouvelées (ansible-core 2.20)
-  - Notes d'intervenant nettoyées
-- ✅ Tests automatiques (obsolescence + validité + anti-fuite)
-  - `tests/slides/check_pptx.py` : validité ZIP, scan métadonnées
-  - `tests/slides/obsolescence/` : assertions par issue (41 tests, OK)
-- ✅ Workflow de publication (`.github/workflows/release.yml`)
-  - Déclenchement sur tag `vX.Y.Z` posé sur `main` (vérification merge-base)
-  - Scan anti-fuite bloquant avec secret `LEAK_PATTERNS`
-  - Création release et asset versionné
-- ✅ Documentation (README, CHANGELOG, CLAUDE.md)
-  - README.md : créé (structure, contenu, tests, versions, release/CI)
-  - CHANGELOG.md : format Keep a Changelog, section [0.1.1] complète
-  - CLAUDE.md : section « Release et CI », règle « tag sur main »
-- ✅ CI validée (tous les contrôles passent)
+### Décisions v0.2.0 Consolidées
+| Décision | Statut |
+|----------|--------|
+| Contenu = quiz + objectifs + « À retenir » | ✅ Implémenté |
+| Slides masquées 193/210/217 exclues | ✅ Implémenté |
+| Interface en français (i18n) | ✅ Implémenté |
+| Agent course = instance generic | ✅ Implémenté |
+| Workflow + version + date contrôlées | ✅ Implémenté (fab6435) |
+| Nom d'auteur slide 147 m11 accepté | ✅ Accepté |
+| Pas de push avant GATE pilote | ✅ Respectée |
 
-### Décisions Utilisateur (v0.1.1, GATE 1.5-Q1 à Q4)
-
-| # | Décision | Impact |
-|---|----------|--------|
-| Q1 | Versions de référence figées : **ansible-core 2.20**, **Python ≥ 3.12** | Slide 2, `.claude/project-config.json`, tests |
-| Q2 | Images slides 4 (TOWER) & 209 conservées + légende « capture historique » | Lot 3, anti-fuite garde-fou |
-| Q3 | ManageIQ conservé comme exemple « legacy integration example » | Slides 210, 217, 219 |
-| Q4 | Secret GitHub `LEAK_PATTERNS` créé (regex des termes sensibles) | Workflow bloquant, CI refusée sans |
-| +1 | Fond blanc appliqué à tout le support | Batch final |
-| +2 | Date slide 2 = 06/10/2026 (non mise à jour à chaque release) | À confirmer pour v0.2.0+ |
+### Cycle v0.1.1 — Recap (✅ LIVRÉE 2026-10-07, commit a120dab)
+**Contenu** : audit d'obsolescence (38 correctifs), tests CI, documentation release/workflow  
+**Durée** : ~24h, 39 issues fermées (#10-#49 hors #19)
 
 ---
 
-## Cycle v0.2.0 — Initialisation & Batch 0 Complété (🔄 EN COURS)
+## Roadmap Versions
 
-### Vue d'ensemble
-**Branche** : `milestone/v0.2.0` (créée, commit 73e4819)  
-**Version DEV** : `0.2.0.0`  
-**Objectif** : Format multi-canal (PowerPoint + HTML interactif)  
-**Issues** : #3 (architecture), #4 (HTML), #5 (PPTX+HTML), #50 (docs.ansible.com)
+**✅ v0.1.0 (2026-10-06)** → **✅ v0.1.1 (2026-10-07)** → **✅ v0.2.0 (2026-10-08)**  
+PPTX générique (audit) → PPTX + tests CI → PPTX + site HTML 15 modules
 
-### Architecture HTML Décidée (GATE 2 intégré — 2026-10-07)
-- **Base** : conversion des 223 slides en HTML interactif (15 modules)
-- **Source de contenu** : PPTX anonymisé (référence stable)
-- **Site commité** : `index.html` racine + `assets/`, `modules/` (comme OpenShift, **plus de gh-pages**)
-- **Décisions GATE 2 (Q1-Q4)** :
-  - Q1 : Hébergement GitHub Pages via Actions à chaque release (activation après confirmation utilisateur)
-  - Q2 : Contenu additionnel = **quiz + objectifs + « À retenir »** (≈145-210 textes, dérivés du PPTX)
-  - Q3 : Slides masquées 193/210/217 **exclues** du HTML
-  - Q4 : Interface en **français** (contenu PPTX inchangé en anglais)
-- **Préparation i18n v1.0.0** : libellés interface isolés en `assets/i18n/fr.js` dès v0.2.0 (sans sélecteur ni anglais)
-- **Décisions techniques** :
-  - Compagnon agent `generic.course.md` (instance générique, rôle dev-course) pour conversion HTML
-  - Accent bleu Ansible (palette de design)
-  - Référence centralisée `reference_version` (.claude/project-config.json)
-  - Chemin local : `/mnt/c/Users/cyril/Documents/PROJETS/TRAINING/OPENSHIFT` (à consulter hors session)
-  - Fichier d'étude : `docs/HOMOGENEISATION-OPENSHIFT.md` (local, non suivi git)
-
-### Batch 0 — Préparation de l'équipe (✅ COMPLÉTÉ — 2026-10-07)
-**Tâche 0.1** : Spécification de l'agent `course`  
-- Spec `.claude/agents/generic.course.md` (435 lignes, rôle dev-course, périmètre étendu)
-- Déclaration `agents.generic[]` dans `.claude/project-config.json`
-- Mise à jour table Agents Disponibles de `CLAUDE.md`
-- Routage `cdp.md` (mots-clés COURSE DONE/BLOQUE/EN COURS, contexte préservé)
-- Commits : `ece2825` (spec), `f367905` (routage cdp.md)
-
-**Tâche 0.2** : Obtention de l'agent (teamleader — à faire : `/end-session` + `/start-session`)
-
-### Batch 1 — Développement (🔄 EN COURS — partiellement)
-
-**Tâche 1.1** : Liens #50 (dev-slides)
-- État : ✅ **TERMINÉE — commit e905af0**
-- Réalisation : 13 occurrences de l'ancien préfixe `docs.ansible.com/ansible/latest/` migrées vers `/projects/ansible/latest/`
-- Slides affectées : 47 (cisco/dnac, cisco/ise, cloud/common), 120, 168, 169, 174
-- Vérification : toutes les 13 URL cibles confirment HTTP 200
-- PPTX : **modifié et commité** — plus d'ancien préfixe dans le document
-- Rapport : `docs/plans/v0.2.0/dev-slides-links-20261007-143500.md`
-
-**Tâche 1.2** : Extraction images (dev-slides)
-- État : ✅ **COMPLÉTÉE — commits b9367c5** 
-- Réalisation : 9 PNG copiés (métadonnées retirées), 19 WMF convertis en PNG (PowerShell Windows)
-- Sortie : `assets/img/sNN-*.png` + `assets/img/images.json`
-- Validation : ✅ Revue visuelle #1 par utilisateur (2026-10-07) — aucune fuite de référence organisation
-
-**Tâche 1.6** : Tests site (test-writer)
-- État : ✅ **COMPLÉTÉE — commit 5fdd31a**
-- Contenu : tests `tests/site/` (parité, check_site.py, meta.js, liens, package, hygiène repo)
-- Fixtures : dump-course.js, validate.js, sync-meta.js, package.js, images.json interfaces supposées
-
-**Tâche 1.3-1.5** : Moteur, outils, pilote m02 (course) — **À faire après 0.2**
-- Déblocage : après `/start-session` (spawn agent `course`)
-- Ressource : `docs/plans/v0.2.0/plan-v0.2.0.md` (révision 2, archivé)
-- Interfaces supposées : `docs/plans/v0.2.0/test-writer-20261007-140724.md`
-- Consigne supplémentaire : **i18n libellés dans `assets/i18n/fr.js`** (sans sélecteur ni anglais en v0.2.0, prépare v1.0.0)
-
-### Archivages complétés (avant purge `_work/`)
-- ✅ Maquettes validées v0.2.0 : `docs/mockup/v0.2.0/` (84038a7 — GATE 2)
-- ✅ Plan r2 + rapports Batch 0 : `docs/plans/v0.2.0/` (fe76490 — avant purge)
+**⏳ v1.0.0 (À VENIR)**  
+Module EDA (#6-#9, #19) + multilingue fr/en (#51)  
+**Prérequis** : GitHub Pages confirmation (3.5), Actions Node update (2026-10-19)
 
 ---
 
-## Roadmap / Milestones
+## Règles Apprises (v0.1.1 → v0.2.0)
 
-### ✅ v0.1.0 (TERMINÉ — LIVRÉ EN PROD — 2026-10-06)
-Support générique Ansible — PPTX anonymisé  
-**Release** : https://github.com/CCoupel/ansible-training/releases/tag/v0.1.0
+### 1. Git & Commit Protocol
+- **Code retour** : vérifier systématiquement chaque `git` (tag, push, merge)
+- **Dépôt public** : pré-vol en lecture seule + accord avant push
+- **Adresse de retour** : `team-lead` (jamais `main` — outil refuse)
+- **DONE d'agent** : doit citer le chemin exact du rapport
+- **Branches** : milestone conservée après release (archivée)
 
-### ✅ v0.1.1 (TERMINÉ — LIVRÉ EN PROD — 2026-10-07)
-Correctifs contenu + CI PowerPoint  
-**Release** : https://github.com/CCoupel/ansible-training/releases/tag/v0.1.1  
-**Issues fermées** : #10-#49 (hors #19)
+### 2. Release & Workflow
+- **Push v0.1.1 avant CI** : tout l'historique public avant que tag-based workflow le scanne
+- **Release.yml durable** : tests bloquants (PARITY_STRICT, LOTS_STRICT), version slide 2 = meta.js, retrait rattrapage v0.1.0
+- **Assets** : 3 (PPTX + zip + .sha256), vérification locale `sha256sum -c`
 
-### 🔄 v0.2.0 (EN COURS)
-Format multi-canal : PowerPoint + HTML ludique  
-**Issues** : #3 (architecture), #4 (HTML), #5 (exigence permanente PPTX+HTML), #50 (docs.ansible.com 429)
+### 3. Node & Tests
+- **node.exe wrapper** : chemins POSIX → ~23 faux échecs tests/site
+  - **Solution** : node Linux 22+ (hors dépôt)
+  - **Impact** : dev local ≠ CI (vigilance)
+- **package.js** : refuse arbre modifié (commiter avant)
 
-### ⏳ v1.0.0 (À VENIR)
-Module EDA + site multilingue (fr/en)  
-**Issues** : #6-#9 (plan, slides, HTML, labs), #19 (obsolescence ansible-navigator/EE), #51 (site multilingue : interface + contenu en fr/en)
-
----
-
-## Règles Apprises (v0.1.1)
-
-### 1. Git & Code Retour
-- **Vérifier toujours** le code retour de chaque commande git avant d'enchaîner
-  - Incident v0.1.1 : tag posé à mauvais endroit (hors main), puis supprimé et reposé
-  - Leçon : validation systématique, ne pas supposer le succès
-- **Dépôt public** : jamais de push avant validation manuelle complète
-  - Publication non réversible
-  - Nécessité d'accord utilisateur avant tout push
-
-### 2. Validation Visuelle & Rendering
-- **Aucun LibreOffice** dans cet environnement → **revue visuelle humaine obligatoire**
-  - Débordements de texte, call-outs, alignement
-  - À valider avant chaque release (non automatisé)
-
-### 3. Endpoints Externes
-- **docs.ansible.com** : répond HTTP 429 en rafale (trop de requêtes)
-  - Impact : vérification manuelle des URLs en lot, délai à respecter
-  - Issue #50 créée pour suivi
-
-### 4. Communication & Protocole
-- **Adresse de retour** : `team-lead` (projet-spécifique, pas `main`)
-- **Consignes** : toujours transmises par référence de fichier, jamais en ligne
-  - Évite duplication, facilite versionning
-- **Format rapport** : livrables dans `_work/reports/`, `_work/handoff/` (jamais inline)
+### 4. Protocol & Team
+- **Rapport obligatoire** : `_work/reports/<agent>-<timestamp>.md`, jamais inline
+- **Consignes > 3 lignes** : `_work/tasks/`, jamais inline
+- **unzip** : absent du poste (géré par CI)
 
 ---
 
-## Décisions Techniques Consolidées
+## Sujets Ouverts / v1.0.0
 
-### Template & Infrastructure
-| Item | Statut | Détails |
-|------|--------|---------|
-| Template | v3.13.1 (sync depuis template global) | À jour |
-| Initialisation | ✅ Complète | Agents reconfigurés, équipe testée |
-| Infra | ❌ Non applicable | Projet documents-only (PPTX + site HTML commité) |
-
-### Équipe
-| Rôle | Statut | Notes |
-|------|--------|-------|
-| dev-slides | ✅ Actif | Spécialisé PPTX PowerPoint |
-| planner | ✅ Permanent | Plan v0.1.1 complété |
-| test-writer | ✅ Permanent | Tests obsolescence + CI |
-| code-reviewer | ✅ Permanent | Revue workflow + code |
-| qa | ✅ Permanent | Validation tests + CI |
-| doc-updater | ✅ Permanent | README, CHANGELOG, CLAUDE.md |
-| deployer | ✅ Permanent | Workflow release + tagging |
-| security | ✅ Ponctuel | Non utilisé v0.1.1 |
-| marketing-release | ✅ Ponctuel | Release notes (v0.2.0+) |
-
-### Fichiers Gérés
-- **PPTX public** : `Ansible Training.pptx` (suivi git, anonymisé)
-- **Sauvegarde** : `Ansible Training.orig.pptx` (.gitignored)
-- **Mémoire session** : `.remember/` (.gitignored)
-- **Fichier local d'étude** : `docs/HOMOGENEISATION-OPENSHIFT.md` (non suivi, local)
+| Topic | Priorité | Notes |
+|-------|----------|-------|
+| GitHub Pages confirmation (3.5) | Oui | Impact release |
+| Actions Node deprecation (2026-10-19) | Oui | Surveiller ubuntu-latest |
+| I1 Secret exposé aux tests | Oui | Sécurité |
+| I2 Rulesets tags/main protection | Oui | Admin |
+| N3 Guidage m03 34-39 (notes seulement) | Non | À juger visuel |
+| Lab sans persistance | Non | Noté v0.2.0 |
+| Coquilles PPTX (verbatim) | Non | Documenté CONVENTIONS.md |
+| N1 timeout/pipefail workflow | Non | Refusé |
+| N4 Dependabot | Moyen | Update actions/node |
 
 ---
 
-## Règles Critiques
+## Configuration Agents
 
-### 1. Anonymisation & Sécurité
-- **Zéro référence** à l'organisation d'origine (dépôt public)
-  - Logos, domaines, identifiants, chemins, proxy
-  - Dépôt scannné via `check_pptx.py` + secret `LEAK_PATTERNS`
-- **IP génériques** : `192.0.2.x` (RFC 5737) obligatoire
-- **Secret LEAK_PATTERNS** : créé (contenu non écrit en mémoire = fichier public)
-
-### 2. Versions de Référence (Figées v0.1.1)
-- **ansible-core** : 2.20 (ou later)
-- **Python** : 3.12+ (nœud de contrôle)
-- **Source** : clé `reference_version` dans `.claude/project-config.json`
-- **Affichage** : slide 2 du support
-
-### 3. Conventions Git
-- **Branches** : `milestone/vX.Y.Z`
-- **Commits** : Conventional Commits (`docs(slides):`, `feat:`, `fix:`, etc.)
-- **Tags** : `vX.Y.Z` posés sur `main` (vérification merge-base en CI)
-- **Jamais de travail direct sur `main`** → tout passe par milestone
-
-### 4. Interlocution
-- **Adresse unique** : `team-lead` (non `main`)
-- **Format rapport** : fichier + référence, jamais inline
-- **Questions utilisateur** : via AskUserQuestion (structured, jamais texte libre)
+**Permanents** : planner, dev-slides, course (generic), test-writer, code-reviewer, qa, doc-updater, deployer  
+**Ponctuels** : security, marketing-release  
+**Adresse de retour** : `team-lead` (jamais `main`)
 
 ---
 
-## Historique des Commits (v0.1.1 PROD)
+## Ressources Clés
 
-| SHA | Type | Message |
-|-----|------|---------|
-| a120dab | chore | Release v0.1.1 |
-| f553bb3 | chore | Version 0.1.1 |
-| c20eaad | docs(slides) | Fond blanc sur tout le support |
-| e2a2d0a | docs | Règle « tag sur main » + corrections CHANGELOG |
-| 0681f6d | ci(release) | Vérification tag posé sur main |
-| f42de50 | docs | Finalise CHANGELOG + coquilles |
-| 166d686 | docs(slides) | Reprises revue batch 2 |
-| f5442fb | docs | Corrections CHANGELOG section release |
-| 8dda9a9 | docs | README, CHANGELOG, section release/CI |
-| ... (suite lots 1-10) | ... | ... |
+| Document | Usage |
+|----------|-------|
+| CLAUDE.md | Conventions, workflow, agents, release/CI |
+| CHANGELOG.md | Historique v0.2.0 livrée |
+| README.md | Guide HTML, tests, prérequis release |
+| .claude/memory/ | Sessions précédentes (`.remember/`) |
 
 ---
 
-## Checklist Fin de Session v0.1.1 (07-10-2026)
+## Checklist v1.0.0 Prep
 
-- [x] Audit d'obsolescence : 38 correctifs appliqués
-- [x] Tests : obsolescence (41 tests OK), validité (check_pptx), anti-fuite
-- [x] Documentation : README.md créé, CHANGELOG.md complété, CLAUDE.md mis à jour
-- [x] Workflow CI : releasefile.yml, vérification tag sur main
-- [x] Secret GitHub : LEAK_PATTERNS créé (contenu non documenté)
-- [x] Release v0.1.1 : publiée, tag a120dab, asset `Ansible-Training-v0.1.1.pptx`
-- [x] Milestone v0.1.1 : fermé, issues #10-#49 fermées (hors #19)
-- [x] Branche milestone/v0.2.0 : créée (commit 73e4819)
-- [x] Version DEV : `0.2.0.0` configurée
-
----
-
-## Décisions à Valider v0.2.0 & Suite
-
-1. **Date slide 2** : rester 06/10/2026 ou mettre à jour avec chaque release ?
-2. **HOMOGENEISATION-OPENSHIFT.md** : conversion HTML basée sur ce fichier local (décision confirmée)
-3. **Compagnon agent** : `generic.course.md` spécialisé pour conversion HTML
-4. **Palette design** : accent bleu validé pour HTML v0.2.0
-
----
-
-## Prochaine Session — Cycle v0.2.0, Batch 1 Continuation
-
-**Tâche 0.2 immédiate** (teamleader) : 
-```
-/end-session  (purge _work/, sauvegarde session)
-/start-session (spawn agents permanents, dont `course`)
-```
-
-**Reprise et continuation Batch 1** (parallèle) :
-
-1. **course 1.3-1.5** : après 0.2, moteur + outils + pilote m02
-   - Entrée : `docs/plans/v0.2.0/plan-v0.2.0.md` (révision 2)
-   - Interfaces : `docs/plans/v0.2.0/test-writer-20261007-140724.md` (supposées)
-   - **Consigne i18n** : libellés dans `assets/i18n/fr.js` dès v0.2.0 (FR uniquement, sans sélecteur)
-   - Adresse retour : `team-lead`, mots-clés COURSE DONE/BLOQUE/EN COURS
-
-2. **test-writer 1.6** : ✅ déjà fait (5fdd31a) ; compléments possibles en parallèle Batch 2
-
-### Décisions utilisateur (v0.2.0, GATE 2)
-- ✅ Revue visuelle #1 : validée (images 1.2 commises b9367c5)
-- ✅ Maquettes : validées (archivées docs/mockup/v0.2.0/, 84038a7)
-- ✅ Agent course : instance `generic`, pas `dev-frontend` (contexte préservé, pas CLEAR mid-feature)
-- ✅ Pas de push avant GATE pilote (dépôt public)
-- ✅ Pages GitHub : activation confirmée seulement après confirmation utilisateur (tâche 3.5)
-- ❌ context-audit : refusé volontairement (non prioritaire)
-
-### GATE pilote (après Batch 1 1.3-1.5 complet)
-- code-reviewer revoit socle + m02 bonus
-- qa exécute tests site sur m02
-- Revue visuelle #2 (double-clic, clair/sombre, mobile)
-- Relecture humaine #R1 (objectifs/quiz/À retenir = étalon)
-
-**v1.0.0 après v0.2.0 release** :
-- Module EDA (#6-#9, #19)
-- Site multilingue (#51) : traduction interface + contenu (fr/en), sélecteur de langue
-
----
-
-## Ressources & Références
-
-| Document | Chemin | Usage |
-|----------|--------|-------|
-| Instructions projet | `CLAUDE.md` | Conventions git, release/CI, agents |
-| Protocole agents | `.claude/agents/context/TEAMMATES_PROTOCOL.template.md` | Mode teammates |
-| Config projet | `.claude/project-config.json` | Versions référence, structure |
-| Changelog | `CHANGELOG.md` | Historique des versions |
-| README | `README.md` | Guide utilisateur, tests, CI |
-| Agent doc-updater | `.claude/agents/doc-updater.template.md` | Documentation |
-| Agent dev-slides | `.claude/agents/dev-slides.md` | PPTX evolution |
-| Étude HTML | `docs/HOMOGENEISATION-OPENSHIFT.md` | Conversion HTML (local) |
-
----
-
-## Notes Session (v0.1.1 — 06-10-2026 & 07-10-2026)
-
-- **06-10 15:26-17:30** : Cycle v0.1.1 démarré (plan, audit, dev-slides lots 1-10, tests, review, QA)
-- **06-10 18:36+** : Template synced v3.10.0 → v3.12.0
-- **07-10** : DOC DRAFT (README, CHANGELOG, section release/CI), corrections, DOC FINALIZE
-- **07-10** : v0.1.1 released (release GitHub, tag a120dab)
-- **07-10** : Milestone/v0.2.0 créée (commit 73e4819)
-
-### Résumé Exécutif v0.1.1
-- **Durée** : ~24 heures (multi-session)
-- **Déliverables** : v0.1.1 publiée, 39 issues fermées, 223 slides corrigées, workflow CI implémenté
-- **État du dépôt** : main stable (v0.1.1), milestone/v0.2.0 en développement
-- **Adresse de retour** : team-lead
-
----
-
-## Statut Global
-
-**✅ SESSION v0.1.1 COMPLÉTÉE | 🔄 v0.2.0.0 EN COURS (Batch 0/1)**
-
-### Versions
-- Version PROD : `0.1.1` (2026-10-07, https://github.com/CCoupel/ansible-training/releases/tag/v0.1.1)
-- Version DEV : `0.2.0.0` (milestone/v0.2.0, Batch 1 partiellement commencé)
-
-### Dépôt & Branching
-- Branche par défaut : `main` (v0.1.1)
-- Développement : `milestone/v0.2.0` (Batch 0 ✅, Batch 1 🔄)
-- Politique : pas de push avant GATE pilote (dépôt public)
-
-### Cycle v0.2.0 Progression
-- **Batch 0** (Préparation) : ✅ COMPLÉTÉ
-  - Agent `course` spec (ece2825, f367905)
-  - Maquettes validées archivées (84038a7)
-  - MEMORY/docs mise à jour (714c7ce, fe76490)
-- **Batch 1** (Développement) : ✅ 1.1/1.2/1.6 COMPLÉTÉES, 1.3-1.5 À FAIRE
-  - 1.1 liens #50 : ✅ TERMINÉE (e905af0 — 13 URL migrées, PPTX modifié)
-  - 1.2 images : ✅ COMPLÉTÉE (b9367c5, revue visuelle #1 validée)
-  - 1.6 tests : ✅ COMPLÉTÉE (5fdd31a)
-  - 1.3-1.5 course : À FAIRE (après 0.2, entrée : docs/plans/v0.2.0/plan-v0.2.0.md)
-
-### Issues & Pipeline
-- Issues fermées : v0.1.1 (39 #10-#49 hors #19)
-- Pipeline v0.2.0 : 4 issues (#3 🔄, #4 🔄, #5 🔄, #50 ✅) — Batch 1 (3/4 ✅), Batch 2/3 à venir
-- Pipeline v1.0.0 : 6 issues (#6-#9, #19, #51) — après v0.2.0 release
-
-### Configuration Agents
-- Équipe : 8 permanents (planner, dev-slides, **course** (nouveau), test-writer, code-reviewer, qa, doc-updater, deployer) + ponctuels (security, marketing-release)
-- Adresse retour : `team-lead` (projet-spécifique, jamais `main`)
-- course : instance `generic`, contexte préservé, pas CLEAR mid-feature
-
-### Prochaine Action Immédiate
-- `/end-session` (purge _work/)
-- `/start-session` (spawn course, récupère docs/plans/v0.2.0/plan-v0.2.0.md)
-- Batch 1 continuation : 1.1 (dev-slides), 1.3-1.5 (course parallèle)
-- GATE pilote après socle complet + m02 bonus
+- [ ] GitHub Pages confirmation utilisateur (GATE 3.5)
+- [ ] Actions Node 20 upgrade (deadline 2026-10-19)
+- [ ] Sécurité : I1 (secret aux tests), I2 (Rulesets)
+- [ ] Sujets ouverts : revue N3, N4 (Dependabot)
+- [ ] Scope : Module EDA (#6-#9, #19) + multilingue (#51)
