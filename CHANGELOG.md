@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Lot 1 de la v1.0.0 (en développement, non publié) : module Execution Environments, agenda sur 4 jours, outillage de renumérotation.
+
+### Added
+
+- **Module m13 « Execution Environments »** (#19) : 10 slides PPTX (183-192, en anglais) et module HTML associé (objectifs, « À retenir », 3 quiz, lab et solution). Couvre `execution-environment.yml` (`version: 3`), `ansible-builder`, `ansible-navigator` et `ansible-dev-tools` / `ansible-creator`.
+- **Agenda sur 4 jours** (slide 3 et accueil du site) : Day 3 accueille m13 ; Day 4 accueille m15 à m17.
+- **Outillage de renumérotation** : `tools/renumber.py` (`--check` / `--apply`, insertions seules, idempotent), `tests/slides/slide_index.json` (ordre des slides) et test `test_slide_index_sync` (garde-fou contre la dérive PPTX/HTML).
+- **Source unique du décompte** : `tests/slides/expected.json` (nombre de slides, masquées) lu par `validate.js`, `check_pptx.py` et les tests du site, au lieu de valeurs codées en dur.
+- **Process « Livraison PPTX + HTML »** dans `CONVENTIONS.md` (#5) : toute insertion de slides passe par gabarits, `renumber.py`, contrôle de non-régression, contenu, puis HTML dans le même lot.
+- **Plan du module Event-Driven Ansible** (`docs/plans/v1.0.0/plan-eda.md`, #6) : module m14 prévu au lot 2, 31 slides, 3 quiz.
+
+### Changed
+
+- **BREAKING (site)** : numéros des modules, qui suivent l'ordre d'affichage. Real use case passe de m13 à m15, Best practices de m14 à m16, Automation integration de m15 à m17. Les ancres `#m13-…` à `#m15-…` pointent désormais vers d'autres modules.
+- **BREAKING (site)** : progression des apprenants remise à zéro une seule fois. La clé de stockage navigateur passe de `ansible-training-v1` à `ansible-training-v2`, car les anciens identifiants `m13-*` à `m15-*` ne correspondent plus aux mêmes slides.
+- **Renumérotation des slides à partir de la 183** (+10) : Execution Environments 183-192 (nouveau), Real use case 193-202, Best practices 203-226, Automation integration 227-233. Le PPTX compte 233 slides, masquées 203, 220 et 227 (anciennes 193, 210 et 217).
+- Image `s209-1.png` renommée `s219-1.png` (suit la slide décalée).
+- Zip HTML : 52 fichiers (module m13 et image renommée inclus).
+- Tests : 172 tests de site en strict (`PARITY_STRICT=1`), 44 tests d'obsolescence PPTX (`LOTS_STRICT=1`).
+
 ## [0.2.0] - 2026-10-07
 
 Version HTML interactive du support de formation : 15 modules répartis en 217 slides PPTX (hors slides masquées), 45 quiz (3 par module), objectifs et « À retenir » pour chaque module, accueil interactif, thème clair/sombre, accessibilité (clavier, SVG nommés), interface en français, outils d'inspection et de validation du site, tests de parité, zip HTML versionné pour distribution (#3, #4, #5).

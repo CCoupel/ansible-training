@@ -16,7 +16,7 @@
 - Badgés « Bonus HTML » (exclus de la parité PPTX-HTML)
 
 ### Conversion & couverture (Q3 — GATE 2)
-- Slides masquées **193, 210, 217 exclues** du HTML et de la parité
+- Slides masquées **193, 210, 217 exclues** du HTML et de la parité (v0.2.0 ; renumérotées en v1.0.0, voir section dédiée)
 - Slides 1-3 (couverture) → page d'accueil
 - Couvertures générées « Objectifs » et « À retenir » par module (badgées « Bonus HTML »)
 
@@ -42,3 +42,20 @@
 - `pages.yml` appelé par `release.yml` seulement si `PAGES_ENABLED=true`
 - Activation manuelle par `deployer` après confirmation utilisateur (dépôt public)
 - Artefact limité à `index.html`, `assets/`, `modules/`, PPTX (lien de téléchargement)
+
+## course-site (v1.0.0, lot 1)
+
+### Agenda & ordre des modules
+- Formation sur **4 jours** (coupe C) : Day 3 = m11 à m13, Day 4 = m15 à m17 (`day` de `assets/plan.js`).
+- Ordre des modules existants conservé : m13 Execution Environments est inséré après m12 ; aucun module existant n'est réordonné.
+- **Ids = ordre d'affichage** : m13 Execution Environments ; **m14 réservé** à Event-Driven Ansible (lot 2, #7/#8/#9) ; anciens m13/m14/m15 renommés m15/m16/m17 (une seule fois, au lot 1).
+
+### Numérotation des slides & source de vérité
+- Aucun numéro de slide saisi à la main : l'ordre de référence est `tests/slides/slide_index.json`, la renumérotation passe par `tools/renumber.py` (`--check` puis `--apply`).
+- Décompte (slides, masquées) lu dans `tests/slides/expected.json` ; plages de modules dans `assets/plan.js`. Aucun compteur codé en dur dans `tools/` ni `tests/`.
+- Toute insertion de slides : PPTX et HTML dans le même lot, avec contrôle de non-régression avant rédaction (process « Livraison PPTX + HTML », `CONVENTIONS.md`).
+- Slides masquées v1.0.0 (lot 1) : **203, 220, 227** (sur 233 slides).
+
+### Progression & ancres
+- Clé de progression navigateur : `ansible-training-v2` (remise à zéro annoncée dans le CHANGELOG, version majeure).
+- Ancres `#mNN-…` liées à l'id du module ; pas de redirection depuis les anciens identifiants.
