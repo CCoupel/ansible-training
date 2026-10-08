@@ -1,8 +1,9 @@
 ---
 - name: Service watchdog
-  hosts: all
+  hosts: localhost
   sources:
-    - ansible.eda.webhook:
+    - name: Listen for alerts
+      ansible.eda.webhook:
         host: 127.0.0.1
         port: 5000
   rules:
