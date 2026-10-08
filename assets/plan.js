@@ -16,6 +16,7 @@ COURSE.plan = [
   { num: 10, id: 'm10', emoji: '🔒', title: 'Vault',                    day: 'J2', range: [135, 141] },
   { num: 11, id: 'm11', emoji: '📦', title: 'Roles, collections & Galaxy', day: 'J3', range: [142, 161] },
   { num: 12, id: 'm12', emoji: '🛠️', title: 'Extend Ansible',           day: 'J3', range: [162, 182] },
+  { num: 13, id: 'm13', emoji: '🐳', title: 'Execution Environments',   day: 'J3', range: [183, 192] },
   { num: 15, id: 'm15', emoji: '🌐', title: 'Real use case',            day: 'J3', range: [193, 202] },
   { num: 16, id: 'm16', emoji: '✅', title: 'Best practices',           day: 'J3', range: [203, 226] },
   { num: 17, id: 'm17', emoji: '🔗', title: 'Automation integration',   day: 'J3', range: [227, 233] }
