@@ -243,6 +243,111 @@ class TestValidateJoursDuPlan(unittest.TestCase):
         self.assertEqual(self.validate().returncode, 1)
 
 
+def translated_module():
+    """valid_module() + version anglaise complète (contrat #51 : champs traduisibles `X` → `X_en`)."""
+    m = valid_module()
+    m["tagline_en"] = "Hook."
+    for o in m["objectives"]:
+        o["html_en"] = "English objective."
+    for t in m["takeaways"]:
+        t["html_en"] = "English point."
+    q = m["slides"][2]
+    q["title_en"] = "Quiz"
+    b = q["blocks"][0]
+    b.update(q_en="Question?", options_en=["A", "B", "C"], explain_en="Because (see slide 13).")
+    return m
+
+
+class TestValidateLangues(unittest.TestCase):
+    """Site fr/en : champs `_en`, complétude « tout ou rien », mode strict (`--strict-i18n` ou `I18N_STRICT=1`).
+
+    Un module sans aucun `_en` est un avertissement en mode normal, une erreur en mode strict ; un module
+    partiellement traduit est toujours une erreur ; `_en` sur un champ verbatim (texte du PPTX) est une erreur."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.dir = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+
+    def run_validate(self, mod, *extra, env=None):
+        return S.node("tools/validate.js", *extra, write_module(self.dir, mod), env=env)
+
+    def out(self, r):
+        return (r.stdout + r.stderr)[-600:]
+
+    def warnings(self, r):
+        m = re.search(r"(\d+) avertissement\(s\)", r.stdout + r.stderr)
+        self.assertIsNotNone(m, self.out(r))
+        return int(m.group(1))
+
+    def assert_invalid(self, mod, *extra, env=None):
+        r = self.run_validate(mod, *extra, env=env)
+        self.assertEqual(r.returncode, 1, "attendu : erreur\n" + self.out(r))
+        self.assertIn("ERREUR", r.stdout + r.stderr)
+
+    def mutated(self, fn):
+        m = copy.deepcopy(translated_module())
+        fn(m)
+        return m
+
+    def test_module_traduit_valide(self):
+        r = self.run_validate(translated_module())
+        self.assertEqual(r.returncode, 0, self.out(r))
+        # le module fixture est court (avertissement de taille) : on compare au même module non traduit
+        untranslated = self.run_validate(valid_module())
+        self.assertLess(self.warnings(r), self.warnings(untranslated),
+                        "l'avertissement « module non traduit » ne doit pas apparaître pour un module traduit\n" + self.out(r))
+
+    def test_module_traduit_valide_en_mode_strict(self):
+        for extra, env in ((("--strict-i18n",), None), ((), {"I18N_STRICT": "1"})):
+            r = self.run_validate(translated_module(), *extra, env=env)
+            self.assertEqual(r.returncode, 0, self.out(r))
+
+    def test_en_sur_un_champ_verbatim_titre_de_slide(self):
+        self.assert_invalid(self.mutated(lambda m: m["slides"][0].update(title_en="Content")))
+
+    def test_en_sur_un_champ_verbatim_texte(self):
+        self.assert_invalid(self.mutated(lambda m: m["slides"][0]["blocks"][0].update(html_en="Text")))
+
+    def test_en_sur_un_champ_verbatim_code(self):
+        self.assert_invalid(self.mutated(lambda m: m["slides"][1]["blocks"][0].update(code_en="ansible all -m ping")))
+
+    def test_en_sur_les_notes_verbatim(self):
+        self.assert_invalid(self.mutated(lambda m: m["slides"][1].update(notes_en="Trainer note.")))
+
+    def test_module_partiellement_traduit_objectif(self):
+        self.assert_invalid(self.mutated(lambda m: m["objectives"][0].pop("html_en")))
+
+    def test_module_partiellement_traduit_quiz(self):
+        self.assert_invalid(self.mutated(lambda m: m["slides"][2]["blocks"][0].pop("explain_en")))
+
+    def test_module_partiellement_traduit_tagline(self):
+        self.assert_invalid(self.mutated(lambda m: m.pop("tagline_en")))
+
+    def test_options_en_de_longueur_differente(self):
+        self.assert_invalid(self.mutated(lambda m: m["slides"][2]["blocks"][0].update(options_en=["A", "B"])))
+
+    def test_code_different_entre_fr_et_en(self):
+        def alter(m):
+            m["objectives"][0]["html"] = "Écrire une <code>condition</code>."
+            m["objectives"][0]["html_en"] = "Write a <code>conditional</code>."
+        self.assert_invalid(self.mutated(alter))
+
+    def test_html_non_autorise_dans_une_traduction(self):
+        self.assert_invalid(self.mutated(lambda m: m["objectives"][0].update(html_en="<script>alert(1)</script>")))
+
+    def test_module_sans_en_simple_avertissement(self):
+        r = self.run_validate(valid_module())
+        self.assertEqual(r.returncode, 0, self.out(r))
+        self.assertGreaterEqual(self.warnings(r), 1, "avertissement « module non traduit » attendu\n" + self.out(r))
+
+    def test_module_sans_en_erreur_avec_option_strict(self):
+        self.assert_invalid(valid_module(), "--strict-i18n")
+
+    def test_module_sans_en_erreur_avec_variable_strict(self):
+        self.assert_invalid(valid_module(), env={"I18N_STRICT": "1"})
+
+
 class TestValidateTailleModule(unittest.TestCase):
     """Avertissement de taille de `validate.js` : seules les slides de contenu (hors `extra: true`, donc hors quiz
     du Bonus) comptent ; le maximum est de 35 slides de contenu. Un module de 30 slides + 3 quiz n'avertit pas,

@@ -75,6 +75,16 @@ class TestPackage(unittest.TestCase):
         self.assertEqual(files, tracked,
                          "le zip doit contenir exactement les fichiers suivis (index.html, assets/, modules/, examples/, labs/) + le PPTX")
 
+    def test_en_js_dans_le_zip_et_nombre_d_entrees(self):
+        """v1.0.0 (#51) : le site fr/en livre `assets/i18n/en.js` (72 entrées avec les 71 d'avant ; le nombre est
+        dérivé de git, jamais codé en dur). ATTENDU ROUGE tant que course n'a pas commité en.js."""
+        self.assertIn("assets/i18n/fr.js", self.names)
+        self.assertIn("assets/i18n/en.js", self.names, "assets/i18n/en.js absent du zip")
+        self.assertIn("assets/i18n/en.js", S.git_files("assets"), "en.js doit être suivi par git")
+        files = [n for n in self.names if not n.endswith("/")]
+        self.assertEqual(len(files), len(S.git_files("index.html", "assets", "modules", "examples", "labs")) + 1,
+                         "nombre d'entrées = fichiers suivis + le PPTX")
+
     @unittest.skipUnless(S.git_files("examples/eda/README.md") and S.git_files("labs/eda/README.md"),
                          "examples/eda/ et labs/eda/ pas encore commités (lot 2, Batch 3)")
     def test_examples_et_labs_eda_livres_dans_le_zip(self):
