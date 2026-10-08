@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm17', num: 17, emoji: '🔗',
   title: 'Automation integration',
   tagline: 'Respecter des règles d\'intégration pour des playbooks et des rôles utilisables par une plateforme d\'automatisation.',
+  tagline_en: 'Follow integration rules for playbooks and roles that an automation platform can use.',
   objectives: [
-    { html: 'Appliquer les règles d\'intégration des playbooks : des groupes plutôt que des VM dans les listes d\'hôtes.', ref: [260] },
-    { html: 'Documenter un playbook avec un README : vue d\'ensemble, prérequis, variables et exemple d\'utilisation.', ref: [261] },
-    { html: 'Fournir les outils sous forme de rôle, avec des métadonnées <code>galaxy_info</code>.', ref: [262] },
-    { html: 'Appliquer les règles « One for All » : aucun secret dans les rôles, variables internes préfixées, fichier <code>Sanity.yml</code>.', ref: [263] },
-    { html: 'Organiser un rôle selon le modèle CRUD : <code>Create</code>, <code>Read</code>, <code>Update</code>, <code>Delete</code>.', ref: [264] }
+    { html: 'Appliquer les règles d\'intégration des playbooks : des groupes plutôt que des VM dans les listes d\'hôtes.', html_en: 'Apply the integration rules for playbooks: groups rather than VMs in host lists.', ref: [260] },
+    { html: 'Documenter un playbook avec un README : vue d\'ensemble, prérequis, variables et exemple d\'utilisation.', html_en: 'Document a playbook with a README: overview, prerequisites, variables and a usage example.', ref: [261] },
+    { html: 'Fournir les outils sous forme de rôle, avec des métadonnées <code>galaxy_info</code>.', html_en: 'Provide tools as a role, with <code>galaxy_info</code> metadata.', ref: [262] },
+    { html: 'Appliquer les règles « One for All » : aucun secret dans les rôles, variables internes préfixées, fichier <code>Sanity.yml</code>.', html_en: 'Apply the “One for All” rules: no secrets in roles, prefixed internal variables, a <code>Sanity.yml</code> file.', ref: [263] },
+    { html: 'Organiser un rôle selon le modèle CRUD : <code>Create</code>, <code>Read</code>, <code>Update</code>, <code>Delete</code>.', html_en: 'Organize a role following the CRUD model: <code>Create</code>, <code>Read</code>, <code>Update</code>, <code>Delete</code>.', ref: [264] }
   ],
   slides: [
     { title: 'Cas concret', src: [259],
@@ -94,28 +95,34 @@ dependencies: []` }
       blocks: [
         { t: 'bullets', items: ['It should be convenient to Implement a CRUD (Create, Read, Update, Delete)<ul><li>MyRole/<ul><li>vars/<ul><li>default.yml</li></ul></li><li>tasks/<ul><li>sanity.yml</li><li>main.yml</li><li>Create.yml</li><li>Read.yml</li><li>Update.yml</li><li>Delete.yml</li></ul></li></ul></li></ul>', 'Set well descriptive name for all tasks and plays', 'Avoid useless tasks, use conditions (when)', 'Use the handlers to avoid multiple runs of a single tache'] }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Où les variables internes d\'un rôle doivent-elles être déclarées ?',
-        options: ['Dans l\'inventaire, à partir des variables de groupe', 'Sur la ligne de commande, à partir des extra vars', 'Dans defaults/main.yml, à partir des variables externes'], answer: 2,
-        explain: 'Slide 222 : « internal role vars MUST be declared in the default/main.yml and initialized from external role vars » (la slide écrit default/main.yml ; le répertoire standard d\'un rôle s\'appelle defaults/).', ref: [263] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Où les variables internes d\'un rôle doivent-elles être déclarées ?', q_en: 'Where must the internal variables of a role be declared?',
+        options: ['Dans l\'inventaire, à partir des variables de groupe', 'Sur la ligne de commande, à partir des extra vars', 'Dans defaults/main.yml, à partir des variables externes'],
+        options_en: ['In the inventory, from group variables', 'On the command line, from extra vars', 'In defaults/main.yml, from external variables'], answer: 2,
+        explain: 'Slide 222 : « internal role vars MUST be declared in the default/main.yml and initialized from external role vars » (la slide écrit default/main.yml ; le répertoire standard d\'un rôle s\'appelle defaults/).',
+        explain_en: 'Slide 263: “internal role vars MUST be declared in the default/main.yml and initialized from external role vars” (the slide writes default/main.yml; the standard directory of a role is called defaults/).', ref: [263] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel mécanisme la slide 223 recommande-t-elle pour éviter plusieurs exécutions d\'une même tâche ?',
-        options: ['Les tags', 'Les handlers', 'ignore_errors'], answer: 1,
-        explain: 'Slide 223 : « Use the handlers to avoid multiple runs of a single tache ».', ref: [264] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Quel mécanisme la slide 223 recommande-t-elle pour éviter plusieurs exécutions d\'une même tâche ?', q_en: 'Which mechanism does slide 264 recommend to avoid running the same task several times?',
+        options: ['Les tags', 'Les handlers', 'ignore_errors'],
+        options_en: ['Tags', 'Handlers', 'ignore_errors'], answer: 1,
+        explain: 'Slide 223 : « Use the handlers to avoid multiple runs of a single tache ».',
+        explain_en: 'Slide 264: “Use the handlers to avoid multiple runs of a single tache”.', ref: [264] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Que faut-il utiliser à la place des VM dans les listes d\'hôtes d\'un playbook ?',
-        options: ['Une intersection de groupes', 'Une liste d\'adresses IP', 'Un fichier d\'inventaire par VM'], answer: 0,
-        explain: 'Slide 219 : « Don’t use VM in host lists, use group intersection » ; les VM sont regroupées par solution, environnement et fonction.', ref: [260] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Que faut-il utiliser à la place des VM dans les listes d\'hôtes d\'un playbook ?', q_en: 'What should be used instead of VMs in the host lists of a playbook?',
+        options: ['Une intersection de groupes', 'Une liste d\'adresses IP', 'Un fichier d\'inventaire par VM'],
+        options_en: ['A group intersection', 'A list of IP addresses', 'One inventory file per VM'], answer: 0,
+        explain: 'Slide 219 : « Don’t use VM in host lists, use group intersection » ; les VM sont regroupées par solution, environnement et fonction.',
+        explain_en: 'Slide 260: “Don’t use VM in host lists, use group intersection”; VMs are grouped by solution, environment and function.', ref: [260] }
     ] }
   ],
   takeaways: [
-    { html: 'Ne pas utiliser des VM dans les listes d\'hôtes : utiliser l\'intersection de groupes (solution, environnement, fonction).', ref: [260] },
-    { html: 'Ne pas référencer les variables d\'environnement.', ref: [260] },
-    { html: 'Les outils doivent être fournis sous forme de rôle, avec des métadonnées pour la documentation (<code>galaxy_info</code>).', ref: [262] },
-    { html: 'Aucun secret dans les rôles ou les playbooks : utiliser Vault.', ref: [263] },
-    { html: 'Les variables internes d\'un rôle suivent le format <code>_&lt;role_name&gt;_&lt;var_name&gt;</code> et sont déclarées dans defaults/main.yml (la slide écrit « default/main.yml »).', ref: [263] },
-    { html: 'Utiliser des conditions pour éviter les tâches inutiles, et des handlers pour éviter les exécutions multiples d\'une même tâche.', ref: [264] }
+    { html: 'Ne pas utiliser des VM dans les listes d\'hôtes : utiliser l\'intersection de groupes (solution, environnement, fonction).', html_en: 'Do not use VMs in host lists: use group intersection (solution, environment, function).', ref: [260] },
+    { html: 'Ne pas référencer les variables d\'environnement.', html_en: 'Do not reference environment variables.', ref: [260] },
+    { html: 'Les outils doivent être fournis sous forme de rôle, avec des métadonnées pour la documentation (<code>galaxy_info</code>).', html_en: 'Tools must be provided as a role, with metadata for documentation (<code>galaxy_info</code>).', ref: [262] },
+    { html: 'Aucun secret dans les rôles ou les playbooks : utiliser Vault.', html_en: 'No secrets in roles or playbooks: use Vault.', ref: [263] },
+    { html: 'Les variables internes d\'un rôle suivent le format <code>_&lt;role_name&gt;_&lt;var_name&gt;</code> et sont déclarées dans defaults/main.yml (la slide écrit « default/main.yml »).', html_en: 'The internal variables of a role follow the format <code>_&lt;role_name&gt;_&lt;var_name&gt;</code> and are declared in defaults/main.yml (the slide writes “default/main.yml”).', ref: [263] },
+    { html: 'Utiliser des conditions pour éviter les tâches inutiles, et des handlers pour éviter les exécutions multiples d\'une même tâche.', html_en: 'Use conditions to avoid unnecessary tasks, and handlers to avoid running the same task several times.', ref: [264] }
   ]
 });
