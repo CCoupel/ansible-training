@@ -43,6 +43,14 @@ def valid_module(num=98, src=(13, 14)):
     }
 
 
+def validate_fixture(*args, env=None):
+    """`validate.js` sur des modules fixtures, avec `I18N_STRICT` purgé de l'environnement hérité (release.yml le pose
+    pour tout le job) : seuls les tests qui le testent explicitement le passent via `env`."""
+    e = {"I18N_STRICT": ""}
+    e.update(env or {})
+    return S.node("tools/validate.js", *args, env=e)
+
+
 def write_module(dirpath, mod, name=None):
     name = name or "m%02d-fixture.js" % mod["num"]
     p = Path(dirpath) / name
@@ -58,7 +66,7 @@ class TestValidateFixtures(unittest.TestCase):
 
     def check(self, mod, *more):
         files = [write_module(self.dir, mod)] + [write_module(self.dir, m) for m in more]
-        return S.node("tools/validate.js", *files)
+        return validate_fixture(*files)
 
     def assert_invalid(self, mod, *more):
         r = self.check(mod, *more)
@@ -270,7 +278,7 @@ class TestValidateLangues(unittest.TestCase):
         self.addCleanup(self._tmp.cleanup)
 
     def run_validate(self, mod, *extra, env=None):
-        return S.node("tools/validate.js", *extra, write_module(self.dir, mod), env=env)
+        return validate_fixture(*extra, write_module(self.dir, mod), env=env)
 
     def out(self, r):
         return (r.stdout + r.stderr)[-600:]
@@ -405,7 +413,7 @@ class TestValidateTailleModule(unittest.TestCase):
         self.addCleanup(self._tmp.cleanup)
 
     def check(self, mod):
-        return S.node("tools/validate.js", write_module(self.dir, mod))
+        return validate_fixture(write_module(self.dir, mod))
 
     def sized_module(self, content):
         mod = valid_module(98, (13, 14))
