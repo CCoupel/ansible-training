@@ -243,7 +243,7 @@ item=['user3', 'group3']
     { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Quel tag spécial s\'exécute même quand d\'autres tags sont demandés avec --tags ?', q_en: 'Which special tag runs even when other tags are requested with --tags?',
         options: ['tagged', 'always', 'never'],
-        options_en: ['The tag named tagged', 'The tag named always', 'The tag run on explicit request'], answer: 1,
+        options_en: ['The tagged tag', 'The always tag', 'The never tag'], answer: 1,
         explain: 'Slide 117 : les tâches taguées <code>always</code> sont exécutées même quand d\'autres tags sont demandés, sauf avec <code>--skip-tags always</code>.',
         explain_en: 'Slide 117: tasks tagged <code>always</code> run even when other tags are requested, except with <code>--skip-tags always</code>.', ref: [117] }
     ] }
