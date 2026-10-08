@@ -101,6 +101,30 @@
 | EDA controller | EDA controller | garder | L'EDA controller gère les activations de rulebooks → The EDA controller manages rulebook activations |
 | activation de rulebook | rulebook activation | traduire | Une activation relie projet, rulebook et decision environment → An activation links a project, a rulebook and a decision environment |
 
+### Termes complémentaires (passes m01 à m12)
+
+Fixés pendant la traduction de m01 à m12 ; à reprendre tels quels pour m13 à m17.
+
+| Français (Bonus) | English | Règle | Exemple court |
+|---|---|---|---|
+| commande ad hoc | ad hoc command | traduire | Lancer une commande ad hoc → Run an ad hoc command |
+| modules intégrés | built-in modules | traduire | Modules intégrés (`ansible.builtin`) → Built-in modules (`ansible.builtin`) ; la slide dit « Builtin Modules » |
+| nœuds cibles | target nodes | traduire | Les modules s'exécutent sur les nœuds cibles → Modules run on the target nodes |
+| mode commande (vi / vim) | command mode | traduire | `ESC` revient au mode commande → `ESC` returns to command mode |
+| sans agent | agentless | traduire | Ansible est sans agent → Ansible is agentless |
+| élévation de privilèges | privilege escalation | traduire | `become` active l'élévation de privilèges → `become` enables privilege escalation |
+| précédence (des variables) | precedence | traduire | L'ordre de précédence → The precedence order |
+| dictionnaire | dictionary | traduire | Une variable de type dictionnaire → A dictionary variable |
+| tableau (variable) | array | traduire | Le premier élément du tableau → The first element of the array |
+| à l'exécution | at run time | traduire | Fournir le mot de passe à l'exécution → Provide the password at run time |
+| extra variables | extra variables | garder | Variables passées en ligne de commande → Extra variables passed on the command line |
+| tâche asynchrone | asynchronous task | traduire | Une tâche asynchrone s'exécute en arrière-plan → An asynchronous task runs in the background |
+| élément courant (d'une boucle) | current item | traduire | Lire l'élément courant avec `item` → Read the current item with `item` |
+| valeur par défaut | default value | traduire | `default` fournit une valeur par défaut → `default` provides a default value |
+| arborescence d'un rôle | directory structure of a role | traduire | Décrire l'arborescence d'un rôle → Describe the directory structure of a role |
+| sous-ensemble d'hôtes | subset of hosts | traduire | `serial` traite un sous-ensemble d'hôtes → `serial` processes a subset of hosts |
+| lot (d'hôtes) | batch | traduire | Le premier hôte du lot → The first host of the batch |
+
 ## 3. Style de l'anglais
 
 - **Ton direct**, sans formule d'introduction ni de politesse. Une idée par phrase, phrases courtes (idéalement moins
@@ -126,7 +150,9 @@
 2. **Longueur voisine** : la bonne réponse n'est jamais nettement plus longue que les distracteurs (écart de ±30 % au
    plus, calculé en caractères sur la version anglaise).
 3. **Pas de « only » / « just » / « simply » réservés aux mauvaises réponses** (ni de « always » / « never »
-   qui trahissent un distracteur).
+   qui trahissent un distracteur). **Exception** : un nom de tag est un identifiant, pas un qualificatif
+   (`tagged`, `always`, `never`) : les formes « The never tag » et « The tag named always » sont admises
+   (contrôlé par `tests/site/i18n`).
 4. **Aucun `<code>` dans les options** (y compris la bonne réponse) : la forme ne doit pas révéler la réponse ;
    `<code>` reste permis dans l'énoncé `q` et dans `explain`.
 5. **L'énoncé ne contient pas le mot de la bonne réponse** (reformuler : « Which key holds the conditions and
@@ -134,6 +160,14 @@
 6. **Bonnes réponses réparties** sur toutes les positions d'un module (pas deux fois la même position).
 7. **Mêmes `ref`** que la version française : le quiz anglais est une traduction, pas une nouvelle question.
 8. Distracteurs plausibles mais faux **selon le module** ; aucune notion absente des slides citées.
+9. **Options qui sont des identifiants ou des chemins** (mots-clés, commandes, fichiers) : elles restent identiques à
+   celles du français (jamais de `<code>`), mais une option très courte peut sortir de la tolérance de ±30 %. On
+   l'étoffe alors de la même façon pour toutes les options (« The X keyword », « The X filter », « Facts in /chemin »,
+   « poll: 0 »), sans changer le sens. Ne jamais retirer un mot porteur de sens (« toujours », « que ») pour respecter
+   une règle de forme : reformuler l'option entière, ou signaler le conflit.
+10. **Énoncé et mot de la réponse** : si la traduction directe de l'énoncé contient le mot de la bonne réponse
+   (« mandatory », « loop », « failed »…), reformuler l'énoncé (« required », « repeating a task », « decide whether it
+   is an error »).
 
 ## 5. Checklist de relecture de l'anglais
 
