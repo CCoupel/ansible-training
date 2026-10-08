@@ -205,5 +205,64 @@ class TestSiteReel(unittest.TestCase):
         self.assertEqual(r.returncode, 0, (r.stdout + r.stderr)[-1500:])
 
 
+RULEBOOK = """---
+- name: Webhook demo
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+  rules:
+    - name: React
+      condition: event.payload.status == "down"
+      action:
+        run_playbook:
+          name: remediate.yml
+"""
+
+
+class TestExemplesEtLabs(Base):
+    """v1.0.0 : examples/ et labs/ sont dans le périmètre du scan (YAML compris : IP et domaines)."""
+
+    def test_exemples_et_labs_propres_ok(self):
+        self.populate(dict(CLEAN, **{"examples/eda/rulebook.yml": RULEBOOK, "labs/eda/solution/rulebook.yml": RULEBOOK,
+                                     "labs/eda/README.md": "# Lab EDA\nTexte neutre, hôte 192.0.2.10."}))
+        r = self.run_check(env=PATTERN_ENV)
+        self.assertEqual(r.returncode, 0, self.out(r))
+        self.assertIn("OK (7 fichier(s))", r.stdout)
+
+    def test_motif_dans_un_rulebook_des_exemples(self):
+        self.populate(dict(CLEAN, **{"examples/eda/rulebook.yml": RULEBOOK + "# %s\n" % FAKE}))
+        r = self.run_check(env=PATTERN_ENV)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("examples/eda/rulebook.yml", r.stdout)
+        self.assertIn("L1", r.stdout)
+        self.assertNotIn(FAKE, self.out(r), "le terme interdit ne doit jamais être imprimé")
+
+    def test_motif_dans_le_readme_du_lab(self):
+        self.populate(dict(CLEAN, **{"labs/eda/README.md": "# Lab %s" % FAKE}))
+        r = self.run_check(env=PATTERN_ENV)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("labs/eda/README.md", r.stdout)
+
+    def test_ip_hors_plage_dans_un_yaml_du_lab(self):
+        self.populate(dict(CLEAN, **{"labs/eda/inventory.yml": "all:\n  hosts:\n    srv:\n      ansible_host: 10.20.30.40\n"}))
+        r = self.run_check(env=PATTERN_ENV)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("labs/eda/inventory.yml", r.stdout)
+        self.assertIn("G5", r.stdout)
+
+    def test_domaine_hors_liste_blanche_dans_un_yaml_des_exemples(self):
+        self.populate(dict(CLEAN, **{"examples/eda/vars.yml": "url: https://serveur.entreprise.fr/api\n"}))
+        r = self.run_check(env=PATTERN_ENV)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("G6", r.stdout)
+
+    def test_fqcn_de_collection_et_hote_example_com_ne_sont_pas_signales(self):
+        self.populate(dict(CLEAN, **{"examples/eda/rulebook.yml": RULEBOOK + "# voir ansible.eda.webhook et web.example.com\n"}))
+        r = self.run_check(env=PATTERN_ENV)
+        self.assertEqual(r.returncode, 0, self.out(r))
+
+
 if __name__ == "__main__":
     unittest.main()

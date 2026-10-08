@@ -316,6 +316,34 @@ class TestMoyenne(SlidesCase):
         self.absent(r"(?:base_image|name|image|FROM)\b[^\n]*\bansible-runner\b", slides=slides,
                     why="(ansible-runner n'est pas une image de base)")
 
+    # --- #7 (v1.0.0) : module m14 « Event-Driven Ansible » --------------------------------------
+    # Motifs à confirmer par la vérification datée de dev-slides (handoff : URL et date de chaque point).
+    # Sautés tant que `7` est absent de lots_faits.json ; m14 absent de plan.js = échec « attendu, lot non fait ».
+
+    def _eda_slides(self):
+        return module_slides("m14", "Event-Driven Ansible")
+
+    def test_issue_7_eda_notions_et_syntaxe_presentes(self):
+        slides = self._eda_slides()
+        for motif, label in ((r"ansible-rulebook", "ansible-rulebook"),
+                             (r"ansible\.eda\.webhook", "ansible.eda.webhook"),
+                             (r"^\s*(?:-\s+)?rules\s*:", "rules:"),
+                             (r"^\s*(?:-\s+)?condition\s*:", "condition:"),
+                             (r"run_playbook", "run_playbook"),
+                             (r"run_job_template", "run_job_template"),
+                             (r"throttle", "throttle"),
+                             (r"once_within", "once_within"),
+                             (r"decision[\s-]+environment", "decision environment"),
+                             (r"ansible_eda\.event|event\.payload|ansible_eda", "ansible_eda.event")):
+            with self.subTest(attendu=label):
+                self.present_any(motif, slides)
+
+    def test_issue_7_eda_formes_obsoletes_absentes(self):
+        slides = self._eda_slides()
+        self.absent(r"ansible-events", slides=slides, why="(ancien nom du projet)")
+        self.absent(r"benthomasson\.eda", slides=slides, why="(ancien espace de noms de la collection)")
+        self.absent(r"--websocket-address", slides=slides, why="(option remplacée par --websocket-url)")
+
     def test_issue_20_ansible_engine(self):
         self.absent(r"Ansible(?:['’]s)?\s+(?:Automation\s+)?Engine", scope="both")
         self.present(r"ansible-core", [8, 9, 10])

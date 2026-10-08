@@ -2,7 +2,7 @@
 """Contrôle anti-fuite du site HTML commité (issue #3/#5, CA-T.1).
 
 Usage :
-  python3 tests/site/check_site.py                  fichiers SUIVIS PAR GIT : index.html, assets/, modules/, CONVENTIONS.md
+  python3 tests/site/check_site.py                  fichiers SUIVIS PAR GIT : index.html, assets/, modules/, CONVENTIONS.md, examples/, labs/
   python3 tests/site/check_site.py --dir <dossier>  tous les fichiers d'un dossier (ex. zip de release dézippé)
   options : --repo <dossier>  racine du dépôt git à scanner (défaut : dépôt contenant ce script)
             --require-secret  LEAK_PATTERNS absent ou vide = échec (release, pages.yml)
@@ -29,10 +29,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "slides"))
 import check_pptx as cp  # noqa: E402  (motifs, plages IP, lecture des chunks PNG)
 
-TRACKED = ["index.html", "assets", "modules", "CONVENTIONS.md"]
+TRACKED = ["index.html", "assets", "modules", "CONVENTIONS.md", "examples", "labs"]  # examples/ et labs/ : diffusés avec le zip (v1.0.0)
 # le site est publié sous github.io ; le reste de la liste blanche est celui du PPTX
 EXTRA_DOMAINS = ("github.io",)
-TEXT_EXT = (".html", ".js", ".css", ".md", ".json", ".svg", ".txt", ".xml", ".map", ".webmanifest")
+TEXT_EXT = (".html", ".js", ".css", ".md", ".json", ".svg", ".txt", ".xml", ".map", ".webmanifest",
+            ".yml", ".yaml", ".j2", ".ini", ".cfg", ".sh")  # YAML/INI des exemples et labs : IP et domaines contrôlés
 
 
 def domain_ok(host):

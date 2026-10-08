@@ -1,6 +1,6 @@
 """Tests d'intégration du zip de release `tools/package.js` (CA-5.2, CA-5.4, CA-T.1) — lot livraison.
 
-  - contenu exact : index.html + assets/** + modules/** (= fichiers suivis par git de ces chemins) + le PPTX
+  - contenu exact : index.html + assets/** + modules/** + examples/** + labs/** (= fichiers suivis par git de ces chemins) + le PPTX
     « Ansible Training.pptx » à la racine (octet pour octet identique au fichier commité), rien d'autre
     (aucun autre .pptx ni .zip) ;
   - le lien de téléchargement de l'accueil (engine.js) pointe vers un fichier présent dans le zip ;
@@ -69,11 +69,25 @@ class TestPackage(unittest.TestCase):
     def test_contenu_exact_index_assets_modules_et_pptx(self):
         files = {n for n in self.names if not n.endswith("/")}
         for n in files:
-            self.assertTrue(n in ("index.html", PPTX_NAME) or n.startswith(("assets/", "modules/")),
+            self.assertTrue(n in ("index.html", PPTX_NAME) or n.startswith(("assets/", "modules/", "examples/", "labs/")),
                             "entrée inattendue : %s" % n)
-        tracked = set(S.git_files("index.html", "assets", "modules")) | {PPTX_NAME}
+        tracked = set(S.git_files("index.html", "assets", "modules", "examples", "labs")) | {PPTX_NAME}
         self.assertEqual(files, tracked,
-                         "le zip doit contenir exactement les fichiers suivis (index.html, assets/, modules/) + le PPTX")
+                         "le zip doit contenir exactement les fichiers suivis (index.html, assets/, modules/, examples/, labs/) + le PPTX")
+
+    @unittest.skipUnless(S.git_files("examples/eda/README.md") and S.git_files("labs/eda/README.md"),
+                         "examples/eda/ et labs/eda/ pas encore commités (lot 2, Batch 3)")
+    def test_examples_et_labs_eda_livres_dans_le_zip(self):
+        """v1.0.0 : exemples et lab EDA livrés dans le zip (décision utilisateur). ATTENDU ROUGE tant que
+        tools/package.js (PATHS) n'inclut pas examples/ et labs/ (course, Batch 3)."""
+        names = set(self.names)
+        for readme in ("examples/eda/README.md", "labs/eda/README.md"):
+            self.assertIn(readme, names, "%s absent du zip" % readme)
+        for f in S.git_files("examples", "labs"):
+            self.assertIn(f, names, "fichier suivi absent du zip : %s" % f)
+        self.assertEqual(len([n for n in names if not n.endswith("/")]),
+                         len(S.git_files("index.html", "assets", "modules", "examples", "labs")) + 1,
+                         "nombre d'entrées = fichiers suivis (index.html, assets/, modules/, examples/, labs/) + le PPTX")
 
     def test_pptx_a_la_racine_a_cote_de_index_html(self):
         self.assertIn(PPTX_NAME, self.names)
