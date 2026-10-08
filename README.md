@@ -4,7 +4,7 @@ Support de cours de formation Ansible (PPTX), version générique sans référen
 
 ## Contenu
 
-Le support couvre l'automatisation avec Ansible en 233 slides (dont 3 masquées) :
+Le support couvre l'automatisation avec Ansible en 264 slides (dont 3 masquées) :
 
 - **Fondamentaux** : concepts, architecture, inventaire, variables, playbooks
 - **Modules et tâches** : modules intégrés, FQCN, gestion de packages, services
@@ -43,7 +43,7 @@ python3 tests/slides/check_pptx.py "Ansible Training.pptx"
 
 Les tests incluent :
 
-- **Validité** : archive ZIP valide, `[Content_Types].xml` en première position, 233 slides
+- **Validité** : archive ZIP valide, `[Content_Types].xml` en première position, 264 slides
 - **Obsolescence** : absence de termes dépassés, versions correctes, syntaxe Ansible valide
 - **Anti-fuite** : scan des métadonnées XML et des images pour empêcher la fuite de termes interdits
 
@@ -73,8 +73,8 @@ git push origin v0.1.1
 1. **Validation du tag** : format `vX.Y.Z` requis ; doit être posé sur `main` (garde-fou CI)
 2. **Environnement** : Node 22, Python 3.12, secret `LEAK_PATTERNS` présent
 3. **Tests bloquants** (échec = arrêt) :
-   - Parité HTML-PPTX (`PARITY_STRICT=1`, 172 tests)
-   - Obsolescence PPTX (`LOTS_STRICT=1`, 44 tests)
+   - Parité HTML-PPTX (`PARITY_STRICT=1`, 206 tests)
+   - Obsolescence PPTX (`LOTS_STRICT=1`, 46 tests)
    - Structure (`validate.js`), version dans `meta.js` (`sync-meta --check --version`)
 4. **Contrôles par artefact** :
    - **PPTX** : validité, anti-fuite (`LEAK_PATTERNS`), slide 2 affiche version et date du tag
@@ -151,9 +151,9 @@ Le workflow est conçu pour supporter des artefacts supplémentaires (HTML, PDF)
 
 ## Version HTML
 
-À partir de v0.2.0, le support est disponible en version HTML interactive : 16 modules (m01–m13 et m15–m17 ; le module m14 Event-Driven Ansible est prévu au lot 2 de la v1.0.0), 233 slides PPTX (dont 3 masquées, exclues du HTML), 48 quiz, objectifs et résumés par module, accessibilité complète (clavier, SVG nommés, alt descriptifs), interface en français.
+À partir de v0.2.0, le support est disponible en version HTML interactive : 17 modules (m01–m17, dont m13 Execution Environments et m14 Event-Driven Ansible, présents dans la version 1.0.0 en développement), 264 slides PPTX (dont 3 masquées, exclues du HTML), 51 quiz, objectifs et résumés par module, accessibilité complète (clavier, SVG nommés, alt descriptifs), interface en français.
 
-Le numéro d'un module suit son ordre d'affichage. Dans la version 1.0.0 en développement (lot 1), le module m13 Execution Environments est inséré après m12 ; les anciens m13, m14 et m15 deviennent m15, m16 et m17. Les ancres `#m13-…` à `#m15-…` pointent désormais vers d'autres modules, et la progression enregistrée dans le navigateur repart à zéro (clé `ansible-training-v2`, voir CHANGELOG).
+Le numéro d'un module suit son ordre d'affichage. Dans la version 1.0.0 en développement, le module m13 Execution Environments est inséré après m12 (lot 1), puis le module m14 Event-Driven Ansible après lui (lot 2) ; les anciens m13, m14 et m15 deviennent m15, m16 et m17. Les ancres `#m13-…` à `#m15-…` pointent désormais vers d'autres modules, et la progression enregistrée dans le navigateur repart à zéro (clé `ansible-training-v2`, voir CHANGELOG).
 
 ### Ouverture du cours HTML
 
@@ -183,10 +183,12 @@ python3 -m http.server 8000
 Le fichier `Ansible-Training-HTML-vX.Y.Z.zip` publié sur GitHub (généré par `node tools/package.js`) contient :
 - `index.html` — page d'accueil du cours
 - `assets/` — moteur (engine.js), styles (style.css), images (img/), internationalisations (i18n/fr.js)
-- `modules/` — 16 modules (m01–m13, m15–m17)
+- `modules/` — 17 modules (m01–m17)
+- `examples/eda/` — exemples de rulebooks Event-Driven Ansible (téléchargeables depuis le zip)
+- `labs/eda/` — lab Event-Driven Ansible (énoncé et solution)
 - `Ansible Training.pptx` — support original à la racine (lien téléchargement disponible depuis l'accueil)
 
-**Total : 52 fichiers**, ouvrable en `file://` (double-clic) sans serveur.
+**Total : 71 fichiers**, ouvrable en `file://` (double-clic) sans serveur.
 
 **Aucun embarquement de** : `tools/`, `tests/`, `CONVENTIONS.md`, `build/`, `.github/`, `.claude/`, ou autres répertoires du dépôt.
 
@@ -196,11 +198,11 @@ La section ci-dessous décrit l'arborescence du **dépôt git**, y compris les f
 
 ```
 .
-├── index.html                         # Page d'accueil, manifeste des 16 modules
+├── index.html                         # Page d'accueil, manifeste des 17 modules
 ├── assets/
 │   ├── engine.js                      # Moteur de présentation (navigation, thème, notes)
 │   ├── style.css                      # Styles (clair/sombre, accessibilité)
-│   ├── plan.js                        # Manifeste : 16 modules, metadata
+│   ├── plan.js                        # Manifeste : 17 modules, metadata
 │   ├── meta.js                        # Version, date, versions de référence (généré)
 │   ├── i18n/
 │   │   └── fr.js                      # Libellés en français
@@ -212,9 +214,12 @@ La section ci-dessous décrit l'arborescence du **dépôt git**, y compris les f
 │   ├── m02-inventory.js               # Module 02 : Inventory
 │   ├── ... (m03 à m13)
 │   ├── m13-execution-environments.js  # Module 13 : Execution Environments
+│   ├── m14-event-driven-ansible.js    # Module 14 : Event-Driven Ansible
 │   ├── m15-real-use-case.js           # Module 15 : Real use case
 │   ├── m16-best-practices.js          # Module 16 : Best practices
 │   └── m17-automation-integration.js  # Module 17 : Automation Integration
+├── examples/eda/                      # Exemples EDA (embarqués dans le zip)
+├── labs/eda/                          # Lab EDA (embarqué dans le zip)
 ├── tools/                             # 🚫 Non embarqué dans le zip
 │   ├── validate.js                    # Vérification de structure du site
 │   ├── sync-meta.js                   # Génération de assets/meta.js
@@ -231,12 +236,19 @@ La section ci-dessous décrit l'arborescence du **dépôt git**, y compris les f
 ### Conventions et contenu
 
 - **Verbatim du PPTX** : texte copié exactement (coquilles conservées sauf si corrigées dans le PPTX)
-- **Quiz** : 48 quiz (3 par module), une seule réponse défendable, distracteurs tirés d'erreurs classiques du module
+- **Quiz** : 51 quiz (3 par module), une seule réponse défendable, distracteurs tirés d'erreurs classiques du module
 - **Objectifs et « À retenir »** : dérivés du contenu du module, en français, avec références aux slides sources
 - **Accessibilité** : clavier complet (flèches, Enter, Espace), SVG nommés, alt descriptif, notes du formateur (touche `n`)
 - **Thème** : clair/sombre (préférence utilisateur)
 
 Voir `CONVENTIONS.md` pour les détails (blocs, code, tables, labs, SVG, etc.).
+
+### Exemples et labs EDA
+
+- `examples/eda/` : 10 rulebooks numérotés (`01-first-rulebook.yml` à `10-run-playbook.yml`), `remediate.yml`, `inventory.yml`, `vars.yml` et un README. Ils ne sont pas exécutés par les tests automatiques.
+- `labs/eda/` : lab de remédiation sur un webhook local (`127.0.0.1:5000`) : énoncé, inventaire et solution. Le playbook simule le redémarrage d'un service sans rien arrêter.
+- **Prérequis** : Java 17 ou plus récent, puis `pip install ansible-rulebook ansible ansible-runner` et `ansible-galaxy collection install ansible.eda`.
+- **Lab testé** : contrôle manuel à faire sur un poste avec Java et `ansible-rulebook` (`tests/procedures/labs/eda/lab-teste.md`). La CI ne vérifie que la structure YAML.
 
 ### Tests du site
 
@@ -283,7 +295,9 @@ python3 tools/renumber.py --apply
 ├── Ansible Training.orig.pptx         # Sauvegarde originale (non tracée)
 ├── index.html                         # Page d'accueil site HTML
 ├── assets/                            # Moteur, styles, images, metadata du site
-├── modules/                           # 16 modules du site HTML (m01–m13, m15–m17)
+├── modules/                           # 17 modules du site HTML (m01–m17)
+├── examples/eda/                      # Exemples de rulebooks EDA (zip)
+├── labs/eda/                          # Lab EDA : énoncé et solution (zip)
 ├── tools/                             # Outils (validate, sync-meta, etc.)
 ├── CONVENTIONS.md                     # Règles PPTX → HTML
 ├── tests/
