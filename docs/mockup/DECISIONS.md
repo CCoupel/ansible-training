@@ -60,6 +60,24 @@
 - Clé de progression navigateur : `ansible-training-v2` (remise à zéro annoncée dans le CHANGELOG, version majeure).
 - Ancres `#mNN-…` liées à l'id du module ; pas de redirection depuis les anciens identifiants.
 
+## course-site (v1.0.0, lot 3 — site fr/en)
+
+### Périmètre de la traduction
+- Site fr/en (#51). **Traduit** : l'interface (`assets/i18n/fr.js` et `en.js`) et le contenu « Bonus HTML » (tagline, objectifs, « À retenir », quiz).
+- **Non traduit** : texte des slides (verbatim PPTX, en anglais), notes du formateur, titres de modules (titres des sections du PPTX), code, identifiants, date de livraison.
+- Relecture de l'anglais par les agents.
+
+### Sélecteur de langue
+- Bouton « FR | EN » dans la barre du haut, à côté du thème, présent sur tous les écrans (accueil compris). Raccourci clavier `l`. La langue active est surlignée.
+- Langue initiale, par priorité : paramètre d'URL `?lang=fr|en` (accepté, puis mémorisé) ; choix mémorisé (clé `ansible-training-v2`, champ `lang`) ; langue du navigateur (français si la langue commence par « fr », sinon anglais).
+- Repli sur le français : une chaîne absente en anglais s'affiche en français, jamais de trou. `validate.js` rend ce cas impossible en release.
+
+### Livraison
+- Zip HTML à **72 fichiers** : les 71 du lot 2 plus `assets/i18n/en.js`.
+
+### Maquette de référence
+- Maquette validée : `docs/mockup/v1.0.0/ui/course-site__i18n.html` (la bascule FR | EN et le thème fonctionnent dans la maquette ; le bandeau « Contrôles de maquette » simule la langue du navigateur et `?lang=`, il ne fait pas partie du produit).
+
 ### Livraison & contrôles (v1.0.0, lot 2)
 - Les exemples (`examples/eda/`) et le lab (`labs/eda/`) sont **livrés dans le zip HTML** (`tools/package.js`, chemins `examples` et `labs`) : 71 fichiers. Le lab « testé » reste une procédure manuelle (Java et `ansible-rulebook` absents de la CI).
 - `tools/validate.js` avertit si un module compte moins de 6 ou plus de 35 slides de contenu hors Bonus (les quiz ne comptent pas) ; 35 = borne du module le plus long (m14).

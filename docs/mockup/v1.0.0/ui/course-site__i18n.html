@@ -1,0 +1,344 @@
+<!doctype html>
+<!--
+  composant : course-site (site HTML du support Ansible Training)
+  feature   : site multilingue fr/en, sélecteur de langue (#51)
+  version   : 1.0.0
+  type      : ui
+  issue     : #51
+  complete  : docs/mockup/v0.2.0/ui/course-site__html-version.html (mise en page, blocs, thème, badges inchangés)
+  remplace  : aucune
+  Note      : maquette autonome (aucune dépendance, double-clic). La bascule FR | EN et le thème fonctionnent dans la maquette.
+              Le bandeau gris « Contrôles de maquette » simule la langue du navigateur et ?lang= : il ne fait PAS partie du produit.
+
+  COMPORTEMENT (décisions utilisateur Q1/Q2 du lot 3)
+  - Langue initiale, par priorité : 1) paramètre d'URL ?lang=fr|en (puis mémorisé) ; 2) choix mémorisé (localStorage, clé
+    ansible-training-v2, champ `lang`) ; 3) langue du navigateur : français si navigator.language commence par « fr », sinon anglais.
+  - Sélecteur : bouton « FR | EN » dans la barre du haut, à côté du thème ; raccourci clavier `l` ; la langue active est surlignée.
+    aria-label annonce la langue proposée : « Langue : English » (interface fr) / « Language: français » (interface en).
+    Le changement est immédiat (pas de rechargement) ; l'ancre #mNN-i, la progression et les scores de quiz sont conservés.
+  - Repli : une chaîne absente en anglais s'affiche en français (jamais de trou) ; validate.js rend ce cas impossible en release.
+  - TRADUIT : interface (assets/i18n/fr.js / en.js), contenu « Bonus HTML » (tagline, objectifs, À retenir, quiz : énoncé, options,
+    explication ; titres « Quiz N » ; alt d'images, légendes, titre/description des schémas SVG), libellés des jours.
+  - NON TRADUIT : texte des slides (verbatim PPTX, en anglais), notes du formateur, titres de modules (titres des sections du PPTX),
+    code, identifiants en <code>, date de livraison (JJ/MM/AAAA). Quand l'interface est en français, le conteneur des blocs verbatim
+    porte lang="en" ; <html lang> suit l'interface.
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette site fr/en</title>
+<style>
+:root{--accent:#1a5fb4;--accent-2:#3584e4;--accent-soft:#e7f0fb;--bg:#f6f8fb;--surface:#fff;--border:#d5dce6;--text:#1d2633;--muted:#5f6b7a;--code-bg:#0f1b2d;--code-fg:#e6edf6;--ok:#1f8a4c;--ko:#c0392b;--warn:#b7791f;--bonus-bg:#fff4e0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#62a0ea;--accent-2:#99c1f1;--accent-soft:#1c2b40;--bg:#0f141b;--surface:#18202b;--border:#2c3747;--text:#e6ebf2;--muted:#9aa7b8;--code-bg:#0a111c;--bonus-bg:#3a2c12}}
+:root[data-theme="dark"]{--accent:#62a0ea;--accent-2:#99c1f1;--accent-soft:#1c2b40;--bg:#0f141b;--surface:#18202b;--border:#2c3747;--text:#e6ebf2;--muted:#9aa7b8;--code-bg:#0a111c;--bonus-bg:#3a2c12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1.frame{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:32px 16px 8px;max-width:1200px}
+.annot{max-width:1200px;margin:0 16px 8px;font-size:12px;color:var(--muted)}
+.mock{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 16px;background:#5f6b7a;color:#fff;font-size:12px}
+.mock b{letter-spacing:.06em;text-transform:uppercase}.mock select,.mock button{font-size:12px;border-radius:4px;border:0;padding:2px 6px}
+.mock .state{margin-left:auto;font-family:ui-monospace,Consolas,monospace}
+.app{display:grid;grid-template-columns:260px 1fr;max-width:1200px;margin:0 16px 24px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);min-height:520px}
+@media (max-width:760px){.app{grid-template-columns:1fr}.app .side{display:none}}
+.side{border-right:1px solid var(--border);padding:14px;background:var(--bg)}
+.brand{font-weight:700;color:var(--accent);display:flex;gap:8px;align-items:center}.brand small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.side input{width:100%;margin:12px 0;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text)}
+.day{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 4px}
+.mod{display:flex;gap:8px;align-items:center;padding:4px 6px;border-radius:6px;font-size:14px}
+.mod.cur{background:var(--accent-soft);color:var(--accent);font-weight:600}.mod .n{font-variant-numeric:tabular-nums;color:var(--muted);width:22px}
+.main{display:flex;flex-direction:column;min-width:0}
+.top{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:14px}
+.top .crumb{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.top .crumb b{color:var(--text)}.top .sp{flex:1}
+.counter{color:var(--muted);white-space:nowrap}
+.btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:6px;padding:4px 10px;font-size:13px;cursor:pointer}
+.btn:focus-visible,.lang:focus-visible{outline:3px solid var(--accent-2);outline-offset:2px}
+/* Sélecteur de langue : un seul bouton, deux segments, la langue active surlignée */
+.lang{display:inline-flex;align-items:stretch;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);padding:0;font-size:12px;font-weight:700;letter-spacing:.04em;cursor:pointer;overflow:hidden}
+.lang span{padding:4px 8px;color:var(--muted)}.lang span.on{background:var(--accent);color:#fff}
+.lang .bar{padding:4px 0;color:var(--border)}
+.prog{height:3px;background:var(--border)}.prog i{display:block;height:100%;width:22%;background:var(--accent)}
+.slide{padding:24px 32px;flex:1}.slide h2{margin:0 0 4px;font-size:24px}
+.src{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:0 8px;margin-bottom:14px}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:10px;padding:1px 8px;margin-left:8px;vertical-align:middle}
+.tag.bonus{background:var(--bonus-bg);color:var(--warn)}
+.refs{font-size:11px;color:var(--muted);margin-left:6px}
+ul.obj{padding-left:20px}ul.obj li{margin:6px 0}
+code{font:13px ui-monospace,Consolas,monospace;background:var(--accent-soft);border-radius:4px;padding:0 4px}
+.quiz{border:1px solid var(--border);border-radius:8px;padding:14px 16px}.quiz .q{font-weight:600;margin-bottom:8px}
+.opt{display:block;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:6px 0}.opt.ok{border-color:var(--ok);background:rgba(31,138,76,.1)}
+.explain{font-size:14px;color:var(--muted);margin-top:8px}
+.foot{display:flex;align-items:center;padding:10px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);gap:10px}.foot .sp{flex:1;text-align:center}
+.home{padding:36px 44px}.home h2{font-size:34px;margin:0;color:var(--accent)}.home .sub{font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.pill{border:1px solid var(--border);border-radius:14px;padding:3px 12px;font-size:13px}.pill b{color:var(--accent)}
+.dayh{font-size:15px;margin:18px 0 6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.card{border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px}.card small{display:block;color:var(--muted)}
+.score{display:inline-block;margin-top:10px;border:1px solid var(--border);border-radius:14px;padding:3px 12px;font-size:13px}
+/* Vue mobile : cadre étroit simulé */
+.phone{width:380px;max-width:calc(100% - 32px);margin:0 16px 32px;border:8px solid #2c3747;border-radius:22px;overflow:hidden;background:var(--surface)}
+.phone .top{padding:8px 10px;gap:6px}.phone .slide{padding:16px}.phone .slide h2{font-size:19px}.phone .foot{padding:8px 10px}
+.phone .hint-m{display:none}
+</style>
+</head>
+<body>
+
+<div class="mock" role="region" aria-label="Contrôles de maquette (hors produit)">
+  <b>Contrôles de maquette (hors produit)</b>
+  <label>Langue du navigateur simulée
+    <select id="mk-nav"><option value="fr-FR">fr-FR</option><option value="en-US">en-US</option><option value="de-DE">de-DE</option></select></label>
+  <label>URL simulée
+    <select id="mk-url"><option value="">index.html</option><option value="fr">index.html?lang=fr</option><option value="en">index.html?lang=en</option></select></label>
+  <button id="mk-reset" type="button">Effacer le choix mémorisé et recharger la simulation</button>
+  <span class="state" id="mk-state"></span>
+</div>
+
+<!-- ============ ÉCRAN 1 : ACCUEIL ============ -->
+<h1 class="frame">Écran 1 — Accueil (#home) : agenda sur 4 jours, interface traduite</h1>
+<p class="annot">Le sélecteur FR | EN est présent dans la barre du haut de tous les écrans (y compris l'accueil). Titres de modules = titres des sections du PPTX, identiques dans les deux langues.</p>
+<div class="app">
+  <aside class="side" data-i18n-attr="aria-label:nav.sidebar">
+    <div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div>
+    <input type="search" data-i18n-attr="placeholder:search.placeholder,aria-label:search.aria">
+    <div class="day" data-i18n="day.J1"></div>
+    <div class="mod"><span class="n">01</span>🚀 Introduction</div>
+    <div class="mod cur"><span class="n">02</span>📇 Inventory</div>
+    <div class="mod"><span class="n">…</span>…</div>
+    <div class="day" data-i18n="day.J4"></div>
+    <div class="mod"><span class="n">14</span>⚡ Event-Driven Ansible</div>
+    <div class="mod"><span class="n">17</span>🔗 Automation integration</div>
+  </aside>
+  <div class="main">
+    <div class="top"><span class="crumb"><b data-i18n="nav.home"></b></span><span class="sp"></span>
+      <button class="lang" type="button"></button>
+      <button class="btn theme" type="button" data-i18n-attr="title:nav.theme,aria-label:nav.themeAria">🌓</button></div>
+    <div class="home">
+      <div class="sub" data-i18n="home.kicker"></div>
+      <h2>Ansible Training</h2>
+      <div class="sub">Automation for everyone</div>
+      <div class="meta">
+        <span class="pill"><span data-i18n="home.version"></span> <b>1.0.0</b></span>
+        <span class="pill"><span data-i18n="home.delivery"></span> <b>JJ/MM/AAAA</b></span>
+        <span class="pill" data-i18n="home.reference" data-vars='{"core":"2.20"}'></span>
+      </div>
+      <p class="annot" style="margin:0" data-i18n="home.modulesLoaded" data-vars='{"done":17,"total":17,"seen":12}'></p>
+      <h3 class="dayh" data-i18n="day.J1"></h3>
+      <div class="grid"><div class="card">🚀 Introduction<small><span data-i18n="home.module"></span> 01</small></div><div class="card">📇 Inventory<small><span data-i18n="home.module"></span> 02</small></div><div class="card">… 03-06</div></div>
+      <h3 class="dayh" data-i18n="day.J2"></h3>
+      <div class="grid"><div class="card">🧪 Filters &amp; conditions<small><span data-i18n="home.module"></span> 07</small></div><div class="card">… 08-10</div></div>
+      <h3 class="dayh" data-i18n="day.J3"></h3>
+      <div class="grid"><div class="card">📦 Roles, collections &amp; Galaxy<small><span data-i18n="home.module"></span> 11</small></div><div class="card">🛠️ Extend Ansible<small><span data-i18n="home.module"></span> 12</small></div><div class="card">🐳 Execution Environments<small><span data-i18n="home.module"></span> 13</small></div></div>
+      <h3 class="dayh" data-i18n="day.J4"></h3>
+      <div class="grid"><div class="card">⚡ Event-Driven Ansible<small><span data-i18n="home.module"></span> 14</small></div><div class="card">🌐 Real use case<small><span data-i18n="home.module"></span> 15</small></div><div class="card">✅ Best practices<small><span data-i18n="home.module"></span> 16</small></div><div class="card">🔗 Automation integration<small><span data-i18n="home.module"></span> 17</small></div></div>
+    </div>
+    <div class="foot"><span></span><span class="sp hint" data-i18n="nav.hint"></span><button class="btn" data-i18n="home.start"></button></div>
+  </div>
+</div>
+
+<!-- ============ ÉCRAN 2 : COUVERTURE OBJECTIFS ============ -->
+<h1 class="frame">Écran 2 — Couverture du module (#m02-0) : objectifs traduits (Bonus HTML)</h1>
+<div class="app">
+  <aside class="side"><div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div><div class="day" data-i18n="day.J1"></div><div class="mod cur"><span class="n">02</span>📇 Inventory</div></aside>
+  <div class="main">
+    <div class="top"><span class="crumb">02 · Inventory › <b data-i18n="cover.objectives"></b></span><span class="sp"></span><span class="counter">1 / 22</span>
+      <button class="lang" type="button"></button><button class="btn theme" type="button" data-i18n-attr="title:nav.theme,aria-label:nav.themeAria">🌓</button></div>
+    <div class="prog"><i></i></div>
+    <div class="slide">
+      <h2><span data-i18n="cover.module"></span> 02 — Inventory <span class="tag bonus" data-i18n="badge.extra"></span></h2>
+      <p class="tx" data-fr="Lister les hôtes gérés par Ansible, les organiser en groupes et choisir le format de l'inventaire." data-en="List the hosts managed by Ansible, organize them into groups and choose the inventory format."></p>
+      <h3 data-i18n="cover.objectives"></h3>
+      <ul class="obj">
+        <li><span class="tx" data-fr="Définir un inventaire : la liste des hôtes gérés par Ansible, éventuellement organisés en groupes." data-en="Define an inventory: the list of hosts managed by Ansible, optionally organized into groups."></span><span class="refs" data-i18n="badge.ref" data-vars='{"list":"14"}'></span></li>
+        <li><span class="tx" data-fr="Structurer des hôtes en groupes à plat ou en arborescence avec la section &lt;code&gt;:children&lt;/code&gt;." data-en="Structure hosts into flat or nested groups with the &lt;code&gt;:children&lt;/code&gt; section."></span><span class="refs" data-i18n="badge.refMany" data-vars='{"list":"15-16"}'></span></li>
+        <li><span class="tx" data-fr="Tester un inventaire avec &lt;code&gt;ansible-inventory&lt;/code&gt;, l'utiliser avec &lt;code&gt;-i&lt;/code&gt; et le limiter avec &lt;code&gt;-l&lt;/code&gt;." data-en="Test an inventory with &lt;code&gt;ansible-inventory&lt;/code&gt;, use it with &lt;code&gt;-i&lt;/code&gt; and limit it with &lt;code&gt;-l&lt;/code&gt;."></span><span class="refs" data-i18n="badge.ref" data-vars='{"list":"29"}'></span></li>
+      </ul>
+      <p><span data-i18n="cover.slides" data-vars='{"n":17}'></span> · <span data-i18n="cover.quiz" data-vars='{"n":3}'></span></p>
+    </div>
+    <div class="foot"><button class="btn" data-i18n="nav.prev"></button><span class="sp hint" data-i18n="nav.hint"></span><button class="btn" data-i18n="nav.next"></button></div>
+  </div>
+</div>
+
+<!-- ============ ÉCRAN 3 : SLIDE VERBATIM ============ -->
+<h1 class="frame">Écran 3 — Slide de contenu (#m02-1) : texte du PPTX identique dans les deux langues</h1>
+<p class="annot">Seuls le fil d'Ariane, le badge de traçabilité, les boutons et l'aide changent. Le contenu (encadré pointillé dans cette maquette) ne change jamais ; il porte <code>lang="en"</code> quand l'interface est en français (état affiché ci-dessous).</p>
+<div class="app">
+  <aside class="side"><div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div><div class="day" data-i18n="day.J1"></div><div class="mod cur"><span class="n">02</span>📇 Inventory</div></aside>
+  <div class="main">
+    <div class="top"><span class="crumb">02 · Inventory › <b>What is an Inventory?</b></span><span class="sp"></span><span class="counter">2 / 22</span>
+      <button class="btn" type="button" data-i18n-attr="title:nav.notesAria,aria-label:nav.notesAria"><span data-i18n="nav.notes"></span></button>
+      <button class="lang" type="button"></button><button class="btn theme" type="button" data-i18n-attr="title:nav.theme,aria-label:nav.themeAria">🌓</button></div>
+    <div class="prog"><i></i></div>
+    <div class="slide">
+      <h2 class="verbatim">What is an Inventory?</h2>
+      <span class="src" data-i18n="badge.pptx" data-vars='{"n":"14"}' data-i18n-attr="title:badge.pptxTitle"></span>
+      <div class="verbatim" id="verb" style="outline:1px dashed var(--border);outline-offset:6px">
+        <ul>
+          <li><b>Definition:</b> The list of managed nodes (or hosts) that Ansible configures.</li>
+          <li><b>Formats:</b> Various formats, with INI and YAML.</li>
+          <li><b>Default Location:</b> The default inventory file is located at /etc/ansible/hosts.</li>
+          <li><b>Groups:</b> Hosts can be organized into groups to simplify management and task execution.</li>
+          <li><b>Dynamic Inventory:</b> Plugins to generate inventories from external sources</li>
+        </ul>
+      </div>
+      <p class="annot" style="margin:14px 0 0">Attribut du conteneur verbatim : <code id="verb-lang"></code></p>
+    </div>
+    <div class="foot"><button class="btn" data-i18n="nav.prev"></button><span class="sp hint" data-i18n="nav.hint"></span><button class="btn" data-i18n="nav.next"></button></div>
+  </div>
+</div>
+
+<!-- ============ ÉCRAN 4 : QUIZ TRADUIT ============ -->
+<h1 class="frame">Écran 4 — Quiz (#m02-18) : énoncé, options et explication traduits ; bonne réponse partagée</h1>
+<div class="app">
+  <aside class="side"><div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div><div class="day" data-i18n="day.J1"></div><div class="mod cur"><span class="n">02</span>📇 Inventory</div></aside>
+  <div class="main">
+    <div class="top"><span class="crumb">02 · Inventory › <b class="tx" data-fr="Quiz 1" data-en="Quiz 1"></b></span><span class="sp"></span><span class="counter">19 / 22</span>
+      <button class="lang" type="button"></button><button class="btn theme" type="button" data-i18n-attr="title:nav.theme,aria-label:nav.themeAria">🌓</button></div>
+    <div class="prog"><i style="width:86%"></i></div>
+    <div class="slide">
+      <h2><span class="tx" data-fr="Quiz 1" data-en="Quiz 1"></span> <span class="tag bonus" data-i18n="badge.extra" data-i18n-attr="title:badge.extraNote"></span></h2>
+      <div class="quiz">
+        <div class="q tx" data-fr="Où se trouve le fichier d'inventaire par défaut d'Ansible ?" data-en="Where is Ansible's default inventory file located?"></div>
+        <span class="opt">/var/lib/ansible/hosts</span>
+        <span class="opt ok">/etc/ansible/hosts ✓</span>
+        <span class="opt">/etc/ansible/inventory.ini</span>
+        <div class="explain tx" data-fr="Le fichier d'inventaire par défaut est &lt;code&gt;/etc/ansible/hosts&lt;/code&gt; (cf. slide 14)." data-en="The default inventory file is &lt;code&gt;/etc/ansible/hosts&lt;/code&gt; (see slide 14)."></div>
+      </div>
+      <p class="annot" style="margin:10px 0 0">Les options de ce quiz sont des chemins (identiques dans les deux langues). Pour une option en texte, elle est traduite, avec les mêmes règles qu'en français : longueur voisine, aucune forme qui révèle la réponse. Le score obtenu en français reste acquis en anglais (même uid).</p>
+    </div>
+    <div class="foot"><button class="btn" data-i18n="nav.prev"></button><span class="sp hint" data-i18n="nav.hint"></span><button class="btn" data-i18n="nav.next"></button></div>
+  </div>
+</div>
+
+<!-- ============ ÉCRAN 5 : À RETENIR ============ -->
+<h1 class="frame">Écran 5 — À retenir / Key takeaways (#m02-21) : contenu Bonus traduit et score des quiz</h1>
+<div class="app">
+  <aside class="side"><div class="brand"><span>🅰️</span><div>Ansible Training<small>Automation for everyone</small></div></div><div class="day" data-i18n="day.J1"></div><div class="mod cur"><span class="n">02</span>📇 Inventory</div></aside>
+  <div class="main">
+    <div class="top"><span class="crumb">02 · Inventory › <b data-i18n="recap.title"></b></span><span class="sp"></span><span class="counter">22 / 22</span>
+      <button class="lang" type="button"></button><button class="btn theme" type="button" data-i18n-attr="title:nav.theme,aria-label:nav.themeAria">🌓</button></div>
+    <div class="prog"><i style="width:100%"></i></div>
+    <div class="slide">
+      <h2><span data-i18n="recap.title"></span> <span class="tag bonus" data-i18n="badge.extra"></span></h2>
+      <ul class="obj">
+        <li><span class="tx" data-fr="Le fichier d'inventaire par défaut est &lt;code&gt;/etc/ansible/hosts&lt;/code&gt;." data-en="The default inventory file is &lt;code&gt;/etc/ansible/hosts&lt;/code&gt;."></span><span class="refs" data-i18n="badge.ref" data-vars='{"list":"14"}'></span></li>
+        <li><span class="tx" data-fr="La section &lt;code&gt;:children&lt;/code&gt; permet de construire une arborescence de groupes." data-en="The &lt;code&gt;:children&lt;/code&gt; section builds a tree of groups."></span><span class="refs" data-i18n="badge.refMany" data-vars='{"list":"16, 25"}'></span></li>
+        <li><span class="tx" data-fr="&lt;code&gt;ansible-inventory -i test_inventory --list&lt;/code&gt; teste un inventaire ; l'option &lt;code&gt;-l&lt;/code&gt; (par exemple &lt;code&gt;-l Web&lt;/code&gt;) limite l'exécution." data-en="&lt;code&gt;ansible-inventory -i test_inventory --list&lt;/code&gt; tests an inventory; the &lt;code&gt;-l&lt;/code&gt; option (for example &lt;code&gt;-l Web&lt;/code&gt;) limits the run."></span><span class="refs" data-i18n="badge.ref" data-vars='{"list":"29"}'></span></li>
+      </ul>
+      <span class="score" data-i18n="recap.score" data-vars='{"score":2,"total":3}'></span>
+    </div>
+    <div class="foot"><button class="btn" data-i18n="nav.prev"></button><span class="sp hint" data-i18n="nav.hint"></span><button class="btn" data-i18n="nav.nextModule" data-vars='{"num":"03"}'></button></div>
+  </div>
+</div>
+
+<!-- ============ ÉCRAN 6 : MOBILE ============ -->
+<h1 class="frame">Écran 6 — Mobile (viewport étroit) : sélecteur toujours visible dans la barre du haut</h1>
+<p class="annot">Sur mobile, le sommaire est replié (☰) ; le fil d'Ariane est tronqué ; le bouton Notes est masqué ; FR | EN et le thème restent visibles. L'aide clavier n'est pas affichée.</p>
+<div class="phone">
+  <div class="main">
+    <div class="top"><button class="btn" type="button" data-i18n-attr="title:nav.menu,aria-label:nav.sidebar">☰</button><span class="crumb">02 · Inventory › <b data-i18n="cover.objectives"></b></span><span class="sp"></span>
+      <button class="lang" type="button"></button><button class="btn theme" type="button" data-i18n-attr="title:nav.theme,aria-label:nav.themeAria">🌓</button></div>
+    <div class="prog"><i></i></div>
+    <div class="slide">
+      <h2><span data-i18n="cover.module"></span> 02 — Inventory</h2>
+      <span class="tag bonus" style="margin:0" data-i18n="badge.extra"></span>
+      <ul class="obj">
+        <li class="tx" data-fr="Définir un inventaire : la liste des hôtes gérés par Ansible, éventuellement organisés en groupes." data-en="Define an inventory: the list of hosts managed by Ansible, optionally organized into groups."></li>
+        <li class="tx" data-fr="Écrire le même inventaire aux formats INI, JSON et YAML." data-en="Write the same inventory in INI, JSON and YAML formats."></li>
+      </ul>
+    </div>
+    <div class="foot"><button class="btn" data-i18n="nav.prev"></button><span class="sp"></span><button class="btn" data-i18n="nav.next"></button></div>
+  </div>
+</div>
+
+<script>
+/* Maquette uniquement : simule assets/i18n/fr.js + en.js et le comportement du moteur. Pas de code de production. */
+(function () {
+  'use strict';
+  const I18N = {
+    fr: {
+      'nav.sidebar': 'Sommaire', 'nav.home': 'Accueil', 'nav.menu': 'Sommaire (m)', 'nav.theme': 'Thème (t)', 'nav.themeAria': 'Changer de thème',
+      'nav.notes': 'Notes (n)', 'nav.notesAria': 'Afficher ou masquer les notes du formateur',
+      'nav.prev': '← Précédent', 'nav.next': 'Suivant →', 'nav.nextModule': 'Module {num} →',
+      'nav.hint': '← → naviguer · m sommaire · n notes · t thème · l langue · / recherche',
+      'nav.lang': 'Langue (l)', 'nav.langAria': 'Langue : English',
+      'search.placeholder': 'Rechercher ( / )', 'search.aria': 'Rechercher dans le cours',
+      'day.J1': 'Jour 1', 'day.J2': 'Jour 2', 'day.J3': 'Jour 3', 'day.J4': 'Jour 4',
+      'home.kicker': 'Ansible', 'home.version': 'Version', 'home.delivery': 'Livraison', 'home.reference': 'Référence : ansible-core {core}',
+      'home.modulesLoaded': '{done} module(s) disponible(s) sur {total} · {seen} slide(s) vue(s)', 'home.start': 'Commencer le cours', 'home.module': 'Module',
+      'cover.module': 'Module', 'cover.objectives': 'Objectifs', 'cover.slides': '{n} slide(s)', 'cover.quiz': '{n} quiz',
+      'recap.title': 'À retenir', 'recap.score': 'Quiz du module : {score} / {total}',
+      'badge.pptxTitle': 'Traçabilité : slide(s) du support PowerPoint', 'badge.pptx': 'PPTX · slide {n}',
+      'badge.extra': 'Bonus HTML', 'badge.extraNote': 'hors PPTX — contenu additionnel dérivé du support',
+      'badge.ref': 'slide {list}', 'badge.refMany': 'slides {list}'
+    },
+    en: {
+      'nav.sidebar': 'Contents', 'nav.home': 'Home', 'nav.menu': 'Contents (m)', 'nav.theme': 'Theme (t)', 'nav.themeAria': 'Change theme',
+      'nav.notes': 'Notes (n)', 'nav.notesAria': 'Show or hide the trainer notes',
+      'nav.prev': '← Previous', 'nav.next': 'Next →', 'nav.nextModule': 'Module {num} →',
+      'nav.hint': '← → navigate · m contents · n notes · t theme · l language · / search',
+      'nav.lang': 'Language (l)', 'nav.langAria': 'Language: français',
+      'search.placeholder': 'Search ( / )', 'search.aria': 'Search the course',
+      'day.J1': 'Day 1', 'day.J2': 'Day 2', 'day.J3': 'Day 3', 'day.J4': 'Day 4',
+      'home.kicker': 'Ansible', 'home.version': 'Version', 'home.delivery': 'Delivery', 'home.reference': 'Reference: ansible-core {core}',
+      'home.modulesLoaded': '{done} of {total} module(s) available · {seen} slide(s) viewed', 'home.start': 'Start the course', 'home.module': 'Module',
+      'cover.module': 'Module', 'cover.objectives': 'Objectives', 'cover.slides': '{n} slide(s)', 'cover.quiz': '{n} quiz(zes)',
+      'recap.title': 'Key takeaways', 'recap.score': 'Module quiz: {score} / {total}',
+      'badge.pptxTitle': 'Traceability: PowerPoint slide(s)', 'badge.pptx': 'PPTX · slide {n}',
+      'badge.extra': 'HTML bonus', 'badge.extraNote': 'not in the PPTX — additional content derived from the deck',
+      'badge.ref': 'slide {list}', 'badge.refMany': 'slides {list}'
+    }
+  };
+  let lang = 'fr', remembered = null;
+  const fill = (s, vars) => vars ? s.replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m)) : s;
+  // Repli : clé absente en anglais -> français -> clé.
+  const t = (k, vars) => fill(I18N[lang][k] !== undefined ? I18N[lang][k] : (I18N.fr[k] !== undefined ? I18N.fr[k] : k), vars);
+
+  function initial() {
+    const url = document.getElementById('mk-url').value;
+    if (url) { remembered = url; return url; }                       // 1) ?lang= (puis mémorisé)
+    if (remembered) return remembered;                               // 2) choix mémorisé
+    return /^fr\b/i.test(document.getElementById('mk-nav').value) ? 'fr' : 'en'; // 3) navigateur
+  }
+  function render() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.dataset.i18n, el.dataset.vars ? JSON.parse(el.dataset.vars) : null);
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach(el => el.dataset.i18nAttr.split(',').forEach(p => {
+      const [a, k] = p.split(':'); el.setAttribute(a.trim(), t(k.trim()));
+    }));
+    // Contenu Bonus : champ X / X_en, repli sur le français.
+    document.querySelectorAll('.tx').forEach(el => { el.innerHTML = (lang === 'en' && el.dataset.en) ? el.dataset.en : el.dataset.fr; });
+    // Texte verbatim : jamais modifié ; lang="en" posé quand l'interface est en français.
+    document.querySelectorAll('.verbatim').forEach(el => { if (lang === 'fr') el.setAttribute('lang', 'en'); else el.removeAttribute('lang'); });
+    document.getElementById('verb-lang').textContent = lang === 'fr' ? 'lang="en"' : '(hérite de <html lang="en">)';
+    document.querySelectorAll('.lang').forEach(b => {
+      b.innerHTML = '<span class="' + (lang === 'fr' ? 'on' : '') + '">FR</span><span class="bar">|</span><span class="' + (lang === 'en' ? 'on' : '') + '">EN</span>';
+      b.setAttribute('aria-label', t('nav.langAria'));
+      b.title = t('nav.lang');
+    });
+    document.getElementById('mk-state').textContent = 'langue=' + lang + ' · mémorisé=' + (remembered || '—') + ' · <html lang="' + lang + '">';
+  }
+  function setLang(l) { lang = l; remembered = l; render(); }        // choix manuel : prioritaire et mémorisé, sans rechargement
+  const toggle = () => setLang(lang === 'fr' ? 'en' : 'fr');
+
+  document.querySelectorAll('.lang').forEach(b => b.addEventListener('click', toggle));
+  document.addEventListener('keydown', e => {
+    if (e.target.matches('input, select, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'l' || e.key === 'L') toggle();
+    if (e.key === 't' || e.key === 'T') toggleTheme();
+  });
+  function toggleTheme() {
+    const root = document.documentElement, cur = root.getAttribute('data-theme');
+    const dark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme', dark ? 'light' : 'dark');
+  }
+  document.querySelectorAll('.theme').forEach(b => b.addEventListener('click', toggleTheme));
+  ['mk-nav', 'mk-url'].forEach(id => document.getElementById(id).addEventListener('change', () => { lang = initial(); render(); }));
+  document.getElementById('mk-reset').addEventListener('click', () => { remembered = null; lang = initial(); render(); });
+
+  lang = initial();
+  render();
+})();
+</script>
+</body>
+</html>
