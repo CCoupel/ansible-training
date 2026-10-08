@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm13', num: 13, emoji: '🐳',
   title: 'Execution Environments',
   tagline: 'Exécuter Ansible dans une image conteneur : la construire avec ansible-builder et la lancer avec ansible-navigator.',
+  tagline_en: 'Run Ansible in a container image: build it with ansible-builder and run it with ansible-navigator.',
   objectives: [
-    { html: 'Définir un Execution Environment (EE) : une image conteneur qui joue le rôle de nœud de contrôle Ansible.', ref: [184] },
-    { html: 'Citer les couches d\'un EE : image de base, <code>ansible-core</code>, <code>ansible-runner</code>, collections, dépendances Python et dépendances système.', ref: [185] },
-    { html: 'Écrire une définition <code>execution-environment.yml</code> en <code>version: 3</code> et construire l\'image avec <code>ansible-builder</code>.', ref: [186, 187] },
-    { html: 'Lancer un playbook dans un EE avec <code>ansible-navigator</code>, en mode <code>interactive</code> ou <code>stdout</code>.', ref: [188, 189] },
-    { html: 'Citer le contenu d\'<code>ansible-dev-tools</code> et créer un squelette avec <code>ansible-creator</code>.', ref: [190] }
+    { html: 'Définir un Execution Environment (EE) : une image conteneur qui joue le rôle de nœud de contrôle Ansible.', html_en: 'Define an Execution Environment (EE): a container image that acts as the Ansible control node.', ref: [184] },
+    { html: 'Citer les couches d\'un EE : image de base, <code>ansible-core</code>, <code>ansible-runner</code>, collections, dépendances Python et dépendances système.', html_en: 'List the layers of an EE: base image, <code>ansible-core</code>, <code>ansible-runner</code>, collections, Python dependencies and system dependencies.', ref: [185] },
+    { html: 'Écrire une définition <code>execution-environment.yml</code> en <code>version: 3</code> et construire l\'image avec <code>ansible-builder</code>.', html_en: 'Write an <code>execution-environment.yml</code> definition in <code>version: 3</code> and build the image with <code>ansible-builder</code>.', ref: [186, 187] },
+    { html: 'Lancer un playbook dans un EE avec <code>ansible-navigator</code>, en mode <code>interactive</code> ou <code>stdout</code>.', html_en: 'Run a playbook in an EE with <code>ansible-navigator</code>, in <code>interactive</code> or <code>stdout</code> mode.', ref: [188, 189] },
+    { html: 'Citer le contenu d\'<code>ansible-dev-tools</code> et créer un squelette avec <code>ansible-creator</code>.', html_en: 'List the contents of <code>ansible-dev-tools</code> and create a skeleton with <code>ansible-creator</code>.', ref: [190] }
   ],
   slides: [
     { title: 'Execution Environments', src: [183],
@@ -140,28 +141,34 @@ $ ansible-creator init playbook my_namespace.my_project ./my_project` }
           ] },
         { t: 'reveal', label: 'Exercise: solution', html: '<pre># execution-environment.yml\n---\nversion: 3\n\nimages:\n  base_image:\n    name: docker.io/redhat/ubi9:latest\n\ndependencies:\n  ansible_core:\n    package_pip: ansible-core~=2.20.0\n  ansible_runner:\n    package_pip: ansible-runner\n  python_interpreter:\n    package_system: python3.12\n    python_path: /usr/bin/python3.12\n  galaxy:\n    collections:\n      - name: community.general\n# ping.yml\n---\n- name: Ping localhost from the EE\n  hosts: localhost\n  gather_facts: false\n  tasks:\n    - name: Check the connection\n      ansible.builtin.ping:\n\n$ ansible-builder build --tag=my_ee:1.0\n$ ansible-navigator images\n$ ansible-navigator run ping.yml \\\n    --eei my_ee:1.0 --pull-policy never \\\n    --mode stdout\n$ ansible-navigator exec --eei my_ee:1.0 \\\n    -- ansible --version</pre>' }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle version minimale de Python demande <code>ansible-core</code> 2.20, d\'après la slide 186 ?',
-        options: ['Python 3.6 ou plus', 'Python 3.9 ou plus', 'Python 3.12 ou plus'], answer: 2,
-        explain: 'Slide 186 : « ansible-core 2.20 needs Python 3.12 or later » ; <code>python_interpreter</code> l\'installe dans l\'image.', ref: [186] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quelle version minimale de Python demande <code>ansible-core</code> 2.20, d\'après la slide 186 ?', q_en: 'Which minimum version of Python does <code>ansible-core</code> 2.20 require, according to slide 186?',
+        options: ['Python 3.6 ou plus', 'Python 3.9 ou plus', 'Python 3.12 ou plus'],
+        options_en: ['Python 3.6 or later', 'Python 3.9 or later', 'Python 3.12 or later'], answer: 2,
+        explain: 'Slide 186 : « ansible-core 2.20 needs Python 3.12 or later » ; <code>python_interpreter</code> l\'installe dans l\'image.',
+        explain_en: 'Slide 186: “ansible-core 2.20 needs Python 3.12 or later”; <code>python_interpreter</code> installs it in the image.', ref: [186] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle commande écrit les instructions et le contexte de build sans construire l\'image ?',
-        options: ['ansible-builder create', 'ansible-builder build', 'ansible-navigator images'], answer: 0,
-        explain: 'Slide 187 : « create: writes the build instructions and context without building » ; <code>build</code> construit aussi l\'image.', ref: [187] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Quelle commande écrit les instructions et le contexte de build sans construire l\'image ?', q_en: 'Which command writes the build instructions and context without building the image?',
+        options: ['ansible-builder create', 'ansible-builder build', 'ansible-navigator images'],
+        options_en: ['ansible-builder create', 'ansible-builder build', 'ansible-navigator images'], answer: 0,
+        explain: 'Slide 187 : « create: writes the build instructions and context without building » ; <code>build</code> construit aussi l\'image.',
+        explain_en: 'Slide 187: “create: writes the build instructions and context without building”; <code>build</code> also builds the image.', ref: [187] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel mode d\'<code>ansible-navigator</code> affiche une sortie classique, comme <code>ansible-playbook</code> ?',
-        options: ['interactive', 'stdout', 'replay'], answer: 1,
-        explain: 'Slide 188 : « stdout: classic output, like ansible-playbook » ; <code>interactive</code> est le mode par défaut.', ref: [188] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Quel mode d\'<code>ansible-navigator</code> affiche une sortie classique, comme <code>ansible-playbook</code> ?', q_en: 'Which mode of <code>ansible-navigator</code> displays classic output, like <code>ansible-playbook</code>?',
+        options: ['interactive', 'stdout', 'replay'],
+        options_en: ['interactive', 'stdout', 'replay'], answer: 1,
+        explain: 'Slide 188 : « stdout: classic output, like ansible-playbook » ; <code>interactive</code> est le mode par défaut.',
+        explain_en: 'Slide 188: “stdout: classic output, like ansible-playbook”; <code>interactive</code> is the default mode.', ref: [188] }
     ] }
   ],
   takeaways: [
-    { html: 'Un Execution Environment est une image conteneur qui joue le rôle de nœud de contrôle Ansible : <code>ansible-core</code>, <code>ansible-runner</code>, Python, collections et leurs dépendances.', ref: [184] },
-    { html: 'Le même EE s\'exécute à l\'identique sur un poste, en CI et dans AWX / automation controller : on le construit une fois, on l\'exécute partout où tourne un moteur de conteneurs.', ref: [184] },
-    { html: 'Dans <code>execution-environment.yml</code>, <code>version: 3</code> demande Ansible Builder 3.x ; <code>ansible-core</code> 2.20 demande Python 3.12 ou plus, installé par <code>python_interpreter</code>.', ref: [186] },
-    { html: '<code>ansible-builder build</code> crée le contexte et construit l\'image, <code>create</code> écrit seulement le contexte ; Podman est le moteur par défaut, <code>--container-runtime=docker</code> sélectionne Docker.', ref: [187] },
-    { html: '<code>ansible-navigator run</code> lance un playbook dans un EE avec <code>--eei</code> ; le mode <code>interactive</code> est le défaut, <code>stdout</code> donne la sortie classique.', ref: [188, 189] },
-    { html: '<code>ansible-dev-tools</code> regroupe les outils (builder, navigator, creator, lint…) dans un seul paquet : <code>pip install ansible-dev-tools</code>.', ref: [190] }
+    { html: 'Un Execution Environment est une image conteneur qui joue le rôle de nœud de contrôle Ansible : <code>ansible-core</code>, <code>ansible-runner</code>, Python, collections et leurs dépendances.', html_en: 'An Execution Environment is a container image that acts as the Ansible control node: <code>ansible-core</code>, <code>ansible-runner</code>, Python, collections and their dependencies.', ref: [184] },
+    { html: 'Le même EE s\'exécute à l\'identique sur un poste, en CI et dans AWX / automation controller : on le construit une fois, on l\'exécute partout où tourne un moteur de conteneurs.', html_en: 'The same EE runs identically on a laptop, in CI and in AWX / automation controller: you build it once and run it anywhere a container engine runs.', ref: [184] },
+    { html: 'Dans <code>execution-environment.yml</code>, <code>version: 3</code> demande Ansible Builder 3.x ; <code>ansible-core</code> 2.20 demande Python 3.12 ou plus, installé par <code>python_interpreter</code>.', html_en: 'In <code>execution-environment.yml</code>, <code>version: 3</code> needs Ansible Builder 3.x; <code>ansible-core</code> 2.20 needs Python 3.12 or later, installed by <code>python_interpreter</code>.', ref: [186] },
+    { html: '<code>ansible-builder build</code> crée le contexte et construit l\'image, <code>create</code> écrit seulement le contexte ; Podman est le moteur par défaut, <code>--container-runtime=docker</code> sélectionne Docker.', html_en: '<code>ansible-builder build</code> creates the context and builds the image, <code>create</code> only writes the context; Podman is the default engine, <code>--container-runtime=docker</code> selects Docker.', ref: [187] },
+    { html: '<code>ansible-navigator run</code> lance un playbook dans un EE avec <code>--eei</code> ; le mode <code>interactive</code> est le défaut, <code>stdout</code> donne la sortie classique.', html_en: '<code>ansible-navigator run</code> runs a playbook in an EE with <code>--eei</code>; <code>interactive</code> mode is the default, <code>stdout</code> gives the classic output.', ref: [188, 189] },
+    { html: '<code>ansible-dev-tools</code> regroupe les outils (builder, navigator, creator, lint…) dans un seul paquet : <code>pip install ansible-dev-tools</code>.', html_en: '<code>ansible-dev-tools</code> bundles the tools (builder, navigator, creator, lint…) in a single package: <code>pip install ansible-dev-tools</code>.', ref: [190] }
   ]
 });

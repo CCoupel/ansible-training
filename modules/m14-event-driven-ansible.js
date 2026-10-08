@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm14', num: 14, emoji: '⚡',
   title: 'Event-Driven Ansible',
   tagline: "Déclencher l'automatisation par des événements : sources, rulebooks, conditions et actions avec ansible-rulebook.",
+  tagline_en: 'Trigger automation with events: sources, rulebooks, conditions and actions with ansible-rulebook.',
   objectives: [
-    { html: 'Expliquer le principe de l\'automatisation événementielle : une source produit des événements, une règle décide, une action s\'exécute.', ref: [194, 195] },
-    { html: 'Décrire l\'anatomie d\'un ruleset (<code>name</code>, <code>hosts</code>, <code>sources</code>, <code>rules</code>) et écrire un premier rulebook avec une source <code>webhook</code>.', ref: [198, 199] },
-    { html: 'Écrire des conditions avec les opérateurs, <code>all</code> et <code>any</code>, et limiter le déclenchement avec <code>throttle</code>.', ref: [205, 207, 209] },
-    { html: 'Choisir une action : <code>run_playbook</code>, <code>run_module</code>, <code>run_job_template</code>, <code>debug</code> ou <code>post_event</code>.', ref: [210] },
-    { html: 'Lancer et déboguer un rulebook avec <code>ansible-rulebook</code> et situer le decision environment et l\'EDA controller.', ref: [215, 216, 217, 218] }
+    { html: 'Expliquer le principe de l\'automatisation événementielle : une source produit des événements, une règle décide, une action s\'exécute.', html_en: 'Explain the principle of event-driven automation: a source produces events, a rule decides, an action runs.', ref: [194, 195] },
+    { html: 'Décrire l\'anatomie d\'un ruleset (<code>name</code>, <code>hosts</code>, <code>sources</code>, <code>rules</code>) et écrire un premier rulebook avec une source <code>webhook</code>.', html_en: 'Describe the anatomy of a ruleset (<code>name</code>, <code>hosts</code>, <code>sources</code>, <code>rules</code>) and write a first rulebook with a <code>webhook</code> source.', ref: [198, 199] },
+    { html: 'Écrire des conditions avec les opérateurs, <code>all</code> et <code>any</code>, et limiter le déclenchement avec <code>throttle</code>.', html_en: 'Write conditions with the operators, <code>all</code> and <code>any</code>, and limit triggering with <code>throttle</code>.', ref: [205, 207, 209] },
+    { html: 'Choisir une action : <code>run_playbook</code>, <code>run_module</code>, <code>run_job_template</code>, <code>debug</code> ou <code>post_event</code>.', html_en: 'Choose an action: <code>run_playbook</code>, <code>run_module</code>, <code>run_job_template</code>, <code>debug</code> or <code>post_event</code>.', ref: [210] },
+    { html: 'Lancer et déboguer un rulebook avec <code>ansible-rulebook</code> et situer le decision environment et l\'EDA controller.', html_en: 'Run and debug a rulebook with <code>ansible-rulebook</code> and place the decision environment and the EDA controller.', ref: [215, 216, 217, 218] }
   ],
   slides: [
     { title: 'Event-Driven Ansible', src: [193],
@@ -731,28 +732,34 @@ curl -H 'Content-Type: application/json' -d '{"service": "my_service", "status":
         ] },
         { t: 'text', html: 'ansible-rulebook, the ansible.eda collection and the EDA controller each have their own repository' }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle clé d\'un ruleset contient les conditions et les actions ?',
-        options: ['hosts', 'rules', 'sources', 'name'], answer: 1,
-        explain: 'Slide 198 : « rules: condition + action » ; <code>sources</code> indique d\'où viennent les événements.', ref: [198] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quelle clé d\'un ruleset contient les conditions et les actions ?', q_en: 'Which key of a ruleset holds the conditions and the actions?',
+        options: ['hosts', 'rules', 'sources', 'name'],
+        options_en: ['hosts', 'rules', 'sources', 'name'], answer: 1,
+        explain: 'Slide 198 : « rules: condition + action » ; <code>sources</code> indique d\'où viennent les événements.',
+        explain_en: 'Slide 198: “rules: condition + action”; <code>sources</code> says where events come from.', ref: [198] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Avec <code>throttle</code>, que fait <code>once_within</code> ?',
-        options: ['Il attend la fin du délai, puis exécute l\'action une fois pour le groupe', 'Il exécute l\'action sur chaque événement, en les espaçant du délai indiqué', 'Il agit sur le premier événement, puis ignore les suivants durant le délai'], answer: 2,
-        explain: 'Slide 209 : « once_within: act on the first, ignore the next ones for the delay » ; <code>once_after</code> attend puis agit une fois sur le groupe.', ref: [209] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Avec <code>throttle</code>, que fait <code>once_within</code> ?', q_en: 'With <code>throttle</code>, what does <code>once_within</code> do?',
+        options: ['Il attend la fin du délai, puis exécute l\'action une fois pour le groupe', 'Il exécute l\'action sur chaque événement, en les espaçant du délai indiqué', 'Il agit sur le premier événement, puis ignore les suivants durant le délai'],
+        options_en: ['It waits until the delay ends, then runs the action once for the group', 'It runs the action on every event, spacing them by the given delay', 'It acts on the first event, then ignores the next ones during the delay'], answer: 2,
+        explain: 'Slide 209 : « once_within: act on the first, ignore the next ones for the delay » ; <code>once_after</code> attend puis agit une fois sur le groupe.',
+        explain_en: 'Slide 209: “once_within: act on the first, ignore the next ones for the delay”; <code>once_after</code> waits, then acts once on the group.', ref: [209] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Que fait l\'action <code>run_job_template</code> ?',
-        options: ['Elle lance un job template sur un contrôleur comme AWX', 'Elle lance un playbook situé à côté du rulebook', 'Elle envoie un nouvel événement au même ruleset', 'Elle affiche l\'événement reçu dans la console'], answer: 0,
-        explain: 'Slide 214 : « Runs a job template of a controller (for example AWX) » ; un playbook se lance avec <code>run_playbook</code> (slide 211), un nouvel événement s\'envoie avec <code>post_event</code> (slide 213).', ref: [210, 211, 213, 214] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Que fait l\'action <code>run_job_template</code> ?', q_en: 'What does the <code>run_job_template</code> action do?',
+        options: ['Elle lance un job template sur un contrôleur comme AWX', 'Elle lance un playbook situé à côté du rulebook', 'Elle envoie un nouvel événement au même ruleset', 'Elle affiche l\'événement reçu dans la console'],
+        options_en: ['It runs a job template on a controller such as AWX', 'It runs a playbook located next to the rulebook', 'It sends a new event to the same ruleset', 'It prints the received event to the console'], answer: 0,
+        explain: 'Slide 214 : « Runs a job template of a controller (for example AWX) » ; un playbook se lance avec <code>run_playbook</code> (slide 211), un nouvel événement s\'envoie avec <code>post_event</code> (slide 213).',
+        explain_en: 'Slide 214: “Runs a job template of a controller (for example AWX)”; a playbook runs with <code>run_playbook</code> (slide 211), a new event is sent with <code>post_event</code> (slide 213).', ref: [210, 211, 213, 214] }
     ] }
   ],
   takeaways: [
-    { html: 'Un rulebook est une liste de rulesets ; un ruleset a un <code>name</code>, des <code>hosts</code>, des <code>sources</code> et des <code>rules</code> ; chaque règle associe une <code>condition</code> et une <code>action</code>.', ref: [198] },
-    { html: 'Les sources de la collection <code>ansible.eda</code> (<code>webhook</code>, <code>kafka</code>, <code>alertmanager</code>…) produisent les événements ; <code>generic</code> et <code>range</code> servent à tester.', ref: [200, 202] },
-    { html: 'Dans une condition, <code>event.payload</code> donne le corps JSON reçu et <code>event.meta</code> l\'endpoint et les en-têtes de la requête.', ref: [203] },
-    { html: 'Avec <code>all</code>, toutes les conditions doivent être vraies, sur des événements différents : <code>all</code> n\'est pas <code>and</code> et <code>any</code> n\'est pas <code>or</code>.', ref: [207] },
-    { html: '<code>throttle</code> (<code>once_within</code> ou <code>once_after</code>, avec <code>group_by_attributes</code> obligatoire) évite qu\'une rafale d\'événements lance l\'action de nombreuses fois.', ref: [209] },
-    { html: 'Les playbooks lancés par les règles doivent être idempotents, car un événement peut arriver deux fois ; la logique reste dans les playbooks, les règles ne font que décider.', ref: [219] }
+    { html: 'Un rulebook est une liste de rulesets ; un ruleset a un <code>name</code>, des <code>hosts</code>, des <code>sources</code> et des <code>rules</code> ; chaque règle associe une <code>condition</code> et une <code>action</code>.', html_en: 'A rulebook is a list of rulesets; a ruleset has a <code>name</code>, <code>hosts</code>, <code>sources</code> and <code>rules</code>; each rule links a <code>condition</code> to an <code>action</code>.', ref: [198] },
+    { html: 'Les sources de la collection <code>ansible.eda</code> (<code>webhook</code>, <code>kafka</code>, <code>alertmanager</code>…) produisent les événements ; <code>generic</code> et <code>range</code> servent à tester.', html_en: 'The sources of the <code>ansible.eda</code> collection (<code>webhook</code>, <code>kafka</code>, <code>alertmanager</code>…) produce the events; <code>generic</code> and <code>range</code> are used for testing.', ref: [200, 202] },
+    { html: 'Dans une condition, <code>event.payload</code> donne le corps JSON reçu et <code>event.meta</code> l\'endpoint et les en-têtes de la requête.', html_en: 'In a condition, <code>event.payload</code> gives the JSON body received and <code>event.meta</code> the endpoint and the request headers.', ref: [203] },
+    { html: 'Avec <code>all</code>, toutes les conditions doivent être vraies, sur des événements différents : <code>all</code> n\'est pas <code>and</code> et <code>any</code> n\'est pas <code>or</code>.', html_en: 'With <code>all</code>, all the conditions must be true, on different events: <code>all</code> is not <code>and</code> and <code>any</code> is not <code>or</code>.', ref: [207] },
+    { html: '<code>throttle</code> (<code>once_within</code> ou <code>once_after</code>, avec <code>group_by_attributes</code> obligatoire) évite qu\'une rafale d\'événements lance l\'action de nombreuses fois.', html_en: '<code>throttle</code> (<code>once_within</code> or <code>once_after</code>, with <code>group_by_attributes</code> mandatory) prevents a burst of events from running the action many times.', ref: [209] },
+    { html: 'Les playbooks lancés par les règles doivent être idempotents, car un événement peut arriver deux fois ; la logique reste dans les playbooks, les règles ne font que décider.', html_en: 'Playbooks run by rules must be idempotent, because an event can arrive twice; the logic stays in the playbooks, the rules only decide.', ref: [219] }
   ]
 });
