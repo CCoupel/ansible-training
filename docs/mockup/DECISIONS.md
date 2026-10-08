@@ -59,3 +59,7 @@
 ### Progression & ancres
 - Clé de progression navigateur : `ansible-training-v2` (remise à zéro annoncée dans le CHANGELOG, version majeure).
 - Ancres `#mNN-…` liées à l'id du module ; pas de redirection depuis les anciens identifiants.
+
+### Livraison & contrôles (v1.0.0, lot 2)
+- Les exemples (`examples/eda/`) et le lab (`labs/eda/`) sont **livrés dans le zip HTML** (`tools/package.js`, chemins `examples` et `labs`) : 71 fichiers. Le lab « testé » reste une procédure manuelle (Java et `ansible-rulebook` absents de la CI).
+- `tools/validate.js` avertit si un module compte moins de 6 ou plus de 35 slides de contenu hors Bonus (les quiz ne comptent pas) ; 35 = borne du module le plus long (m14).

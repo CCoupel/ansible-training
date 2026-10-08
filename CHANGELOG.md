@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Lot 1 de la v1.0.0 (en développement, non publié) : module Execution Environments, agenda sur 4 jours, outillage de renumérotation.
+Lots 1 et 2 de la v1.0.0 (en développement, non publiés) : modules Execution Environments (m13) et Event-Driven Ansible (m14), exemples et lab EDA, agenda sur 4 jours, outillage de renumérotation.
 
 ### Added
 
@@ -16,7 +16,10 @@ Lot 1 de la v1.0.0 (en développement, non publié) : module Execution Environme
 - **Outillage de renumérotation** : `tools/renumber.py` (`--check` / `--apply`, insertions seules, idempotent), `tests/slides/slide_index.json` (ordre des slides) et test `test_slide_index_sync` (garde-fou contre la dérive PPTX/HTML).
 - **Source unique du décompte** : `tests/slides/expected.json` (nombre de slides, masquées) lu par `validate.js`, `check_pptx.py` et les tests du site, au lieu de valeurs codées en dur.
 - **Process « Livraison PPTX + HTML »** dans `CONVENTIONS.md` (#5) : toute insertion de slides passe par gabarits, `renumber.py`, contrôle de non-régression, contenu, puis HTML dans le même lot.
-- **Plan du module Event-Driven Ansible** (`docs/plans/v1.0.0/plan-eda.md`, #6) : module m14 prévu au lot 2, 31 slides, 3 quiz.
+- **Plan du module Event-Driven Ansible** (`docs/plans/v1.0.0/plan-eda.md`, #6).
+- **Module m14 « Event-Driven Ansible »** (#7, #8) : 31 slides PPTX (193-223, en anglais) et module HTML associé (5 objectifs, 6 « À retenir », 3 quiz). Couvre les rulebooks, les sources `ansible.eda`, les conditions, les actions, `ansible-rulebook` et le decision environment.
+- **Exemples et lab EDA** (#9) : `examples/eda/` (10 rulebooks numérotés, `remediate.yml`, inventaire, variables) et `labs/eda/` (lab de remédiation sur webhook local `127.0.0.1`, énoncé et solution). Embarqués dans le zip HTML. La procédure manuelle « lab testé » est dans `tests/procedures/labs/eda/lab-teste.md`.
+- **Comptage des slides de contenu** dans `tools/validate.js` (hors Bonus) : avertissement hors de la plage 6 à 35.
 
 ### Changed
 
@@ -24,8 +27,9 @@ Lot 1 de la v1.0.0 (en développement, non publié) : module Execution Environme
 - **BREAKING (site)** : progression des apprenants remise à zéro une seule fois. La clé de stockage navigateur passe de `ansible-training-v1` à `ansible-training-v2`, car les anciens identifiants `m13-*` à `m15-*` ne correspondent plus aux mêmes slides.
 - **Renumérotation des slides à partir de la 183** (+10) : Execution Environments 183-192 (nouveau), Real use case 193-202, Best practices 203-226, Automation integration 227-233. Le PPTX compte 233 slides, masquées 203, 220 et 227 (anciennes 193, 210 et 217).
 - Image `s209-1.png` renommée `s219-1.png` (suit la slide décalée).
-- Zip HTML : 52 fichiers (module m13 et image renommée inclus).
-- Tests : 172 tests de site en strict (`PARITY_STRICT=1`), 44 tests d'obsolescence PPTX (`LOTS_STRICT=1`).
+- **Renumérotation des slides à partir de la 193** (+31, lot 2) : Event-Driven Ansible 193-223 (nouveau), Real use case 224-233, Best practices 234-257, Automation integration 258-264. Le PPTX compte 264 slides, masquées 234, 251 et 258. Image `s219-1.png` renommée `s250-1.png`.
+- Zip HTML : 71 fichiers (module m14, `examples/eda/` et `labs/eda/` inclus).
+- Tests : 206 tests de site en strict (`PARITY_STRICT=1`), 46 tests d'obsolescence PPTX (`LOTS_STRICT=1`), dont des tests de concordance entre slides, exemples et lab EDA.
 
 ## [0.2.0] - 2026-10-07
 
