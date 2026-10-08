@@ -4,13 +4,13 @@ COURSE.add({
   id: 'm03', num: 3, emoji: '📜',
   title: 'Playbooks',
   tagline: 'Lire et comprendre un playbook : plays, tâches, modules, blocs, import et include.',
-  tagline_en: 'Read and understand a playbook: plays, tasks, modules, blocks, import and include.',
+  tagline_en: 'Learn to read a playbook: plays, tasks, modules, blocks, import and include.',
   objectives: [
     { html: 'Décrire un playbook : un fichier YAML simple et lisible qui définit une série de tâches à exécuter.', html_en: 'Describe a playbook: a simple, readable YAML file that defines a series of tasks to run.', ref: [31] },
     { html: 'Identifier les éléments d\'un playbook : plays, hôtes de l\'inventaire, tâches, modules et paramètres.', html_en: 'Identify the elements of a playbook: plays, inventory hosts, tasks, modules and parameters.', ref: [32] },
     { html: 'Lire un playbook qui installe et démarre Apache (<code>hosts</code>, <code>vars</code>, <code>remote_user</code>, <code>tasks</code>).', html_en: 'Read a playbook that installs and starts Apache (<code>hosts</code>, <code>vars</code>, <code>remote_user</code>, <code>tasks</code>).', ref: [34] },
     { html: 'Grouper des tâches avec <code>block</code> et conditionner une tâche avec <code>when</code>.', html_en: 'Group tasks with <code>block</code> and make a task conditional with <code>when</code>.', ref: [41, 42] },
-    { html: 'Distinguer les <code>import*</code> (statiques) des <code>include*</code> (dynamiques).', html_en: 'Tell the <code>import*</code> keywords (static) from the <code>include*</code> keywords (dynamic).', ref: [43] }
+    { html: 'Distinguer les <code>import*</code> (statiques) des <code>include*</code> (dynamiques).', html_en: 'Distinguish between the <code>import*</code> keywords (static) and the <code>include*</code> keywords (dynamic).', ref: [43] }
   ],
   slides: [
     { title: 'Playbook', src: [30],
@@ -139,7 +139,7 @@ SRV-1                      : ok=3    changed=1    unreachable=0    failed=0    s
     { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle affirmation sur les <code>include*</code> est exacte ?', q_en: 'Which statement about <code>include*</code> is correct?',
         options: ['Leurs tâches apparaissent toujours dans la sortie de --list-tasks', 'Ils sont traités pendant l\'exécution du playbook et acceptent une boucle', 'Ils sont pré-traités au moment où le playbook est analysé'],
-        options_en: ['Their tasks appear in the output of --list-tasks', 'They are processed while the playbook runs and accept a loop', 'They are pre-processed when the playbook is parsed'], answer: 1,
+        options_en: ['All the tasks of an include are listed by --list-tasks', 'They are processed while the playbook runs and accept a loop', 'They are pre-processed when the playbook is parsed'], answer: 1,
         explain: 'Slide 43 : « Include => dynamic » ; une boucle peut être utilisée avec un include, alors que les tâches d\'un include dynamique n\'apparaissent pas dans la sortie de <code>--list-tasks</code>.',
         explain_en: 'Slide 43: “Include => dynamic”; a loop can be used with an include, whereas the tasks of a dynamic include do not appear in the <code>--list-tasks</code> output.', ref: [43] }
     ] },

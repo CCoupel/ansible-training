@@ -4,12 +4,12 @@ COURSE.add({
   id: 'm01', num: 1, emoji: '🚀',
   title: 'Introduction',
   tagline: 'Découvrir ce qu\'est Ansible, ses cas d\'usage, son architecture sans agent et ses premières commandes.',
-  tagline_en: 'Discover what Ansible is, its use cases, its agentless architecture and your first commands.',
+  tagline_en: 'Discover what Ansible is, its use cases, its agentless architecture and its first commands.',
   objectives: [
     { html: 'Décrire Ansible comme un langage d\'automatisation (les playbooks) et un moteur qui les exécute.', html_en: 'Describe Ansible as an automation language (playbooks) and an engine that runs them.', ref: [4] },
     { html: 'Citer des cas d\'usage d\'Ansible : gestion de configuration, déploiement d\'applications, provisioning, livraison continue, sécurité et conformité, orchestration.', html_en: 'List Ansible use cases: configuration management, application deployment, provisioning, continuous delivery, security and compliance, orchestration.', ref: [5] },
     { html: 'Expliquer pourquoi Ansible est dit sans agent (OpenSSH, WinRM, PSRP).', html_en: 'Explain why Ansible is called agentless (OpenSSH, WinRM, PSRP).', ref: [6] },
-    { html: 'Situer l\'inventaire, les modules, les plugins et les playbooks dans le fonctionnement d\'ansible-core.', html_en: 'Place the inventory, modules, plugins and playbooks in the way ansible-core works.', ref: [8, 9, 10] },
+    { html: 'Situer l\'inventaire, les modules, les plugins et les playbooks dans le fonctionnement d\'ansible-core.', html_en: 'Identify where the inventory, modules, plugins and playbooks fit in ansible-core.', ref: [8, 9, 10] },
     { html: 'Lancer une commande ad hoc avec <code>ansible</code> et un playbook avec <code>ansible-playbook</code>.', html_en: 'Run an ad hoc command with <code>ansible</code> and a playbook with <code>ansible-playbook</code>.', ref: [11, 12] }
   ],
   slides: [
@@ -106,7 +106,7 @@ PLAY RECAP *********************************************************************
     { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle commande exécute un playbook sur un inventaire donné ?', q_en: 'Which command runs a playbook on a given inventory?',
         options: ['ansible -i &lt;inventaire&gt; &lt;playbook&gt;', 'pipx install ansible-core -i &lt;inventaire&gt;', 'ansible-playbook -i &lt;inventaire&gt; &lt;playbook&gt;'],
-        options_en: ['ansible -i &lt;inventory&gt; &lt;playbook&gt;', 'pipx install ansible-core -i &lt;inventory&gt;', 'ansible-playbook -i &lt;inventory&gt; &lt;playbook&gt;'], answer: 2,
+        options_en: ['ansible -i &lt;inventaire&gt; &lt;playbook&gt;', 'pipx install ansible-core -i &lt;inventaire&gt;', 'ansible-playbook -i &lt;inventaire&gt; &lt;playbook&gt;'], answer: 2,
         explain: 'La slide 12 donne <code>ansible-playbook -i &lt;inventaire&gt;</code> suivi des options et du playbook (cf. slide 12).',
         explain_en: 'Slide 12 gives <code>ansible-playbook -i &lt;inventaire&gt;</code> followed by the options and the playbook (see slide 12).', ref: [12] }
     ] }

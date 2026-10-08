@@ -114,7 +114,7 @@ tasks:
     { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quel mot-clé exécute un bloc de tâches quel que soit le succès ou l\'échec du bloc principal ?', q_en: 'Which keyword runs a block of tasks whether the main block succeeds or fails?',
         options: ['rescue', 'ignore_errors', 'always'],
-        options_en: ['The rescue section', 'The ignore_errors keyword', 'The always section'], answer: 2,
+        options_en: ['The rescue keyword', 'The ignore_errors keyword', 'The always keyword'], answer: 2,
         explain: 'Slide 69 : « always: A block to execute tasks regardless of success or failure » ; <code>rescue</code> ne s\'exécute que si une erreur survient.',
         explain_en: 'Slide 69: “always: A block to execute tasks regardless of success or failure”; <code>rescue</code> runs only if an error occurs.', ref: [69] }
     ] },
@@ -126,7 +126,7 @@ tasks:
         explain_en: 'Slide 79: “The task will be executed ont the server ‘host’ instead of the current one”.', ref: [79] }
     ] },
     { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Comment considérer une tâche comme échouée d\'après sa sortie ?', q_en: 'How do you mark a task as failed based on its output?',
+      { t: 'quiz', q: 'Comment considérer une tâche comme échouée d\'après sa sortie ?', q_en: 'How can the output of a task decide whether it is an error?',
         options: ['Avec failed_when et une condition sur result', 'Avec changed_when et une condition sur result', 'Avec become_user et une condition sur result'],
         options_en: ['With failed_when and a condition on result', 'With changed_when and a condition on result', 'With become_user and a condition on result'], answer: 0,
         explain: 'Slide 72 : <code>failed_when</code> teste le contenu de <code>result.stdout</code> pour décider de l\'échec.',

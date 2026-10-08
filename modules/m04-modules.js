@@ -4,10 +4,10 @@ COURSE.add({
   id: 'm04', num: 4, emoji: '🧩',
   title: 'Modules',
   tagline: 'Comprendre ce qu\'est un module, où trouver les modules et collections, et préparer l\'environnement de lab.',
-  tagline_en: 'Understand what a module is, where to find modules and collections, and prepare the lab environment.',
+  tagline_en: 'Learn what a module is, where to find modules and collections, and how to prepare the lab environment.',
   objectives: [
     { html: 'Définir un module Ansible : un script réutilisable et autonome qui réalise une tâche précise.', html_en: 'Define an Ansible module: a reusable, self-contained script that performs a specific task.', ref: [45] },
-    { html: 'Distinguer les modules intégrés (<code>ansible.builtin</code>), ceux des collections et les modules personnalisés.', html_en: 'Tell built-in modules (<code>ansible.builtin</code>), collection modules and custom modules apart.', ref: [45] },
+    { html: 'Distinguer les modules intégrés (<code>ansible.builtin</code>), ceux des collections et les modules personnalisés.', html_en: 'Distinguish between built-in modules (<code>ansible.builtin</code>), collection modules and custom modules.', ref: [45] },
     { html: 'Retrouver un module dans l\'index des collections et dans l\'index de <code>ansible.builtin</code>.', html_en: 'Find a module in the collections index and in the <code>ansible.builtin</code> index.', ref: [47, 48] },
     { html: 'Consulter la documentation en ligne d\'un module, par exemple <code>shell</code>.', html_en: 'Read the online documentation of a module, for example <code>shell</code>.', ref: [49] },
     { html: 'Utiliser les commandes de base de vi/vim pour éditer un fichier.', html_en: 'Use the basic vi/vim commands to edit a file.', ref: [53] }

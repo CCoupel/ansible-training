@@ -4,12 +4,12 @@ COURSE.add({
   id: 'm05', num: 5, emoji: '🔣',
   title: 'Variables & facts',
   tagline: 'Définir et utiliser des variables, comprendre leur précédence et exploiter les facts.',
-  tagline_en: 'Define and use variables, understand their precedence and use facts.',
+  tagline_en: 'Define and use variables, learn how precedence works and use facts.',
   objectives: [
     { html: 'Définir une variable : une valeur réutilisable dans les playbooks et les rôles.', html_en: 'Define a variable: a reusable value in playbooks and roles.', ref: [57] },
     { html: 'Citer les types de variables : de playbook, d\'inventaire, de rôle et extra variables passées en ligne de commande.', html_en: 'List the variable types: playbook, inventory, role and extra variables passed on the command line.', ref: [57] },
     { html: 'Utiliser des variables de type chaîne, entier, tableau et dictionnaire dans un playbook.', html_en: 'Use string, integer, array and dictionary variables in a playbook.', ref: [59] },
-    { html: 'Déterminer la valeur d\'une variable définie à plusieurs niveaux grâce à l\'ordre de précédence.', html_en: 'Work out the value of a variable defined at several levels using the precedence order.', ref: [58, 60, 61] },
+    { html: 'Déterminer la valeur d\'une variable définie à plusieurs niveaux grâce à l\'ordre de précédence.', html_en: 'Determine the value of a variable defined at several levels using the precedence order.', ref: [58, 60, 61] },
     { html: 'Lister les facts d\'un hôte et ajouter des facts personnalisés.', html_en: 'List the facts of a host and add custom facts.', ref: [64, 65, 67] }
   ],
   slides: [
@@ -148,7 +148,7 @@ Key2=value2` },
     { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Où se placent les facts locaux sur l\'hôte distant ?', q_en: 'Where are local facts placed on the remote host?',
         options: ['/var/lib/ansible/facts', '/etc/ansible/facts.d/*.fact', '/etc/ansible/hosts'],
-        options_en: ['Under /var/lib/ansible/facts', 'Under /etc/ansible/facts.d/*.fact', 'Under /etc/ansible/hosts'], answer: 1,
+        options_en: ['Facts in /var/lib/ansible/facts', 'Facts in /etc/ansible/facts.d/*.fact', 'Facts in /etc/ansible/hosts'], answer: 1,
         explain: 'Slide 65 : « facts in remote host: /etc/ansible/facts.d/*.fact ».',
         explain_en: 'Slide 65: “facts in remote host: /etc/ansible/facts.d/*.fact”.', ref: [65] }
     ] }
