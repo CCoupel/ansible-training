@@ -141,7 +141,7 @@ class TestPackage(unittest.TestCase):
 
     def test_cle_localstorage_du_cours(self):
         engine = self.zf.read("assets/engine.js").decode("utf-8")
-        self.assertIn("ansible-training-v1", engine)
+        self.assertIn("ansible-training-v2", engine)
 
     def test_site_autonome_double_clic(self):
         """index.html référence des chemins relatifs existants dans le zip (pas de chemin absolu ni file://)."""

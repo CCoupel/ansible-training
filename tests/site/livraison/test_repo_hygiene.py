@@ -50,7 +50,9 @@ class TestHygiene(unittest.TestCase):
     def test_noms_de_modules_conformes(self):
         for p in self.tracked:
             if p.startswith("modules/"):
-                self.assertRegex(p, r"modules/m(0[1-9]|1[0-5])-[a-z0-9-]+\.js$", "nom de module non conforme : %s" % p)
+                self.assertRegex(p, r"modules/m(0[1-9]|[1-9]\d)-[a-z0-9-]+\.js$", "nom de module non conforme : %s" % p)
+                self.assertIn(p.split("/")[1][:3], {m["id"] for m in S.plan_reader.plan()},
+                              "module absent de assets/plan.js : %s" % p)
 
     def test_scripts_de_index_html_existent_et_sont_suivis(self):
         html = (S.ROOT / "index.html").read_text(encoding="utf-8")
