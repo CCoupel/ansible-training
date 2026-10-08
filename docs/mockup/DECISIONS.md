@@ -81,3 +81,8 @@
 ### Livraison & contrôles (v1.0.0, lot 2)
 - Les exemples (`examples/eda/`) et le lab (`labs/eda/`) sont **livrés dans le zip HTML** (`tools/package.js`, chemins `examples` et `labs`) : 71 fichiers. Le lab « testé » reste une procédure manuelle (Java et `ansible-rulebook` absents de la CI).
 - `tools/validate.js` avertit si un module compte moins de 6 ou plus de 35 slides de contenu hors Bonus (les quiz ne comptent pas) ; 35 = borne du module le plus long (m14).
+
+### Tolérances et choix acceptés (v1.0.0, lot 3)
+- **Bascule de langue** : elle réaffiche la slide courante. Conséquences connues : défilement remis en haut de la slide, cases d'un lab décochées, solutions refermées. Tolérance acceptée.
+- **Nom accessible du bouton** : « FR | EN — langue : … ». Écart à la maquette validée, qui ne prévoyait pas ce libellé.
+- **Relecture de l'anglais** : seulement par les agents du projet. Risque : tournures peu idiomatiques dans le Bonus. Une relecture humaine peut être faite avant la release v1.0.0 (voir `docs/plans/v1.0.0/release-checklist.md`).

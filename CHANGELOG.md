@@ -7,9 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Lots 1 et 2 de la v1.0.0 (en développement, non publiés) : modules Execution Environments (m13) et Event-Driven Ansible (m14), exemples et lab EDA, agenda sur 4 jours, outillage de renumérotation.
+Lots 1, 2 et 3 de la v1.0.0 (en développement, non publiés) : modules Execution Environments (m13) et Event-Driven Ansible (m14), exemples et lab EDA, agenda sur 4 jours, outillage de renumérotation, site bilingue fr/en.
 
 ### Added
+
+- **Site multilingue fr/en** (#51) : sélecteur « FR | EN » dans la barre du haut, à côté du thème, raccourci clavier `l`. Langue initiale : paramètre d'URL `?lang=fr|en` (accepté, puis mémorisé), sinon choix mémorisé, sinon langue du navigateur. Repli sur le français pour toute chaîne absente en anglais.
+- **Traduction du Bonus HTML** des 17 modules (tagline, objectifs, « À retenir », 51 quiz, titres des slides `extra`, textes alternatifs des images) : 427 champs `_en`, dont 9 descriptions de schémas SVG. Le texte des slides et les notes du formateur restent en anglais dans les deux langues.
+- **Interface traduite** : `assets/i18n/fr.js` et `assets/i18n/en.js`, 74 clés chacun (libellés `lab` et `reveal` inclus).
+- **Contrôles de traduction** dans `tools/validate.js` : parité des clés fr/en, liste fermée des champs traduisibles, `<code>` identiques dans les deux langues, traduction tout ou rien par module, libellés en dur refusés. Option `--strict-i18n` (ou `I18N_STRICT=1`).
+- **Glossaire** `docs/i18n/glossary.md` : termes techniques et règles de l'anglais du Bonus.
+- **Tests** : moteur de langue, règles de l'anglais, citations de slides (`tests/site/i18n`) et contrôle de complétude de la traduction.
+
+### Fixed
+
+- Numéros de slides périmés dans le texte français des quiz de m15 à m17 (renumérotation +41 non répercutée dans la prose).
+- Note du module m03 en anglais, comme le reste du PPTX.
 
 - **Module m13 « Execution Environments »** (#19) : 10 slides PPTX (183-192, en anglais) et module HTML associé (objectifs, « À retenir », 3 quiz, lab et solution). Couvre `execution-environment.yml` (`version: 3`), `ansible-builder`, `ansible-navigator` et `ansible-dev-tools` / `ansible-creator`.
 - **Agenda sur 4 jours** (slide 3 et accueil du site) : Day 3 accueille m13 ; Day 4 accueille m15 à m17.
@@ -28,8 +40,9 @@ Lots 1 et 2 de la v1.0.0 (en développement, non publiés) : modules Execution E
 - **Renumérotation des slides à partir de la 183** (+10) : Execution Environments 183-192 (nouveau), Real use case 193-202, Best practices 203-226, Automation integration 227-233. Le PPTX compte 233 slides, masquées 203, 220 et 227 (anciennes 193, 210 et 217).
 - Image `s209-1.png` renommée `s219-1.png` (suit la slide décalée).
 - **Renumérotation des slides à partir de la 193** (+31, lot 2) : Event-Driven Ansible 193-223 (nouveau), Real use case 224-233, Best practices 234-257, Automation integration 258-264. Le PPTX compte 264 slides, masquées 234, 251 et 258. Image `s219-1.png` renommée `s250-1.png`.
-- Zip HTML : 71 fichiers (module m14, `examples/eda/` et `labs/eda/` inclus).
-- Tests : 206 tests de site en strict (`PARITY_STRICT=1`), 46 tests d'obsolescence PPTX (`LOTS_STRICT=1`), dont des tests de concordance entre slides, exemples et lab EDA.
+- Zip HTML : 72 fichiers (module m14, `examples/eda/`, `labs/eda/`, `assets/i18n/en.js` inclus).
+- Tests : 284 tests de site en strict complet (`PARITY_STRICT=1 LOTS_STRICT=1 I18N_STRICT=1`), 46 tests d'obsolescence PPTX (`LOTS_STRICT=1`), dont des tests de concordance entre slides, exemples et lab EDA.
+- **Release** : `release.yml` passe en `I18N_STRICT: '1'` et lance `node tools/validate.js --strict-i18n`. **Un tag `vX.Y.Z` échoue en CI tant que la traduction anglaise n'est pas complète** ; c'est le cas désormais.
 
 ## [0.2.0] - 2026-10-07
 
