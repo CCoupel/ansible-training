@@ -25,7 +25,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-TOOL = ROOT / "tools" / "renumber.py"
+TOOL = Path(os.environ.get("RENUMBER_TOOL", ROOT / "tools" / "renumber.py"))  # RENUMBER_TOOL : viser une autre version de l'outil
 PPTX_NAME = "Ansible Training.pptx"
 
 NS = ('xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
@@ -321,6 +321,117 @@ class TestRefus(RenumberCase):
     def test_options_exclusives(self):
         rc, _, _ = self.run_tool("--check", "--apply")
         self.assertNotEqual(rc, 0)
+
+
+BIG = [{"id": 400 + i, "text": "Grand deck, slide %d" % (i + 1), "hidden": False} for i in range(14)]
+BIG_IMAGES = ["s010-1.png", "s010-2.png", "s011-1.png", "s012-1.png", "s012-2.png"]
+BIG_MODULE = """COURSE.add({ id: 'm01', num: 1,
+  slides: [
+    { title: 'Dix', src: [10],
+      blocks: [ { t: 'img', file: 'assets/img/s010-1.png', alt: 'a' }, { t: 'img', file: 'assets/img/s010-2.png', alt: 'b' } ] },
+    { title: 'Onze', src: [11], blocks: [ { t: 'img', file: 'assets/img/s011-1.png', alt: 'c' } ] },
+    { title: 'Douze', src: [12],
+      blocks: [ { t: 'img', file: 'assets/img/s012-1.png', alt: 'd' }, { t: 'img', file: 'assets/img/s012-2.png', alt: 'e' } ] }
+  ] });
+"""
+
+
+class TestImagesDoubleDecalage(RenumberCase):
+    """Régression (revue renumber.py) : images de slides consécutives, plusieurs par slide, décalées de +1 puis +2."""
+
+    def setUp(self):
+        super().setUp()
+        self.write("tests/slides/expected.json", json.dumps({"slides": 14, "hidden": []}, indent=2) + "\n")
+        self.write("tests/slides/slide_index.json", json.dumps(index_of(BIG), indent=1) + "\n")
+        self.write("assets/plan.js", "COURSE.plan = [\n  { num: 1, id: 'm01', title: 'Un', day: 'J1', range: [1, 14] }\n];\n")
+        self.write("modules/m01-un.js", BIG_MODULE)
+        self.write("modules/m02-deux.js", "COURSE.add({ id: 'm02', num: 2, slides: [] });\n")
+        (self.repo / "assets/img/s005-1.png").unlink()
+        decl = []
+        for f in BIG_IMAGES:
+            (self.repo / "assets/img" / f).write_bytes(b"PNG:" + f.encode())
+            n = int(f[1:4])
+            decl.append({"fichier": f, "slide": n, "slides": [n], "media_origine": "x.png", "sha256": "0" * 64})
+        self.write("assets/img/images.json", json.dumps(decl, indent=2) + "\n")
+        make_pptx(self.repo / PPTX_NAME, BIG)
+        self.git("add", "-A")
+        self.git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c", "commit.gpgsign=false",
+                 "commit", "-q", "--amend", "-m", "etat avant (grand deck)")
+
+    def check_images(self, deck, shifts):
+        """shifts : {ancien numéro: nouveau numéro} pour 10, 11, 12."""
+        self.deck_after(deck)
+        rc, out, err = self.run_tool("--apply")
+        self.assertEqual(rc, 2, out + err)
+        names = sorted(p.name for p in (self.repo / "assets/img").glob("s*.png"))
+        expected = sorted("s%03d-%s" % (shifts[int(f[1:4])], f[5:]) for f in BIG_IMAGES)
+        self.assertEqual(names, expected, "fichiers PNG renommés exactement, sans collision ni doublon")
+        for f in BIG_IMAGES:  # le contenu suit le nom (aucune image écrasée ni échangée)
+            new = "s%03d-%s" % (shifts[int(f[1:4])], f[5:])
+            self.assertEqual((self.repo / "assets/img" / new).read_bytes(), b"PNG:" + f.encode(), new)
+        module = self.read("modules/m01-un.js")
+        refs = sorted(__import__("re").findall(r"assets/img/(s\d{3}-\d\.png)", module))
+        self.assertEqual(refs, expected)
+        decl = {d["fichier"]: d for d in self.json("assets/img/images.json")}
+        self.assertEqual(sorted(decl), expected)
+        for f in BIG_IMAGES:
+            new = "s%03d-%s" % (shifts[int(f[1:4])], f[5:])
+            self.assertEqual((decl[new]["slide"], decl[new]["slides"]), (shifts[int(f[1:4])], [shifts[int(f[1:4])]]))
+        self.assertIn("src: [%d]" % shifts[10], module)
+        self.assertIn("src: [%d]" % shifts[12], module)
+        # idempotence : après commit, un second --apply ne change rien
+        self.git("add", "-A")
+        self.git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c", "commit.gpgsign=false",
+                 "commit", "-q", "-m", "renumerotation")
+        snap = self.snapshot()
+        rc, out, err = self.run_tool("--apply")
+        self.assertEqual(rc, 0, out + err)
+        self.assertEqual(self.snapshot(), snap)
+
+    def test_decalage_uniforme_de_2(self):
+        deck = BIG[:9] + [new_slide(1), new_slide(2)] + BIG[9:]
+        self.check_images(deck, {10: 12, 11: 13, 12: 14})
+
+    def test_decalage_de_1_puis_de_2(self):
+        # une slide avant la 10, une autre entre la 11 et la 12 : 10 et 11 → +1, 12 → +2
+        deck = BIG[:9] + [new_slide(1)] + BIG[9:11] + [new_slide(2)] + BIG[11:]
+        self.check_images(deck, {10: 11, 11: 12, 12: 14})
+
+    def test_decalage_de_1_seul(self):
+        deck = BIG[:9] + [new_slide(1)] + BIG[9:]
+        self.check_images(deck, {10: 11, 11: 12, 12: 13})
+
+
+class TestControleTexteSaute(RenumberCase):
+    """Régression : aucun ancien PPTX de l'historique ne correspond à slide_index.json → le contrôle texte est sauté."""
+
+    def setUp(self):
+        super().setUp()
+        deck = self.inserted(4, 2)
+        make_pptx(self.repo / PPTX_NAME, deck)  # le PPTX « après » devient le seul de l'historique
+        self.git("add", "-A")
+        self.git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c", "commit.gpgsign=false",
+                 "commit", "-q", "--amend", "-m", "historique sans l'ancien PPTX")
+        self.deck = deck
+
+    def test_check_simple_note_sans_changer_le_code_retour(self):
+        before = self.snapshot()
+        rc, out, err = self.run_tool("--check")
+        self.assertEqual(rc, 2, out + err)
+        self.assertIn("saut", (out + err).lower(), "la note « contrôle du texte sauté » est attendue")
+        self.assertEqual(self.snapshot(), before)
+
+    def test_apply_refuse_sans_option(self):
+        before = self.snapshot()
+        rc, out, err = self.run_tool("--apply")
+        self.assertEqual(rc, 1, out + err)
+        self.assertEqual(self.snapshot(), before, "rien n'est écrit quand le contrôle texte est impossible")
+
+    def test_apply_avec_no_text_check_applique(self):
+        rc, out, err = self.run_tool("--apply", "--no-text-check")
+        self.assertEqual(rc, 2, out + err)
+        self.assertEqual(self.json("tests/slides/slide_index.json"), index_of(self.deck))
+        self.assertIn("range: [7, 10]", self.read("assets/plan.js"))
 
 
 class TestPasDeChangement(RenumberCase):
