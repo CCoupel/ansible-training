@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Lots 1, 2 et 3 de la v1.0.0 (en développement, non publiés) : modules Execution Environments (m13) et Event-Driven Ansible (m14), exemples et lab EDA, agenda sur 4 jours, outillage de renumérotation, site bilingue fr/en.
+## [1.0.0] - 08/10/2026
+
+Version 1.0.0 : modules Execution Environments (m13) et Event-Driven Ansible (m14), exemples et lab EDA, agenda sur 4 jours, outillage de renumérotation, site bilingue fr/en.
 
 ### Added
 
@@ -22,6 +24,7 @@ Lots 1, 2 et 3 de la v1.0.0 (en développement, non publiés) : modules Executio
 
 - Numéros de slides périmés dans le texte français des quiz de m15 à m17 (renumérotation +41 non répercutée dans la prose).
 - Note du module m03 en anglais, comme le reste du PPTX.
+- Quiz m08 : le distracteur `tagged` (français et anglais) est remplacé par le tag `web`, `tagged` étant une valeur spéciale de `--tags` et non un tag posé sur une tâche.
 
 - **Module m13 « Execution Environments »** (#19) : 10 slides PPTX (183-192, en anglais) et module HTML associé (objectifs, « À retenir », 3 quiz, lab et solution). Couvre `execution-environment.yml` (`version: 3`), `ansible-builder`, `ansible-navigator` et `ansible-dev-tools` / `ansible-creator`.
 - **Agenda sur 4 jours** (slide 3 et accueil du site) : Day 3 accueille m13 ; Day 4 accueille m15 à m17.

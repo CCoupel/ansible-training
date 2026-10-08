@@ -171,7 +171,7 @@ Le site HTML est disponible en **français** et en **anglais** :
 
 À partir de v0.2.0, le support est disponible en version HTML interactive : 17 modules (m01–m17, dont m13 Execution Environments et m14 Event-Driven Ansible, présents dans la version 1.0.0 en développement), 264 slides PPTX (dont 3 masquées, exclues du HTML), 51 quiz, objectifs et résumés par module, accessibilité complète (clavier, SVG nommés, alt descriptifs), interface et Bonus en français et en anglais (voir « Langues »).
 
-Le numéro d'un module suit son ordre d'affichage. Dans la version 1.0.0 en développement, le module m13 Execution Environments est inséré après m12 (lot 1), puis le module m14 Event-Driven Ansible après lui (lot 2) ; les anciens m13, m14 et m15 deviennent m15, m16 et m17. Les ancres `#m13-…` à `#m15-…` pointent désormais vers d'autres modules, et la progression enregistrée dans le navigateur repart à zéro (clé `ansible-training-v2`, voir CHANGELOG).
+Le numéro d'un module suit son ordre d'affichage. Dans la version 1.0.0 en préparation (release à venir), le module m13 Execution Environments est inséré après m12 (lot 1), puis le module m14 Event-Driven Ansible après lui (lot 2) ; les anciens m13, m14 et m15 deviennent m15, m16 et m17. Les ancres `#m13-…` à `#m15-…` pointent désormais vers d'autres modules, et la progression enregistrée dans le navigateur repart à zéro (clé `ansible-training-v2`, voir CHANGELOG).
 
 ### Ouverture du cours HTML
 
@@ -366,5 +366,5 @@ Consultez la licence applicable du dépôt (ce document ne la précise pas).
 ---
 
 **Dernière mise à jour** : 08/10/2026  
-**Version du support** : 0.2.0 (publiée) ; 1.0.0 en développement  
+**Version du support** : 0.2.0 (publiée) ; 1.0.0 en préparation (release à venir)  
 **Versions de référence** : ansible-core 2.20, Python 3.12+
