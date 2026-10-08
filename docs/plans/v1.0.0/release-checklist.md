@@ -1,45 +1,53 @@
 # Checklist de release v1.0.0 — reste à faire
 
-> État : milestone `v1.0.0` en développement (`1.0.0.a`). Lots 1, 2 et 3 validés en QA (C3 final du lot 3 sur HEAD `2a5a2a1`).
+> État : **1.0.0 en préparation (release à venir)**. Tag `v1.0.0` non posé, rien poussé.
+> HEAD de référence : `babc90a` (contient `1970145`). Contrôle final de la release : `_work/reports/qa-20261008-151717.md`, verdict **VALIDATED**.
 > Chiffres de référence : 264 slides PPTX, slides masquées 234, 251, 258 ; 17 modules (m01–m17) ; 51 quiz ; zip HTML de 72 fichiers ; 284 tests site en strict complet ; 46 tests d'obsolescence PPTX.
 > Ne pas tagger avant que toutes les cases « bloquant » soient cochées.
 
 ## 1. Secrets et anti-fuite (bloquant)
 
-- [ ] Définir le secret GitHub `LEAK_PATTERNS` : `gh secret set LEAK_PATTERNS < leak_patterns.txt` (une regex par ligne). Vérifier avec `gh secret list` (le contenu n'est jamais affiché).
-- [ ] Préparer `leak_patterns.txt` en local et relancer le scan avec les vrais motifs : `LEAK_PATTERNS="$(cat leak_patterns.txt)" python3 tests/slides/check_pptx.py "Ansible Training.pptx"` et `python3 tests/site/check_site.py --dir <extraction du zip> --require-secret`. Le lot 3 n'a pas pu faire ce scan (secret absent).
+- [ ] Créer `leak_patterns.txt` en local (une regex par ligne), puis définir le secret GitHub : `gh secret set LEAK_PATTERNS < leak_patterns.txt`. Vérifier avec `gh secret list` (le contenu n'est jamais affiché).
+- [ ] Rejouer le scan avec les vrais motifs : `LEAK_PATTERNS="$(cat leak_patterns.txt)" python3 tests/slides/check_pptx.py "Ansible Training.pptx"` puis `python3 tests/site/check_site.py --dir <extraction du zip> --require-secret`. Le contrôle QA a été fait sans secret (échec attendu sur `--require-secret`).
 
 ## 2. Revues humaines (bloquant)
 
-- [ ] **Revue visuelle PowerPoint** (pas de LibreOffice sur le poste) : slides 183 à 223 (Execution Environments et Event-Driven Ansible) et slide 3 (agenda sur 4 jours, colonnes Day 3 et Day 4 sans débordement). Procédure : `tests/procedures/slides/revue-visuelle/`.
+- [ ] **Revue visuelle PowerPoint** (pas de LibreOffice sur le poste) : slide 3 (agenda sur 4 jours, colonnes Day 3 et Day 4 sans débordement), slides 183 à 223 (Execution Environments et Event-Driven Ansible). Procédure : `tests/procedures/slides/revue-visuelle/`.
 - [ ] **Revue navigateur du site bilingue** : bascule FR | EN, `?lang=fr|en`, mémorisation, repli sur le français, libellés `lab` et `reveal`. Procédure : `tests/procedures/site/revue-visuelle-bilingue/`.
 - [ ] **Lab EDA testé** sur un poste avec Java 17+ et `ansible-rulebook` : `tests/procedures/labs/eda/lab-teste.md`.
 - [ ] **Exemple d'EE (slide 192, Podman)** : construire et lancer l'image d'exemple sur un poste avec Podman. Vérifier que les commandes de la slide fonctionnent telles quelles.
 - [ ] **Relecture humaine de l'anglais** (optionnelle, décision de l'utilisateur) : tournures du Bonus fr/en, en particulier m13 à m17.
 
-## 3. Correctifs de contenu connus
+## 3. Correctifs de contenu
 
-- [ ] **Quiz m08 : distracteur `tagged`** (français et anglais) à remplacer par un vrai tag ; actuellement une valeur spéciale de `--tags`, pas un tag posé sur une tâche. Relancer `node tools/validate.js --strict-i18n` et les tests i18n après correction.
+- [x] **Quiz m08 : distracteur `tagged`** (français et anglais) remplacé par le tag `web` (commit `197f6e8`). `tagged` est une valeur spéciale de `--tags`, pas un tag posé sur une tâche. Relancer `node tools/validate.js --strict-i18n` et les tests i18n avant le tag ; tout changement de module invalide le rapport QA `qa-20261008-151717`.
 
-## 4. Version, slide 2 et `meta.js` (bloquant)
+## 4. Version, slide 2 et `meta.js` (fait)
 
-- [ ] Passer `meta.js` en 1.0.0 avec la date de livraison : `node tools/sync-meta.js --version 1.0.0 --date JJ/MM/AAAA`.
-- [ ] Faire aligner la slide 2 du PPTX par `dev-slides` : version v1.0.0, même date (JJ/MM/AAAA), référence `ansible-core 2.20`.
-- [ ] Mettre `.claude/project-config.json` à 1.0.0 (version et date), si la clôture le demande.
-- [ ] Vérifier la cohérence : slide 2 et `meta.js` ont la même date et la même version.
+- [x] `meta.js` en 1.0.0, date 08/10/2026 (commit `1970145`).
+- [x] Slide 2 du PPTX en v1.0.0, date 08/10/2026 (commit `babc90a`).
+- [x] `.claude/project-config.json` en 1.0.0 (commit `babc90a`).
+- [x] Cohérence slide 2 / `meta.js` : même version et même date (contrôlé par la QA).
 
-## 5. Tests de version de tag
+## 5. Tests de version de tag (fait en QA)
 
-- [ ] Rejouer les trois contrôles de version avec le tag : `RELEASE_TAG=v1.0.0 PARITY_STRICT=1 LOTS_STRICT=1 I18N_STRICT=1 python3 -m unittest discover -s tests/site` (`test_meta_js_affiche_la_version_du_tag`, `test_slide_2_affiche_la_version_du_tag`, `test_sync_meta_check_avec_la_version_du_tag`). Ils échouent aujourd'hui, attendu tant que la slide 2 et `meta.js` sont en 0.2.0.
-- [ ] `node tools/validate.js --strict-i18n` : 0 erreur.
-- [ ] `node tools/package.js` puis `unzip -t build/Ansible-Training-HTML.zip` : 72 fichiers, `assets/i18n/en.js` présent.
+- [x] Les trois contrôles de version passent avec `RELEASE_TAG=v1.0.0` (`test_meta_js_affiche_la_version_du_tag`, `test_slide_2_affiche_la_version_du_tag`, `test_sync_meta_check_avec_la_version_du_tag`), QA `qa-20261008-151717`.
+- [x] `node tools/validate.js --strict-i18n` : 0 erreur (QA).
+- [x] `node tools/package.js` : zip de 72 fichiers, dont `assets/i18n/en.js` (QA).
 
 ## 6. Git, tag et publication
 
-- [ ] Merger `milestone/v1.0.0` sur `main` (fast-forward si possible), puis pousser `main`.
-- [ ] Poser le tag annoté `v1.0.0` sur `main` et pousser le tag. La CI refuse le tag si le commit n'est pas dans `origin/main`, si `LEAK_PATTERNS` manque, ou si la traduction est incomplète (`I18N_STRICT`).
-- [ ] Vérifier les trois assets de la release : `Ansible-Training-v1.0.0.pptx`, `Ansible-Training-HTML-v1.0.0.zip` et son `.sha256` (`sha256sum -c`).
-- [ ] **GitHub Pages** : activation à décider par l'utilisateur (dépôt public). Sans activation, le site n'est accessible que par le zip.
+Ordre des étapes restantes, tel que relevé dans le rapport QA :
+
+1. [ ] Créer `leak_patterns.txt`, puis `gh secret set LEAK_PATTERNS` et `gh secret list` (section 1).
+2. [ ] Rejouer le scan avec les vrais motifs (section 1).
+3. [ ] Revues humaines : PowerPoint, navigateur bilingue, lab EDA, exemple d'EE, relecture optionnelle (section 2).
+4. [x] Correctif du quiz m08 appliqué (`197f6e8`) ; relancer `validate.js --strict-i18n` et les tests i18n avant le tag (section 3).
+5. [ ] Clôture documentaire : CHANGELOG (`[1.0.0] - 08/10/2026`) et README (statut « en préparation ») faits ; CLAUDE.md vérifié (aucune erreur de chiffre).
+6. [ ] Refaire un contrôle si un nouveau commit change le PPTX, `meta.js` ou un module.
+7. [ ] **Pousser `main` local** : `main` (`0ffb1a8`) est un ancêtre de `babc90a`. Il est en avance d'un commit (mémoire de fin de session v0.2.0, `0ffb1a8`) sur `origin/main` (`b4b67b2`). Le push enverra donc 91 commits au total, dont 90 de `milestone/v1.0.0`. Faire d'abord le fast-forward de `main` sur `milestone/v1.0.0`, puis pousser `main`, et vérifier que `origin/main` contient le commit à tagger.
+8. [ ] Poser le tag annoté `v1.0.0` sur `main` et le pousser. La CI refuse le tag si le commit n'est pas dans `origin/main`, si `LEAK_PATTERNS` manque, ou si la traduction est incomplète (`I18N_STRICT`). Suivre le run de la release, puis vérifier les trois assets : `Ansible-Training-v1.0.0.pptx`, `Ansible-Training-HTML-v1.0.0.zip` et son `.sha256` (`sha256sum -c`).
+9. [ ] **GitHub Pages** : activation à décider par l'utilisateur (dépôt public). Sans activation, le site n'est accessible que par le zip.
 
 ## 7. Infrastructure du dépôt
 
@@ -49,6 +57,7 @@
 
 ## 8. Clôture
 
-- [ ] CHANGELOG : passer `[Unreleased]` en `[1.0.0] - JJ/MM/AAAA` et ajouter les notes de release (BREAKING côté site : numéros de modules, ancres `#m13-…` à `#m15-…`, progression remise à zéro).
-- [ ] README et CLAUDE.md : vérifier les chiffres après les corrections des points 3 et 4.
+- [x] CHANGELOG : section `[1.0.0] - 08/10/2026` et `[Unreleased]` vide au-dessus, avec les notes de release (BREAKING côté site : numéros de modules, ancres `#m13-…` à `#m15-…`, progression remise à zéro ; correction du distracteur m08).
+- [x] README : statut « 1.0.0 en préparation (release à venir) ».
+- [ ] README et CLAUDE.md : revérifier les chiffres après le correctif éventuel du point 3.
 - [ ] `/end-session` : mettre à jour la mémoire du projet et fermer le milestone `v1.0.0`.
