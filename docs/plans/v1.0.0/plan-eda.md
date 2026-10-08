@@ -4,6 +4,8 @@
 > Milestone : v1.0.0, branche `milestone/v1.0.0`.
 > Source : plan d'implémentation rev. 2 (`_work/reports/planner-20261008-101154.md`, section 4.2) et plan de contenu détaillé (`_work/reports/planner-20261008-100018.md`, section 2.2).
 > Rédigé le 2026-10-08. Version générique : aucune référence à l'organisation d'origine.
+>
+> **Statut : réalisé (lot 2).** Contenu E1-E31 livré en PPTX (slides 193-223) et en HTML (m14), validé au C3 du lot 2 (QA addendum 2, HEAD `9135394`). Valeurs réelles : m14 193-223, m15 224-233, m16 234-257, m17 258-264 ; slides masquées 234, 251, 258 ; 264 slides ; image `s250-1.png` ; zip HTML de 71 fichiers. Le lab testé sur un poste avec Java reste une procédure manuelle à faire par l'utilisateur (`tests/procedures/labs/eda/lab-teste.md`).
 
 ---
 
@@ -15,7 +17,7 @@
 | Langue des slides PPTX | **Anglais** | Cohérent avec le corps du support ; le site fr/en (#51) affiche les slides verbatim |
 | Agenda | **Day 4** (coupe C : m14 ouvre le Day 4) | Formation sur 4 jours. Day 3 = m11, m12, m13 ; Day 4 = m14, m15, m16, m17. Slide 3 et `day: 'J4'` dans `assets/plan.js` (voir section 12) |
 | Rédaction des slides | **Deux passages** : E1-E17 puis E18-E31 | Contrôle intermédiaire entre les deux passages ; même numérotation finale |
-| Exemples et lab | **Livrés dans le zip HTML** (`labs/eda/`, `examples/eda/`) | `package.js` embarque ces dossiers ; le zip passe à 53 entrées (voir section 7) |
+| Exemples et lab | **Livrés dans le zip HTML** (`labs/eda/`, `examples/eda/`) | `package.js` embarque ces dossiers ; le zip passe à 71 entrées (voir section 7) |
 | Lab | **Webhook local** (`127.0.0.1`) | Pas de service externe nécessaire |
 | Contrôle de structure | **stdlib Python** en CI ; lab testé = **procédure manuelle** | Pas de dépendance Java ni `ansible-rulebook` en CI |
 | HTML du module (#8) | **Lot 2**, avec les slides (#7) | Parité stricte verte à chaque fin de lot |
@@ -72,7 +74,7 @@ Règles de rédaction des quiz (CONVENTIONS) : options de longueur voisine, pas 
 
 - **`labs/eda/`** : énoncé et solution du lab E28-E30 (webhook → remédiation).
 - **`examples/eda/`** : rulebooks et playbooks d'exemple, avec des noms neutres (`my_namespace`, `example.com`, `127.0.0.1`).
-- **Livraison** : `labs/eda/` et `examples/eda/` sont embarqués dans le zip HTML par `package.js`. Le zip passe de 52 à **53 entrées** : le seul fichier ajouté est `modules/m14-event-driven-ansible.js` (les quiz sont dans ce fichier, aucune image nouvelle). Les fichiers de `labs/eda/` et `examples/eda/` s'ajoutent à ce compte ; le décompte exact est fixé à la clôture du lot 2.
+- **Livraison** : `labs/eda/` et `examples/eda/` sont embarqués dans le zip HTML par `package.js`. Le zip passe de 52 à **71 entrées** : 1 fichier pour le module (`modules/m14-event-driven-ansible.js`, quiz compris, aucune image nouvelle), 14 fichiers dans `examples/eda/` (10 rulebooks, `remediate.yml`, `inventory.yml`, `vars.yml`, README) et 4 fichiers dans `labs/eda/` (README, inventaire, `solution/rulebook.yml`, `solution/remediate.yml`).
 - Contrôle CI : test de structure (YAML et stdlib Python uniquement). Le lab n'est pas exécuté en CI (Java 17+ et `ansible-rulebook` absents). Le critère « lab testé » (#9) relève d'une **procédure manuelle** avec un webhook local sur `127.0.0.1`.
 
 ## 8. Procédure d'insertion (lot 2)
@@ -88,7 +90,7 @@ Toute insertion de slides suit la procédure du lot 1 (process #5, section « Li
 
 Garde-fous de `tools/renumber.py` : insertions seules, idempotence (`slide_index.json`), écriture atomique, arbre propre, motifs de code stricts, contrôle après coup du texte des slides décalées.
 
-Valeurs attendues après le lot 2 (calculées par l'outil, jamais saisies à la main) :
+Valeurs réelles après le lot 2 (calculées par l'outil, jamais saisies à la main ; identiques aux valeurs attendues) :
 
 | Élément | Valeur |
 |---|---|
@@ -99,6 +101,7 @@ Valeurs attendues après le lot 2 (calculées par l'outil, jamais saisies à la 
 | Slides masquées | 234, 251, 258 |
 | Total | 264 slides |
 | Image décalée | `s219-1.png` → `s250-1.png` (slide 219 devient 250) |
+| Zip HTML | 71 fichiers (module m14, `examples/eda/`, `labs/eda/`) |
 
 Les deux passages n'ajoutent pas de slide : le total de 264 correspond à N = 31 quel que soit le découpage.
 
