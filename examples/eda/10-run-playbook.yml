@@ -1,5 +1,5 @@
 # Webhook -> run_playbook (same as the lab solution, labs/eda/solution/rulebook.yml).
-# Test: curl -H "Content-Type: application/json" -d '{"status": "down"}' http://127.0.0.1:5000/endpoint
+# Test: curl -H "Content-Type: application/json" -d '{"service": "my_service", "status": "down"}' http://127.0.0.1:5000/endpoint
 ---
 - name: Service watchdog
   hosts: all

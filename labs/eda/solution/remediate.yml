@@ -3,12 +3,12 @@
   hosts: localhost
   gather_facts: false
   tasks:
-    - name: Announce the simulated restart
+    - name: Announce the simulated restart of the service in the event
       ansible.builtin.debug:
-        msg: "Simulated restart of my_service"
+        msg: "Simulated restart of {{ ansible_eda.event.payload.service | default('unknown service') }}"
 
     - name: Leave a marker file
       ansible.builtin.copy:
-        content: "my_service restarted\n"
+        content: "{{ ansible_eda.event.payload.service | default('unknown service') }} restarted\n"
         dest: /tmp/eda-lab-my_service.txt
         mode: "0644"

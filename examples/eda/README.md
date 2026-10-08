@@ -21,7 +21,7 @@ files and the slides must stay identical. `10` and `remediate.yml` are the same 
 
 ## Prerequisites
 
-- Java 17 or later, `ansible-rulebook` and `ansible-core`: `pip install ansible-rulebook ansible-core`
+- Java 17 or later; `ansible-rulebook`, `ansible` and `ansible-runner`: `pip install ansible-rulebook ansible ansible-runner`
 - The `ansible.eda` collection: `ansible-galaxy collection install ansible.eda`
 - `curl`; TCP port 5000 free on 127.0.0.1
 
