@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm05', num: 5, emoji: '🔣',
   title: 'Variables & facts',
   tagline: 'Définir et utiliser des variables, comprendre leur précédence et exploiter les facts.',
+  tagline_en: 'Define and use variables, understand their precedence and use facts.',
   objectives: [
-    { html: 'Définir une variable : une valeur réutilisable dans les playbooks et les rôles.', ref: [57] },
-    { html: 'Citer les types de variables : de playbook, d\'inventaire, de rôle et extra variables passées en ligne de commande.', ref: [57] },
-    { html: 'Utiliser des variables de type chaîne, entier, tableau et dictionnaire dans un playbook.', ref: [59] },
-    { html: 'Déterminer la valeur d\'une variable définie à plusieurs niveaux grâce à l\'ordre de précédence.', ref: [58, 60, 61] },
-    { html: 'Lister les facts d\'un hôte et ajouter des facts personnalisés.', ref: [64, 65, 67] }
+    { html: 'Définir une variable : une valeur réutilisable dans les playbooks et les rôles.', html_en: 'Define a variable: a reusable value in playbooks and roles.', ref: [57] },
+    { html: 'Citer les types de variables : de playbook, d\'inventaire, de rôle et extra variables passées en ligne de commande.', html_en: 'List the variable types: playbook, inventory, role and extra variables passed on the command line.', ref: [57] },
+    { html: 'Utiliser des variables de type chaîne, entier, tableau et dictionnaire dans un playbook.', html_en: 'Use string, integer, array and dictionary variables in a playbook.', ref: [59] },
+    { html: 'Déterminer la valeur d\'une variable définie à plusieurs niveaux grâce à l\'ordre de précédence.', html_en: 'Work out the value of a variable defined at several levels using the precedence order.', ref: [58, 60, 61] },
+    { html: 'Lister les facts d\'un hôte et ajouter des facts personnalisés.', html_en: 'List the facts of a host and add custom facts.', ref: [64, 65, 67] }
   ],
   slides: [
     { title: 'Variables and facts', src: [56],
@@ -130,28 +131,34 @@ Key2=value2` },
         file: "{{ my_vars_file }}"
         name: my_value` }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quels types de variables la slide 57 distingue-t-elle ?',
-        options: ['Playbook, inventaire, rôle et extra variables', 'Playbook, module, plugin et callback', 'Inventaire, collection, Galaxy et Vault'], answer: 0,
-        explain: 'Slide 57 : « Playbook Variables », « Inventory Variables », « Role Variables » et « Extra Variables » (passées à l\'exécution en ligne de commande).', ref: [57] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quels types de variables la slide 57 distingue-t-elle ?', q_en: 'Which variable types does slide 57 distinguish?',
+        options: ['Playbook, inventaire, rôle et extra variables', 'Playbook, module, plugin et callback', 'Inventaire, collection, Galaxy et Vault'],
+        options_en: ['Playbook, inventory, role and extra variables', 'Playbook, module, plugin and callback', 'Inventory, collection, Galaxy and Vault'], answer: 0,
+        explain: 'Slide 57 : « Playbook Variables », « Inventory Variables », « Role Variables » et « Extra Variables » (passées à l\'exécution en ligne de commande).',
+        explain_en: 'Slide 57: “Playbook Variables”, “Inventory Variables”, “Role Variables” and “Extra Variables” (passed on the command line at run time).', ref: [57] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Comment la slide 59 accède-t-elle au premier élément du tableau <code>my_array</code> ?',
-        options: ['{{ my_array(0) }} (ou {{ my_array.first }})', '{{ my_array{0} }} (ou {{ my_array.index(0) }})', '{{ my_array[0] }} (ou {{ my_array.0 }})'], answer: 2,
-        explain: 'La slide 59 affiche <code>{{ my_array.0 }}</code> et <code>{{ my_array[0] }}</code>.', ref: [59] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Comment la slide 59 accède-t-elle au premier élément du tableau <code>my_array</code> ?', q_en: 'How does slide 59 access the first element of the <code>my_array</code> array?',
+        options: ['{{ my_array(0) }} (ou {{ my_array.first }})', '{{ my_array{0} }} (ou {{ my_array.index(0) }})', '{{ my_array[0] }} (ou {{ my_array.0 }})'],
+        options_en: ['{{ my_array(0) }} (or {{ my_array.first }})', '{{ my_array{0} }} (or {{ my_array.index(0) }})', '{{ my_array[0] }} (or {{ my_array.0 }})'], answer: 2,
+        explain: 'La slide 59 affiche <code>{{ my_array.0 }}</code> et <code>{{ my_array[0] }}</code>.',
+        explain_en: 'Slide 59 shows <code>{{ my_array.0 }}</code> and <code>{{ my_array[0] }}</code>.', ref: [59] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Où se placent les facts locaux sur l\'hôte distant ?',
-        options: ['/var/lib/ansible/facts', '/etc/ansible/facts.d/*.fact', '/etc/ansible/hosts'], answer: 1,
-        explain: 'Slide 65 : « facts in remote host: /etc/ansible/facts.d/*.fact ».', ref: [65] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Où se placent les facts locaux sur l\'hôte distant ?', q_en: 'Where are local facts placed on the remote host?',
+        options: ['/var/lib/ansible/facts', '/etc/ansible/facts.d/*.fact', '/etc/ansible/hosts'],
+        options_en: ['Under /var/lib/ansible/facts', 'Under /etc/ansible/facts.d/*.fact', 'Under /etc/ansible/hosts'], answer: 1,
+        explain: 'Slide 65 : « facts in remote host: /etc/ansible/facts.d/*.fact ».',
+        explain_en: 'Slide 65: “facts in remote host: /etc/ansible/facts.d/*.fact”.', ref: [65] }
     ] }
   ],
   takeaways: [
-    { html: 'Les variables stockent des valeurs réutilisables dans les playbooks et les rôles, ce qui rend l\'automatisation plus flexible et dynamique.', ref: [57] },
-    { html: 'Les variables peuvent être définies dans un playbook, dans l\'inventaire, dans un rôle ou passées à l\'exécution avec les extra variables.', ref: [57] },
-    { html: 'Une même variable peut être définie à plusieurs niveaux (inventaire, playbook, <code>set_fact</code>, ligne de commande) : l\'ordre de précédence détermine la valeur retenue.', ref: [58, 60] },
-    { html: 'Les facts sont un groupe de variables chargées depuis les hôtes distants ; <code>setup</code> avec <code>filter</code> permet de les filtrer.', ref: [64] },
-    { html: 'Les facts locaux se placent dans <code>/etc/ansible/facts.d/*.fact</code> et se lisent avec <code>ansible_local</code>.', ref: [65] },
-    { html: 'Les variables magiques incluent <code>hostvars</code>, <code>group_names</code>, <code>groups</code>, <code>inventory_hostname</code> et <code>ansible_facts</code>.', ref: [62] }
+    { html: 'Les variables stockent des valeurs réutilisables dans les playbooks et les rôles, ce qui rend l\'automatisation plus flexible et dynamique.', html_en: 'Variables store reusable values in playbooks and roles, which makes automation more flexible and dynamic.', ref: [57] },
+    { html: 'Les variables peuvent être définies dans un playbook, dans l\'inventaire, dans un rôle ou passées à l\'exécution avec les extra variables.', html_en: 'Variables can be defined in a playbook, in the inventory, in a role, or passed at run time as extra variables.', ref: [57] },
+    { html: 'Une même variable peut être définie à plusieurs niveaux (inventaire, playbook, <code>set_fact</code>, ligne de commande) : l\'ordre de précédence détermine la valeur retenue.', html_en: 'The same variable can be defined at several levels (inventory, playbook, <code>set_fact</code>, command line): the precedence order determines which value is used.', ref: [58, 60] },
+    { html: 'Les facts sont un groupe de variables chargées depuis les hôtes distants ; <code>setup</code> avec <code>filter</code> permet de les filtrer.', html_en: 'Facts are a group of variables loaded from the remote hosts; <code>setup</code> with <code>filter</code> lets you filter them.', ref: [64] },
+    { html: 'Les facts locaux se placent dans <code>/etc/ansible/facts.d/*.fact</code> et se lisent avec <code>ansible_local</code>.', html_en: 'Local facts go in <code>/etc/ansible/facts.d/*.fact</code> and are read with <code>ansible_local</code>.', ref: [65] },
+    { html: 'Les variables magiques incluent <code>hostvars</code>, <code>group_names</code>, <code>groups</code>, <code>inventory_hostname</code> et <code>ansible_facts</code>.', html_en: 'Magic variables include <code>hostvars</code>, <code>group_names</code>, <code>groups</code>, <code>inventory_hostname</code> and <code>ansible_facts</code>.', ref: [62] }
   ]
 });

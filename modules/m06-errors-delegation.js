@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm06', num: 6, emoji: '🚨',
   title: 'Errors & delegation',
   tagline: 'Gérer les erreurs d\'un playbook, déléguer des tâches et changer d\'utilisateur.',
+  tagline_en: 'Handle playbook errors, delegate tasks and switch users.',
   objectives: [
-    { html: 'Expliquer la gestion des erreurs dans Ansible : réagir aux échecs pour obtenir des automatisations résilientes.', ref: [69] },
-    { html: 'Utiliser <code>ignore_errors</code>, <code>failed_when</code> et <code>changed_when</code> pour contrôler le résultat d\'une tâche.', ref: [69, 71, 72, 73] },
-    { html: 'Structurer des tâches avec <code>block</code>, <code>rescue</code> et <code>always</code>.', ref: [74] },
-    { html: 'Déléguer une tâche à un autre hôte avec <code>delegate_to</code> ou <code>local_action</code>.', ref: [78, 79] },
-    { html: 'Exécuter une tâche sous un autre utilisateur avec <code>become</code>, <code>become_user</code> et <code>become_method</code>.', ref: [79] }
+    { html: 'Expliquer la gestion des erreurs dans Ansible : réagir aux échecs pour obtenir des automatisations résilientes.', html_en: 'Explain error handling in Ansible: react to failures to build resilient automation.', ref: [69] },
+    { html: 'Utiliser <code>ignore_errors</code>, <code>failed_when</code> et <code>changed_when</code> pour contrôler le résultat d\'une tâche.', html_en: 'Use <code>ignore_errors</code>, <code>failed_when</code> and <code>changed_when</code> to control the result of a task.', ref: [69, 71, 72, 73] },
+    { html: 'Structurer des tâches avec <code>block</code>, <code>rescue</code> et <code>always</code>.', html_en: 'Structure tasks with <code>block</code>, <code>rescue</code> and <code>always</code>.', ref: [74] },
+    { html: 'Déléguer une tâche à un autre hôte avec <code>delegate_to</code> ou <code>local_action</code>.', html_en: 'Delegate a task to another host with <code>delegate_to</code> or <code>local_action</code>.', ref: [78, 79] },
+    { html: 'Exécuter une tâche sous un autre utilisateur avec <code>become</code>, <code>become_user</code> et <code>become_method</code>.', html_en: 'Run a task as another user with <code>become</code>, <code>become_user</code> and <code>become_method</code>.', ref: [79] }
   ],
   slides: [
     { title: 'errors', src: [68],
@@ -110,28 +111,34 @@ tasks:
         { t: 'lab', steps: ['- ping inventory hosts', '- add hostname in /tmp/hosts of the controller'] },
         { t: 'reveal', slide: 81, html: '<pre>---\n- hosts: all\n  gather_facts: no\n  tasks:\n    - name: Ping inventory hosts\n      ping:\n      #register: myping\n    - name: Add hostname to /tmp/hosts on the controller\n      local_action:\n        module: lineinfile\n        path: /tmp/hosts\n        line: "{{ inventory_hostname }}"\n      #when: myping.ok is useless\n      #delegate_to: localhost\n      #connection: local</pre>' }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel mot-clé exécute un bloc de tâches quel que soit le succès ou l\'échec du bloc principal ?',
-        options: ['rescue', 'ignore_errors', 'always'], answer: 2,
-        explain: 'Slide 69 : « always: A block to execute tasks regardless of success or failure » ; <code>rescue</code> ne s\'exécute que si une erreur survient.', ref: [69] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quel mot-clé exécute un bloc de tâches quel que soit le succès ou l\'échec du bloc principal ?', q_en: 'Which keyword runs a block of tasks whether the main block succeeds or fails?',
+        options: ['rescue', 'ignore_errors', 'always'],
+        options_en: ['The rescue section', 'The ignore_errors keyword', 'The always section'], answer: 2,
+        explain: 'Slide 69 : « always: A block to execute tasks regardless of success or failure » ; <code>rescue</code> ne s\'exécute que si une erreur survient.',
+        explain_en: 'Slide 69: “always: A block to execute tasks regardless of success or failure”; <code>rescue</code> runs only if an error occurs.', ref: [69] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Que fait <code>delegate_to</code> ?',
-        options: ['Il charge les facts d\'un autre inventaire', 'Il exécute la tâche sur l\'hôte indiqué, pas sur l\'hôte courant', 'Il délègue l\'exécution du playbook à un autre utilisateur'], answer: 1,
-        explain: 'Slide 79 : « The task will be executed ont the server ‘host’ instead of the current one ».', ref: [79] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Que fait <code>delegate_to</code> ?', q_en: 'What does <code>delegate_to</code> do?',
+        options: ['Il charge les facts d\'un autre inventaire', 'Il exécute la tâche sur l\'hôte indiqué, pas sur l\'hôte courant', 'Il délègue l\'exécution du playbook à un autre utilisateur'],
+        options_en: ['It loads the facts of another inventory file', 'It runs the task on the given host, not the current one', 'It delegates the playbook run to another user'], answer: 1,
+        explain: 'Slide 79 : « The task will be executed ont the server ‘host’ instead of the current one ».',
+        explain_en: 'Slide 79: “The task will be executed ont the server ‘host’ instead of the current one”.', ref: [79] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Comment considérer une tâche comme échouée d\'après sa sortie ?',
-        options: ['Avec failed_when et une condition sur result', 'Avec changed_when et une condition sur result', 'Avec become_user et une condition sur result'], answer: 0,
-        explain: 'Slide 72 : <code>failed_when</code> teste le contenu de <code>result.stdout</code> pour décider de l\'échec.', ref: [72] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Comment considérer une tâche comme échouée d\'après sa sortie ?', q_en: 'How do you mark a task as failed based on its output?',
+        options: ['Avec failed_when et une condition sur result', 'Avec changed_when et une condition sur result', 'Avec become_user et une condition sur result'],
+        options_en: ['With failed_when and a condition on result', 'With changed_when and a condition on result', 'With become_user and a condition on result'], answer: 0,
+        explain: 'Slide 72 : <code>failed_when</code> teste le contenu de <code>result.stdout</code> pour décider de l\'échec.',
+        explain_en: 'Slide 72: <code>failed_when</code> tests the content of <code>result.stdout</code> to decide on failure.', ref: [72] }
     ] }
   ],
   takeaways: [
-    { html: '<code>ignore_errors</code> permet aux tâches de continuer même si elles échouent ; <code>failed_when</code> définit une condition personnalisée d\'échec.', ref: [69] },
-    { html: '<code>changed_when</code> définit à quelle condition une tâche est considérée comme modifiée.', ref: [73] },
-    { html: '<code>rescue</code> exécute des tâches si une erreur survient dans le bloc, <code>always</code> les exécute dans tous les cas.', ref: [69, 74] },
-    { html: '<code>delegate_to</code> exécute une tâche sur un autre hôte ; <code>local_action</code> est une syntaxe abrégée pour la machine locale.', ref: [78] },
-    { html: '<code>delegated_facts</code> indique si les facts utilisés sont ceux du serveur délégué plutôt que ceux de l\'hôte courant.', ref: [79] },
-    { html: '<code>become</code> active l\'élévation de privilèges ; <code>become_user</code> choisit l\'utilisateur et <code>become_method</code> la méthode (sudo, su, pbrun…).', ref: [79] }
+    { html: '<code>ignore_errors</code> permet aux tâches de continuer même si elles échouent ; <code>failed_when</code> définit une condition personnalisée d\'échec.', html_en: '<code>ignore_errors</code> lets tasks carry on even if they fail; <code>failed_when</code> defines a custom failure condition.', ref: [69] },
+    { html: '<code>changed_when</code> définit à quelle condition une tâche est considérée comme modifiée.', html_en: '<code>changed_when</code> defines when a task is considered changed.', ref: [73] },
+    { html: '<code>rescue</code> exécute des tâches si une erreur survient dans le bloc, <code>always</code> les exécute dans tous les cas.', html_en: '<code>rescue</code> runs tasks if an error occurs in the block, <code>always</code> runs them in every case.', ref: [69, 74] },
+    { html: '<code>delegate_to</code> exécute une tâche sur un autre hôte ; <code>local_action</code> est une syntaxe abrégée pour la machine locale.', html_en: '<code>delegate_to</code> runs a task on another host; <code>local_action</code> is a shorthand syntax for the local machine.', ref: [78] },
+    { html: '<code>delegated_facts</code> indique si les facts utilisés sont ceux du serveur délégué plutôt que ceux de l\'hôte courant.', html_en: '<code>delegated_facts</code> says whether the facts used are those of the delegated server rather than those of the current host.', ref: [79] },
+    { html: '<code>become</code> active l\'élévation de privilèges ; <code>become_user</code> choisit l\'utilisateur et <code>become_method</code> la méthode (sudo, su, pbrun…).', html_en: '<code>become</code> enables privilege escalation; <code>become_user</code> chooses the user and <code>become_method</code> the method (sudo, su, pbrun…).', ref: [79] }
   ]
 });

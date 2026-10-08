@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm04', num: 4, emoji: '🧩',
   title: 'Modules',
   tagline: 'Comprendre ce qu\'est un module, où trouver les modules et collections, et préparer l\'environnement de lab.',
+  tagline_en: 'Understand what a module is, where to find modules and collections, and prepare the lab environment.',
   objectives: [
-    { html: 'Définir un module Ansible : un script réutilisable et autonome qui réalise une tâche précise.', ref: [45] },
-    { html: 'Distinguer les modules intégrés (<code>ansible.builtin</code>), ceux des collections et les modules personnalisés.', ref: [45] },
-    { html: 'Retrouver un module dans l\'index des collections et dans l\'index de <code>ansible.builtin</code>.', ref: [47, 48] },
-    { html: 'Consulter la documentation en ligne d\'un module, par exemple <code>shell</code>.', ref: [49] },
-    { html: 'Utiliser les commandes de base de vi/vim pour éditer un fichier.', ref: [53] }
+    { html: 'Définir un module Ansible : un script réutilisable et autonome qui réalise une tâche précise.', html_en: 'Define an Ansible module: a reusable, self-contained script that performs a specific task.', ref: [45] },
+    { html: 'Distinguer les modules intégrés (<code>ansible.builtin</code>), ceux des collections et les modules personnalisés.', html_en: 'Tell built-in modules (<code>ansible.builtin</code>), collection modules and custom modules apart.', ref: [45] },
+    { html: 'Retrouver un module dans l\'index des collections et dans l\'index de <code>ansible.builtin</code>.', html_en: 'Find a module in the collections index and in the <code>ansible.builtin</code> index.', ref: [47, 48] },
+    { html: 'Consulter la documentation en ligne d\'un module, par exemple <code>shell</code>.', html_en: 'Read the online documentation of a module, for example <code>shell</code>.', ref: [49] },
+    { html: 'Utiliser les commandes de base de vi/vim pour éditer un fichier.', html_en: 'Use the basic vi/vim commands to edit a file.', ref: [53] }
   ],
   slides: [
     { title: 'Modules', src: [44],
@@ -45,23 +46,23 @@ COURSE.add({
     { title: 'ansible.builtin.shell (1/4)', src: [49],
       blocks: [
         { t: 'text', html: 'Source : docs.ansible.com, consulté le 2026-10-06 - <a href="https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/shell_module.html" target="_blank" rel="noopener">collections/ansible/builtin/shell_module.html</a>' },
-        { t: 'img', file: 'assets/img/s049-1.png', alt: 'Capture de la documentation du module ansible.builtin.shell : note, sommaire et synopsis' }
+        { t: 'img', file: 'assets/img/s049-1.png', alt: 'Capture de la documentation du module ansible.builtin.shell : note, sommaire et synopsis', alt_en: 'Screenshot of the ansible.builtin.shell module documentation: note, table of contents and synopsis' }
       ] },
     { title: 'ansible.builtin.shell (2/4)', src: [50],
       blocks: [
         { t: 'text', html: 'Source : docs.ansible.com, consulté le 2026-10-06 - <a href="https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/shell_module.html" target="_blank" rel="noopener">collections/ansible/builtin/shell_module.html</a>' },
-        { t: 'img', file: 'assets/img/s050-1.png', alt: 'Capture de la documentation du module ansible.builtin.shell (partie 2/4)' }
+        { t: 'img', file: 'assets/img/s050-1.png', alt: 'Capture de la documentation du module ansible.builtin.shell (partie 2/4)', alt_en: 'Screenshot of the ansible.builtin.shell module documentation (part 2/4)' }
       ] },
     { title: 'ansible.builtin.shell (3/4)', src: [51],
       blocks: [
         { t: 'text', html: 'Source : docs.ansible.com, consulté le 2026-10-06 - <a href="https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/shell_module.html" target="_blank" rel="noopener">collections/ansible/builtin/shell_module.html</a>' },
-        { t: 'img', file: 'assets/img/s051-1.png', alt: 'Capture de la section « See Also » de la documentation du module ansible.builtin.shell' },
-        { t: 'img', file: 'assets/img/s051-2.png', alt: 'Capture de la documentation du module ansible.builtin.shell (partie 3/4)' }
+        { t: 'img', file: 'assets/img/s051-1.png', alt: 'Capture de la section « See Also » de la documentation du module ansible.builtin.shell', alt_en: 'Screenshot of the “See Also” section of the ansible.builtin.shell module documentation' },
+        { t: 'img', file: 'assets/img/s051-2.png', alt: 'Capture de la documentation du module ansible.builtin.shell (partie 3/4)', alt_en: 'Screenshot of the ansible.builtin.shell module documentation (part 3/4)' }
       ] },
     { title: 'ansible.builtin.shell (4/4)', src: [52],
       blocks: [
         { t: 'text', html: 'Source : docs.ansible.com, consulté le 2026-10-06 - <a href="https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/shell_module.html" target="_blank" rel="noopener">collections/ansible/builtin/shell_module.html</a>' },
-        { t: 'img', file: 'assets/img/s052-1.png', alt: 'Capture de la documentation du module ansible.builtin.shell (partie 4/4)' }
+        { t: 'img', file: 'assets/img/s052-1.png', alt: 'Capture de la documentation du module ansible.builtin.shell (partie 4/4)', alt_en: 'Screenshot of the ansible.builtin.shell module documentation (part 4/4)' }
       ] },
     { title: 'VI/VIm: basics', src: [53],
       blocks: [
@@ -76,28 +77,34 @@ COURSE.add({
       blocks: [
         { t: 'lab', steps: ['- get access to your environment with Ansible User', '-Validate from Manager that you can ssh to all nodes<br><code>ssh-keygen</code><br><code>ssh-copy-id</code>', '- Validate that you can become root on all nodes<br><code>sudo</code>', '- install Ansible core on controller node', '- setup inventory file:<br>add a group for all: MYSRVS<br>add a group for UBUNTU and ROCKY', '- Validate your inventory', '- ping your servers', '- ping your Rocky Servers'] }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel type de modules est livré avec ansible-core ?',
-        options: ['Les modules personnalisés écrits par l\'utilisateur', 'Les modules intégrés (ansible.builtin)', 'Les modules des collections distribuées par Galaxy'], answer: 1,
-        explain: 'Slide 45 : « Builtin Modules (ansible.builtin): Shipped with ansible-core ».', ref: [45] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quel type de modules est livré avec ansible-core ?', q_en: 'Which type of modules ships with ansible-core?',
+        options: ['Les modules personnalisés écrits par l\'utilisateur', 'Les modules intégrés (ansible.builtin)', 'Les modules des collections distribuées par Galaxy'],
+        options_en: ['Custom modules written by the user', 'Built-in modules (ansible.builtin)', 'Modules from collections distributed by Galaxy'], answer: 1,
+        explain: 'Slide 45 : « Builtin Modules (ansible.builtin): Shipped with ansible-core ».',
+        explain_en: 'Slide 45: “Builtin Modules (ansible.builtin): Shipped with ansible-core”.', ref: [45] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Que signifie qu\'un module est idempotent ?',
-        options: ['Rejouer la même tâche ne change pas le système après la première application', 'Le module s\'exécute sur le contrôleur et non sur les nœuds cibles du playbook', 'Le module ne peut être référencé que dans un seul playbook du projet'], answer: 0,
-        explain: 'Slide 45 : « Idempotent: Modules ensure that applying the same task multiple times will not change the system after the first application ».', ref: [45] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Que signifie qu\'un module est idempotent ?', q_en: 'What does it mean for a module to be idempotent?',
+        options: ['Rejouer la même tâche ne change pas le système après la première application', 'Le module s\'exécute sur le contrôleur et non sur les nœuds cibles du playbook', 'Le module ne peut être référencé que dans un seul playbook du projet'],
+        options_en: ['Running the same task again does not change the system after the first run', 'The module runs on the controller, not on the target nodes of the playbook', 'The module can be referenced by a single playbook of the project'], answer: 0,
+        explain: 'Slide 45 : « Idempotent: Modules ensure that applying the same task multiple times will not change the system after the first application ».',
+        explain_en: 'Slide 45: “Idempotent: Modules ensure that applying the same task multiple times will not change the system after the first application”.', ref: [45] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Dans vi/vim, quelle touche permet de revenir au mode commande ?',
-        options: ['i', 'dd', 'ESC'], answer: 2,
-        explain: 'Slide 53 : « ESC: return to command mode » ; <code>i</code> insère du texte et <code>dd</code> supprime une ligne.', ref: [53] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Dans vi/vim, quelle touche permet de revenir au mode commande ?', q_en: 'In vi/vim, which key returns to command mode?',
+        options: ['i', 'dd', 'ESC'],
+        options_en: ['The i key', 'The dd keys', 'The ESC key'], answer: 2,
+        explain: 'Slide 53 : « ESC: return to command mode » ; <code>i</code> insère du texte et <code>dd</code> supprime une ligne.',
+        explain_en: 'Slide 53: “ESC: return to command mode”; <code>i</code> inserts text and <code>dd</code> deletes a line.', ref: [53] }
     ] }
   ],
   takeaways: [
-    { html: 'Les modules sont les blocs de construction des playbooks : des scripts réutilisables, écrits en Python et exécutés sur les nœuds cibles.', ref: [45] },
-    { html: 'Il existe trois types de modules : intégrés (<code>ansible.builtin</code>, livrés avec ansible-core), issus de collections (Galaxy, Automation Hub) et personnalisés.', ref: [45] },
-    { html: 'Un module est idempotent : appliquer plusieurs fois la même tâche ne change pas le système après la première application.', ref: [45] },
-    { html: 'Les modules sont réutilisables dans plusieurs playbooks et peuvent être combinés pour des tâches complexes.', ref: [45] },
-    { html: 'Les collections et les modules sont listés sur docs.ansible.com (index des collections, index <code>ansible.builtin</code>).', ref: [47, 48] },
-    { html: 'Dans vi/vim, <code>ESC</code> revient au mode commande, <code>i</code> insère du texte, <code>dd</code> supprime une ligne, <code>yy</code> la copie et <code>p</code> la colle.', ref: [53] }
+    { html: 'Les modules sont les blocs de construction des playbooks : des scripts réutilisables, écrits en Python et exécutés sur les nœuds cibles.', html_en: 'Modules are the building blocks of playbooks: reusable scripts, written in Python and run on the target nodes.', ref: [45] },
+    { html: 'Il existe trois types de modules : intégrés (<code>ansible.builtin</code>, livrés avec ansible-core), issus de collections (Galaxy, Automation Hub) et personnalisés.', html_en: 'There are three types of modules: built-in (<code>ansible.builtin</code>, shipped with ansible-core), from collections (Galaxy, Automation Hub) and custom.', ref: [45] },
+    { html: 'Un module est idempotent : appliquer plusieurs fois la même tâche ne change pas le système après la première application.', html_en: 'A module is idempotent: applying the same task several times does not change the system after the first run.', ref: [45] },
+    { html: 'Les modules sont réutilisables dans plusieurs playbooks et peuvent être combinés pour des tâches complexes.', html_en: 'Modules can be reused in several playbooks and combined for complex tasks.', ref: [45] },
+    { html: 'Les collections et les modules sont listés sur docs.ansible.com (index des collections, index <code>ansible.builtin</code>).', html_en: 'Collections and modules are listed on docs.ansible.com (collections index, <code>ansible.builtin</code> index).', ref: [47, 48] },
+    { html: 'Dans vi/vim, <code>ESC</code> revient au mode commande, <code>i</code> insère du texte, <code>dd</code> supprime une ligne, <code>yy</code> la copie et <code>p</code> la colle.', html_en: 'In vi/vim, <code>ESC</code> returns to command mode, <code>i</code> inserts text, <code>dd</code> deletes a line, <code>yy</code> copies it and <code>p</code> pastes it.', ref: [53] }
   ]
 });
