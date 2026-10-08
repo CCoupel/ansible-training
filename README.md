@@ -4,7 +4,7 @@ Support de cours de formation Ansible (PPTX), version générique sans référen
 
 ## Contenu
 
-Le support couvre l'automatisation avec Ansible en 223 slides :
+Le support couvre l'automatisation avec Ansible en 233 slides (dont 3 masquées) :
 
 - **Fondamentaux** : concepts, architecture, inventaire, variables, playbooks
 - **Modules et tâches** : modules intégrés, FQCN, gestion de packages, services
@@ -43,7 +43,7 @@ python3 tests/slides/check_pptx.py "Ansible Training.pptx"
 
 Les tests incluent :
 
-- **Validité** : archive ZIP valide, `[Content_Types].xml` en première position, 223 slides
+- **Validité** : archive ZIP valide, `[Content_Types].xml` en première position, 233 slides
 - **Obsolescence** : absence de termes dépassés, versions correctes, syntaxe Ansible valide
 - **Anti-fuite** : scan des métadonnées XML et des images pour empêcher la fuite de termes interdits
 
@@ -73,8 +73,8 @@ git push origin v0.1.1
 1. **Validation du tag** : format `vX.Y.Z` requis ; doit être posé sur `main` (garde-fou CI)
 2. **Environnement** : Node 22, Python 3.12, secret `LEAK_PATTERNS` présent
 3. **Tests bloquants** (échec = arrêt) :
-   - Parité HTML-PPTX (`PARITY_STRICT=1`, 131 tests)
-   - Obsolescence PPTX (`LOTS_STRICT=1`, 42 tests)
+   - Parité HTML-PPTX (`PARITY_STRICT=1`, 172 tests)
+   - Obsolescence PPTX (`LOTS_STRICT=1`, 44 tests)
    - Structure (`validate.js`), version dans `meta.js` (`sync-meta --check --version`)
 4. **Contrôles par artefact** :
    - **PPTX** : validité, anti-fuite (`LEAK_PATTERNS`), slide 2 affiche version et date du tag
@@ -151,7 +151,9 @@ Le workflow est conçu pour supporter des artefacts supplémentaires (HTML, PDF)
 
 ## Version HTML
 
-À partir de v0.2.0, le support est disponible en version HTML interactive : 15 modules, 217 slides (hors slides masquées), 45 quiz, objectifs et résumés par module, accessibilité complète (clavier, SVG nommés, alt descriptifs), interface en français.
+À partir de v0.2.0, le support est disponible en version HTML interactive : 16 modules (m01–m13 et m15–m17 ; le module m14 Event-Driven Ansible est prévu au lot 2 de la v1.0.0), 233 slides PPTX (dont 3 masquées, exclues du HTML), 48 quiz, objectifs et résumés par module, accessibilité complète (clavier, SVG nommés, alt descriptifs), interface en français.
+
+Le numéro d'un module suit son ordre d'affichage. Dans la version 1.0.0 en développement (lot 1), le module m13 Execution Environments est inséré après m12 ; les anciens m13, m14 et m15 deviennent m15, m16 et m17. Les ancres `#m13-…` à `#m15-…` pointent désormais vers d'autres modules, et la progression enregistrée dans le navigateur repart à zéro (clé `ansible-training-v2`, voir CHANGELOG).
 
 ### Ouverture du cours HTML
 
@@ -181,10 +183,10 @@ python3 -m http.server 8000
 Le fichier `Ansible-Training-HTML-vX.Y.Z.zip` publié sur GitHub (généré par `node tools/package.js`) contient :
 - `index.html` — page d'accueil du cours
 - `assets/` — moteur (engine.js), styles (style.css), images (img/), internationalisations (i18n/fr.js)
-- `modules/` — 15 modules (m01–m15)
+- `modules/` — 16 modules (m01–m13, m15–m17)
 - `Ansible Training.pptx` — support original à la racine (lien téléchargement disponible depuis l'accueil)
 
-**Total : 51 fichiers**, ouvrable en `file://` (double-clic) sans serveur.
+**Total : 52 fichiers**, ouvrable en `file://` (double-clic) sans serveur.
 
 **Aucun embarquement de** : `tools/`, `tests/`, `CONVENTIONS.md`, `build/`, `.github/`, `.claude/`, ou autres répertoires du dépôt.
 
@@ -194,11 +196,11 @@ La section ci-dessous décrit l'arborescence du **dépôt git**, y compris les f
 
 ```
 .
-├── index.html                         # Page d'accueil, manifeste des 15 modules
+├── index.html                         # Page d'accueil, manifeste des 16 modules
 ├── assets/
 │   ├── engine.js                      # Moteur de présentation (navigation, thème, notes)
 │   ├── style.css                      # Styles (clair/sombre, accessibilité)
-│   ├── plan.js                        # Manifeste : 15 modules, metadata
+│   ├── plan.js                        # Manifeste : 16 modules, metadata
 │   ├── meta.js                        # Version, date, versions de référence (généré)
 │   ├── i18n/
 │   │   └── fr.js                      # Libellés en français
@@ -208,8 +210,11 @@ La section ci-dessous décrit l'arborescence du **dépôt git**, y compris les f
 ├── modules/
 │   ├── m01-introduction.js            # Module 01 : Introduction
 │   ├── m02-inventory.js               # Module 02 : Inventory
-│   ├── ... (m03 à m15)
-│   └── m15-automation-integration.js  # Module 15 : Automation Integration
+│   ├── ... (m03 à m13)
+│   ├── m13-execution-environments.js  # Module 13 : Execution Environments
+│   ├── m15-real-use-case.js           # Module 15 : Real use case
+│   ├── m16-best-practices.js          # Module 16 : Best practices
+│   └── m17-automation-integration.js  # Module 17 : Automation Integration
 ├── tools/                             # 🚫 Non embarqué dans le zip
 │   ├── validate.js                    # Vérification de structure du site
 │   ├── sync-meta.js                   # Génération de assets/meta.js
@@ -226,7 +231,7 @@ La section ci-dessous décrit l'arborescence du **dépôt git**, y compris les f
 ### Conventions et contenu
 
 - **Verbatim du PPTX** : texte copié exactement (coquilles conservées sauf si corrigées dans le PPTX)
-- **Quiz** : 45 quiz (3 par module), une seule réponse défendable, distracteurs tirés d'erreurs classiques du module
+- **Quiz** : 48 quiz (3 par module), une seule réponse défendable, distracteurs tirés d'erreurs classiques du module
 - **Objectifs et « À retenir »** : dérivés du contenu du module, en français, avec références aux slides sources
 - **Accessibilité** : clavier complet (flèches, Enter, Espace), SVG nommés, alt descriptif, notes du formateur (touche `n`)
 - **Thème** : clair/sombre (préférence utilisateur)
@@ -252,7 +257,20 @@ node tools/dump-course.js > build/course.json
 node tools/package.js
 ```
 
-**Note Windows** : utiliser Node.js Linux (WSL) pour les tests complets ; le wrapper `node.exe` Windows a des chemins en `C:\mnt\…` qui peuvent causer des faux échecs (environnement, non contenu).
+**Prérequis des tests** : Node 22 et Python 3.12 sous Linux (WSL accepté). Le wrapper `node.exe` Windows a des chemins en `C:\mnt\…` qui peuvent causer des faux échecs (environnement, non contenu).
+
+### Insérer ou modifier des slides (Livraison PPTX + HTML)
+
+Une slide ajoutée ou retirée du PPTX se traite dans le même lot que sa conversion HTML. La procédure complète est dans `CONVENTIONS.md`, section « Livraison PPTX + HTML » :
+
+```bash
+# Calcule la correspondance ancien → nouveau numéro et écrit build/renumber-plan.md
+python3 tools/renumber.py --check
+# Applique les remplacements (arbre propre requis, insertions seulement)
+python3 tools/renumber.py --apply
+```
+
+`tests/slides/slide_index.json` (ordre des slides) et `tests/slides/expected.json` (nombre de slides, masquées) sont les seules sources de numérotation : les tests et outils les lisent, aucun compteur n'est codé en dur.
 
 ## Structure du Dépôt
 
@@ -265,7 +283,7 @@ node tools/package.js
 ├── Ansible Training.orig.pptx         # Sauvegarde originale (non tracée)
 ├── index.html                         # Page d'accueil site HTML
 ├── assets/                            # Moteur, styles, images, metadata du site
-├── modules/                           # 15 modules du site HTML (m01–m15)
+├── modules/                           # 16 modules du site HTML (m01–m13, m15–m17)
 ├── tools/                             # Outils (validate, sync-meta, etc.)
 ├── CONVENTIONS.md                     # Règles PPTX → HTML
 ├── tests/
@@ -311,6 +329,6 @@ Consultez la licence applicable du dépôt (ce document ne la précise pas).
 
 ---
 
-**Dernière mise à jour** : 06/10/2026  
-**Version du support** : 0.1.1  
+**Dernière mise à jour** : 08/10/2026  
+**Version du support** : 0.2.0 (publiée) ; 1.0.0 en développement  
 **Versions de référence** : ansible-core 2.20, Python 3.12+

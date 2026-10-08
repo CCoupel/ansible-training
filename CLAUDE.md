@@ -309,8 +309,8 @@ ARTIFACTS: |
    - Python 3.12 (SHA épinglé `a26af69…`)
 
 3. **Tests bloquants** (échec = arrêt) :
-   - `PARITY_STRICT=1 python3 -m unittest discover -s tests/site` (131 tests, `RELEASE_TAG=$TAG` active version check slide 2)
-   - `LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence` (42 tests, validité du PPTX et versions)
+   - `PARITY_STRICT=1 python3 -m unittest discover -s tests/site` (172 tests, `RELEASE_TAG=$TAG` active version check slide 2)
+   - `LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence` (44 tests, validité du PPTX et versions)
    - `node tools/validate.js` (structure HTML/SVG/quiz)
    - `node tools/sync-meta.js --check --version "${TAG#v}"` (meta.js contient la bonne version, pas de réécriture)
 
@@ -318,7 +318,7 @@ ARTIFACTS: |
    - **PPTX** (`tests/slides/check_pptx.py`, anti-fuite avec `LEAK_PATTERNS`) :
      - Slide 2 affiche version du tag (ex. v0.2.0)
      - Slide 2 affiche date de livraison (JJ/MM/AAAA)
-   - **Zip HTML** (51 fichiers) :
+   - **Zip HTML** (52 fichiers) :
      - Validité : `unzip -t` (archive OK)
      - Contenu : présence de `index.html`, `assets/meta.js`, `Ansible Training.pptx` à la racine
      - PPTX embarqué identique au PPTX du tag (`cmp`)
@@ -367,7 +367,7 @@ python3 tools/check_links.py  # mode connecté (requête HTTP, peut être lent/i
 Avant de tagguer une release v0.2.0 ou supérieure :
 
 ```bash
-# Tests du PPTX (223 slides totales, y compris slides masquées ; obsolescence)
+# Tests du PPTX (233 slides totales, dont 3 masquées 203/220/227 ; obsolescence)
 LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence
 
 # Tests du site HTML (parité, accessibilité, structure)
