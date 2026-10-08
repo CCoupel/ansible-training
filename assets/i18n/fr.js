@@ -30,6 +30,7 @@ COURSE.i18n['fr'] = {
   'day.J1': 'Jour 1',
   'day.J2': 'Jour 2',
   'day.J3': 'Jour 3',
+  'day.J4': 'Jour 4',
 
   'home.kicker': 'Ansible',
   'home.version': 'Version',

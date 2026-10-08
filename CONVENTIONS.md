@@ -28,7 +28,7 @@ Source de vérité du **site** (version HTML du support) : choix techniques, sch
 ## Fichiers du site
 
 - `index.html` : coquille (sidebar, topbar, slide, footer) + un `<script>` par module **existant**. Ordre imposé : `assets/meta.js`, `assets/engine.js`, `assets/i18n/fr.js`, `assets/plan.js`, `modules/*.js`, puis `COURSE.start()`. Ne jamais référencer un module absent (404).
-- `assets/plan.js` : manifeste des 15 modules (`COURSE.plan`) : `id`, `num`, `emoji`, `title`, `day` (`J1`/`J2`/`J3`, agenda de la slide 3 du PPTX), `range` (première et dernière slide PPTX du module, slides masquées incluses). Un module du manifeste sans `<script>` apparaît « à venir » (grisé).
+- `assets/plan.js` : manifeste des modules (`COURSE.plan`) : `id`, `num`, `emoji`, `title`, `day` (`J1` à `J4`, agenda de la slide 3 du PPTX), `range` (première et dernière slide PPTX du module, slides masquées incluses). Un module du manifeste sans `<script>` apparaît « à venir » (grisé).
 - `assets/engine.js` : moteur (navigation, rendu des blocs, notes, quiz, recherche, thème).
 - `modules/mNN-sujet.js` : un module = un appel `COURSE.add({...})`. Noms : `mNN-` + kebab-case ASCII.
 

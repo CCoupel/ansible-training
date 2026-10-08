@@ -20,7 +20,7 @@ const vm = require('vm');
 // À garder synchronisé avec assets/engine.js (objet R) et le CSS.
 const BLOCKS = ['text', 'bullets', 'code', 'cmds', 'table', 'compare', 'callout', 'flow', 'layers', 'quiz', 'reveal', 'lab', 'diagram', 'img', 'gallery'];
 const CALLOUTS = ['tip', 'warn', 'trap', 'note', 'awx'];
-const DAYS = ['J1', 'J2', 'J3'];
+const DAYS = ['J1', 'J2', 'J3', 'J4'];
 const HTML_TAGS = new Set(['b', 'i', 'em', 'strong', 'code', 'br', 'a', 'span', 'ul', 'ol', 'li', 'p', 'kbd', 'sub', 'sup', 'mark', 'small', 'pre']);
 const TAG_RE = /<\/?([A-Za-z][A-Za-z0-9-]*)/g;
 const SLIDE_MIN = 4;
