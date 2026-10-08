@@ -23,9 +23,7 @@ const CALLOUTS = ['tip', 'warn', 'trap', 'note', 'awx'];
 const DAYS = ['J1', 'J2', 'J3'];
 const HTML_TAGS = new Set(['b', 'i', 'em', 'strong', 'code', 'br', 'a', 'span', 'ul', 'ol', 'li', 'p', 'kbd', 'sub', 'sup', 'mark', 'small', 'pre']);
 const TAG_RE = /<\/?([A-Za-z][A-Za-z0-9-]*)/g;
-// Repli si tests/slides/expected.json est absent ou illisible (la source de vérité est expected.json).
-const SLIDE_MIN = 4, SLIDE_MAX_FALLBACK = 223;
-const HIDDEN_FALLBACK = [193, 210, 217];
+const SLIDE_MIN = 4;
 
 const argv = process.argv.slice(2);
 const ri = argv.indexOf('--root');
@@ -41,14 +39,14 @@ const isInt = n => Number.isInteger(n);
 
 // Compteurs attendus du deck : tests/slides/expected.json { slides, hidden } (mis à jour par tools/renumber.py).
 function expectedDeck() {
-  try {
-    const e = JSON.parse(fs.readFileSync(path.join(ROOT, 'tests', 'slides', 'expected.json'), 'utf8'));
-    return {
-      slides: Number.isInteger(e.slides) ? e.slides : SLIDE_MAX_FALLBACK,
-      hidden: Array.isArray(e.hidden) ? e.hidden.map(Number) : HIDDEN_FALLBACK
-    };
-  } catch (e) { /* repli */ }
-  return { slides: SLIDE_MAX_FALLBACK, hidden: HIDDEN_FALLBACK };
+  const f = path.join(ROOT, 'tests', 'slides', 'expected.json');
+  let e;
+  try { e = JSON.parse(fs.readFileSync(f, 'utf8')); }
+  catch (x) { console.error(`ERREUR  expected.json : illisible ou absent (${x.message}) — source de vérité du nombre de slides`); process.exit(1); }
+  if (!Number.isInteger(e.slides) || !Array.isArray(e.hidden)) {
+    console.error('ERREUR  expected.json : champs "slides" (entier) et "hidden" (liste) requis'); process.exit(1);
+  }
+  return { slides: e.slides, hidden: e.hidden.map(Number) };
 }
 const EXPECTED = expectedDeck();
 const SLIDE_MAX = EXPECTED.slides;
