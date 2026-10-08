@@ -4,7 +4,13 @@ name: pages
 # - appelé par release.yml après la publication d'une release (workflow_call)
 # - ou lancé manuellement (workflow_dispatch)
 # - seuls les fichiers du site sont publiés (rien de docs/, tests/, tools/, .claude/, _work/) ;
-#   .nojekyll est placé dans l'artefact : aucun traitement Jekyll
+#   en mode workflow (build_type=workflow) Jekyll n'est pas exécuté : pas de .nojekyll nécessaire
+#   (upload-pages-artifact exclut de toute façon les fichiers cachés)
+# - le site publié est celui de la ref appelante : main pour un lancement manuel, le tag pour un appel
+#   depuis release.yml. Un rattrapage d'une release ancienne depuis main publierait donc le contenu de main.
+# - ce workflow ne fait PAS de scan anti-fuite (LEAK_PATTERNS) : il repose sur celui de release.yml.
+#   Avant un premier lancement manuel (workflow_dispatch), lancer tests/site/check_site.py et
+#   tests/slides/check_pptx.py avec LEAK_PATTERNS sur les fichiers à publier.
 
 on:
   workflow_dispatch:
@@ -40,13 +46,9 @@ jobs:
           mkdir _site
           cp -r index.html assets modules examples labs _site/
           cp "Ansible Training.pptx" _site/
-          touch _site/.nojekyll
-
-      - name: Configurer Pages
-        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
 
       - name: Envoyer l'artefact
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: _site
 
@@ -63,4 +65,4 @@ jobs:
     steps:
       - name: Déployer sur GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
