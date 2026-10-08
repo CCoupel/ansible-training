@@ -44,8 +44,6 @@ import xml.etree.ElementTree as ET
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from pptx_reader import Deck, paragraphs_of, attribute_values, external_targets  # noqa: E402
 
-DEFAULT_EXPECTED_SLIDES = 223
-DEFAULT_EXPECTED_HIDDEN = [193, 210, 217]
 EXPECTED_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "expected.json")
 
 
@@ -53,20 +51,25 @@ def load_expected():
     """(nombre de slides, slides masquées) attendus.
 
     Priorité : variables d'environnement EXPECTED_SLIDES / EXPECTED_HIDDEN, puis le fichier versionné
-    tests/slides/expected.json, puis les valeurs par défaut ci-dessus. Tout changement légitime du
+    tests/slides/expected.json. Aucune valeur par défaut codée en dur : sans l'un ou l'autre, erreur
+    explicite. Tout changement légitime du
     deck (slide ajoutée ou retirée, slide masquée déplacée, ajout du HTML en v0.2.0) se fait dans
     expected.json — jamais en contournant le contrôle dans le workflow de release.
     """
-    slides, hidden = DEFAULT_EXPECTED_SLIDES, list(DEFAULT_EXPECTED_HIDDEN)
+    slides, hidden = None, None
     if os.path.isfile(EXPECTED_FILE):
         with open(EXPECTED_FILE, encoding="utf-8") as fh:
             data = json.load(fh)
-        slides = int(data.get("slides", slides))
-        hidden = [int(x) for x in data.get("hidden", hidden)]
+        if "slides" in data:
+            slides = int(data["slides"])
+        if "hidden" in data:
+            hidden = [int(x) for x in data["hidden"]]
     if "EXPECTED_SLIDES" in os.environ:
         slides = int(os.environ["EXPECTED_SLIDES"])
     if "EXPECTED_HIDDEN" in os.environ:
         hidden = [int(x) for x in os.environ["EXPECTED_HIDDEN"].split(",") if x.strip()]
+    if slides is None or hidden is None:
+        raise RuntimeError("valeurs attendues introuvables : expected.json ou EXPECTED_SLIDES/EXPECTED_HIDDEN")
     return slides, hidden
 
 

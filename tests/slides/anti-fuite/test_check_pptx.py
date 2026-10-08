@@ -177,7 +177,9 @@ class TestExpectedFileAndInternalErrors(CheckCase):
         saved = {k: os.environ.pop(k, None) for k in ("EXPECTED_SLIDES", "EXPECTED_HIDDEN")}
         try:
             self.assertEqual(check_pptx.load_expected(), (data["slides"], data["hidden"]))
-            self.assertEqual((data["slides"], data["hidden"]), (223, [193, 210, 217]))
+            self.assertIsInstance(data["slides"], int)
+            self.assertEqual(data["hidden"], sorted(set(data["hidden"])))
+            self.assertTrue(all(4 <= h <= data["slides"] for h in data["hidden"]))
             os.environ["EXPECTED_SLIDES"] = "7"
             self.assertEqual(check_pptx.load_expected()[0], 7, "la variable d'environnement doit primer")
         finally:
@@ -348,7 +350,7 @@ class TestCiRequiresLeakPatterns(CheckCase):
 
 @unittest.skipUnless(REAL_PPTX.is_file(), "PPTX réel introuvable")
 class TestRealDeck(unittest.TestCase):
-    """Intégration sur le vrai support : validité, 223 slides, 193/210/217 masquées, anti-fuite."""
+    """Intégration sur le vrai support : validité, nombre de slides et slides masquées de expected.json, anti-fuite."""
 
     def test_real_deck_passes_check(self):
         env = dict(os.environ)

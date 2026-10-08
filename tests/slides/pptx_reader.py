@@ -80,8 +80,9 @@ def _rels_part(part):
 
 
 class Slide:
-    def __init__(self, deck, number, part):
+    def __init__(self, deck, number, part, sld_id=None):
         self.deck = deck
+        self.sld_id = sld_id  # attribut id de <p:sldId> : identité stable de la slide (≠ position)
         self.number = number  # position 1-based dans l'ordre de présentation.xml
         self.part = part  # ex. ppt/slides/slide41.xml
         raw = deck.zip.read(part)
@@ -130,10 +131,10 @@ class Deck:
             rid_target[r.get("Id")] = r.get("Target", "")
         slides = []
         lst = root.find("{%s}sldIdLst" % NS_P)
-        ids = [] if lst is None else [e.get("{%s}id" % NS_R) for e in lst]
-        for i, rid in enumerate(ids, start=1):
+        items = [] if lst is None else [(e.get("{%s}id" % NS_R), e.get("id")) for e in lst]
+        for i, (rid, sid) in enumerate(items, start=1):
             part = _resolve(pres, rid_target[rid])
-            slides.append(Slide(self, i, part))
+            slides.append(Slide(self, i, part, int(sid) if sid is not None else None))
         return slides
 
     def slide(self, n):

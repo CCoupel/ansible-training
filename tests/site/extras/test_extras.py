@@ -1,7 +1,7 @@
 """Tests du contenu additionnel « Bonus HTML » (Q2 : objectifs, quiz, À retenir) — CA-3.3, CA-3.5.
 
 Règle n° 7 du plan : tout contenu additionnel est dérivé UNIQUEMENT du PPTX. Vérifié ici pour chaque
-module présent dans build/course.json (les 15 avec PARITY_STRICT=1) :
+module présent dans build/course.json (tous ceux du plan avec PARITY_STRICT=1) :
   - 3-5 objectifs, 4-6 « À retenir », 1-3 quiz (3-4 options, `answer` valide, `explain` non vide) ;
   - `ref` : entiers, non vides, ⊂ slides PPTX (`src`) du MÊME module ;
   - chaque <code>…</code> d'un texte additionnel figure dans le texte PPTX (slides + notes) des slides `ref` ;
@@ -110,7 +110,7 @@ class TestExtras(unittest.TestCase):
                 for label, txt, ref in additional_items(m):
                     if not isinstance(ref, list):
                         continue  # signalé par test_ref_valides
-                    source = S.norm(" ".join(S.pptx_full_text(n) for n in ref if 1 <= n <= 223))
+                    source = S.norm(" ".join(S.pptx_full_text(n) for n in ref if 1 <= n <= S.expected()[0]))
                     for code in RE_CODE.findall(txt):
                         c = S.norm(S._html.unescape(re.sub(r"<[^>]+>", "", code)))
                         if c:

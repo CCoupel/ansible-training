@@ -1,7 +1,9 @@
 """Tests de spécification du milestone v0.1.1 : correctifs d'obsolescence du support.
 
-Une assertion (méthode) par issue #10 à #48 (hors #19, reportée en v0.3.0), plus deux
-garde-fous transverses. Lecture du PPTX par texte CONCATENE des runs (pptx_reader).
+Une assertion (méthode) par issue #10 à #48, plus deux garde-fous transverses. L'issue #19
+(module « Execution Environments », v1.0.0) est testée sur les slides du module m13 lues dans
+assets/plan.js (jamais de numéros en dur) ; son lot n'est pas dans lots_faits.json tant que le contenu
+n'existe pas (échec = « attendu, lot non fait » ; LOTS_STRICT=1 = rouge). Lecture du PPTX par texte CONCATENE des runs (pptx_reader).
 
 Exécution (stdlib uniquement) :
     python3 -m unittest discover -s tests/slides/obsolescence -p "test_obsolescence.py" -v
@@ -29,6 +31,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # tests/slides (pptx_reader)
 from pptx_reader import Deck, external_targets  # noqa: E402
+import plan_reader  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 PPTX = Path(os.environ.get("PPTX_PATH", ROOT / "Ansible Training.pptx"))
@@ -57,6 +60,19 @@ def reference_version():
     rv = cfg.get("reference_version")
     assert isinstance(rv, dict), "clé reference_version absente de .claude/project-config.json"
     return str(rv["ansible_core"]), str(rv["python_controller_min"])
+
+
+def module_slides(module_id, title_contains):
+    """Numéros des slides d'un module, lus dans assets/plan.js (plage `range`), après contrôle du titre.
+
+    Un titre différent (ex. m13 encore « Real use case ») fait échouer le test : le module n'existe pas
+    encore au plan, le lot correspondant n'est pas livré."""
+    entry = plan_reader.entry(module_id)
+    assert entry is not None, "module %s absent de assets/plan.js" % module_id
+    assert title_contains.lower() in (entry["title"] or "").lower(), \
+        "module %s intitulé « %s » dans plan.js, « %s » attendu" % (module_id, entry["title"], title_contains)
+    a, b = entry["range"]
+    return list(range(a, b + 1))
 
 
 def project_version_xyz():
@@ -277,6 +293,29 @@ class TestHaute(SlidesCase):
 # ---------------------------------------------------------------------------------------
 
 class TestMoyenne(SlidesCase):
+    # --- #19 (v1.0.0) : module m13 « Execution Environments » ----------------------------------
+
+    def _ee_slides(self):
+        return module_slides("m13", "Execution Environments")
+
+    def test_issue_19_ee_outils_et_formats_presents(self):
+        slides = self._ee_slides()
+        for motif, label in ((r"ansible-navigator", "ansible-navigator"),
+                             (r"execution-environment\.yml", "execution-environment.yml"),
+                             (r"^\s*version\s*:\s*3\b", "version: 3"),
+                             (r"ansible-builder", "ansible-builder"),
+                             (r"ansible-dev-tools", "ansible-dev-tools"),
+                             (r"ansible-creator", "ansible-creator")):
+            with self.subTest(attendu=label):
+                self.present_any(motif, slides)
+
+    def test_issue_19_ee_formes_obsoletes_absentes(self):
+        slides = self._ee_slides()
+        self.absent(r"creator-ee", slides=slides, why="(ancien nom de l'image)")
+        self.absent(r"^\s*version\s*:\s*1\b", slides=slides, why="(schéma 1 de execution-environment.yml)")
+        self.absent(r"(?:base_image|name|image|FROM)\b[^\n]*\bansible-runner\b", slides=slides,
+                    why="(ansible-runner n'est pas une image de base)")
+
     def test_issue_20_ansible_engine(self):
         self.absent(r"Ansible(?:['’]s)?\s+(?:Automation\s+)?Engine", scope="both")
         self.present(r"ansible-core", [8, 9, 10])

@@ -15,7 +15,7 @@ Les blocs gardent les noms de champs de CONVENTIONS.md (`t`, `html`, `items`, `c
 
 Variables d'environnement :
   COURSE_JSON    chemin d'un course.json déjà produit (sinon : `node tools/dump-course.js`)
-  PARITY_STRICT  =1 : les 15 modules doivent être présents (CI release) ; sinon seuls les modules
+  PARITY_STRICT  =1 : tous les modules du plan (assets/plan.js) doivent être présents (CI release) ; sinon seuls les modules
                  présents sont contrôlés (conversion progressive), plus le pilote m02 obligatoire.
   PPTX_PATH      PPTX de référence (défaut : « Ansible Training.pptx » à la racine).
 Les messages d'échec citent des numéros (slide, ligne, module) — jamais d'extrait de texte.
@@ -32,6 +32,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tests" / "slides"))
+import plan_reader  # noqa: E402
 from pptx_reader import Deck, paragraphs_of, external_targets, _resolve  # noqa: E402
 
 PPTX = Path(os.environ.get("PPTX_PATH", ROOT / "Ansible Training.pptx"))
@@ -39,12 +40,10 @@ CONFIG = ROOT / ".claude" / "project-config.json"
 EXPECTED = ROOT / "tests" / "slides" / "expected.json"
 STRICT = os.environ.get("PARITY_STRICT", "") == "1"
 
-# module -> (première, dernière) slide PPTX, hors slides masquées (plan v0.2.0, découpage en 15 modules)
-MODULE_RANGES = {
-    "m01": (4, 12), "m02": (13, 29), "m03": (30, 43), "m04": (44, 55), "m05": (56, 67),
-    "m06": (68, 81), "m07": (82, 98), "m08": (99, 119), "m09": (120, 134), "m10": (135, 141),
-    "m11": (142, 161), "m12": (162, 182), "m13": (183, 192), "m14": (193, 216), "m15": (217, 223),
-}
+# module -> (première, dernière) slide PPTX (slides masquées incluses) : lu dans assets/plan.js, source
+# unique (désancrage #5 — aucune plage codée en dur). Si course.json porte `range`, il doit être identique
+# (test_parity.test_ranges_course_json_conformes_au_plan).
+MODULE_RANGES = plan_reader.ranges()
 NOTES_SLIDES = [12, 29, 35, 36, 37, 38, 43, 63, 66, 67, 108, 111]  # notes non vides (plan, CA-4.2)
 
 

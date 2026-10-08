@@ -1,6 +1,6 @@
 """Parité PPTX ⊂ HTML (CA-4.1, CA-4.2, CA-4.3, CA-4.5-parité ; définition : maquette d'architecture §3) — lot parite.
 
-Pour chaque slide PPTX N de contenu (4-223, hors masquées 193/210/217 — Q3) d'un module présent :
+Pour chaque slide PPTX N de contenu (de 4 au total de `expected.json`, hors masquées — Q3) d'un module présent :
   - COUVERTURE : ≥ 1 slide HTML (non extra) avec N ∈ `src` ;
   - TEXTE : chaque ligne PPTX normalisée (espaces, NBSP, guillemets/tirets typographiques) ⊂ texte HTML
     des slides `src ∋ N` (balises retirées, entités décodées ; `code` et `cmds[0]` pris tels quels) ;
@@ -12,7 +12,7 @@ Exceptions : tests/site/parity_exceptions.json uniquement (< 20 entrées, justif
 Slides HTML sans `src` (hors `extra`) interdites ; objectifs / À retenir / quiz exclus de la parité.
 Messages : n° de slide et de ligne, jamais d'extrait.
 
-PARITY_STRICT=1 : les 15 modules obligatoires (CI release). Sinon : modules présents + pilote m02.
+PARITY_STRICT=1 : tous les modules du plan (assets/plan.js) obligatoires (CI release). Sinon : modules présents + pilote m02.
 
 Exécution : python3 -m unittest discover -s tests/site -p "test_parity.py" -v
 """
@@ -57,7 +57,15 @@ class TestParite(unittest.TestCase):
         covered = {n for mid in S.MODULE_RANGES for n in slides_of_module(mid)}
         total, hidden = S.expected()
         self.assertEqual(covered, set(range(4, total + 1)) - set(hidden))
-        self.assertEqual(len(covered), 217)
+        self.assertEqual(len(covered), total - 3 - len(hidden))
+
+    def test_ranges_course_json_conformes_au_plan(self):
+        """Contrat course : `modules[].range` de course.json (si exporté) = plage de assets/plan.js."""
+        for mid, m in self.mods.items():
+            if m.get("range") is None:
+                continue
+            with self.subTest(module=mid):
+                self.assertEqual(tuple(m["range"]), S.MODULE_RANGES[mid])
 
     def test_expected_json_coherent_avec_le_pptx(self):
         total, hidden = S.expected()
@@ -194,7 +202,7 @@ class TestParite(unittest.TestCase):
                 self.assertIn(e.get("kind"), ("text", "notes", "link", "image"))
                 self.assertIsInstance(e.get("slide"), int)
                 self.assertNotIn(e["slide"], hidden)
-                self.assertTrue(4 <= e["slide"] <= 223)
+                self.assertTrue(4 <= e["slide"] <= S.expected()[0])
                 self.assertTrue(len(str(e.get("reason", "")).strip()) >= 15, "justification trop courte")
                 if e["kind"] == "link":
                     self.assertTrue(str(e.get("target", "")).strip(), "cible exacte obligatoire pour link")

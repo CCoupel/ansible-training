@@ -82,7 +82,7 @@ class TestValidateFixtures(unittest.TestCase):
         self.assert_invalid(self.mutated(lambda m: m["slides"][0].update(src=[3])))
 
     def test_src_hors_plage_haut(self):
-        self.assert_invalid(self.mutated(lambda m: m["slides"][0].update(src=[224])))
+        self.assert_invalid(self.mutated(lambda m: m["slides"][0].update(src=[S.expected()[0] + 1])))
 
     def test_src_non_entier(self):
         self.assert_invalid(self.mutated(lambda m: m["slides"][0].update(src=["13"])))
