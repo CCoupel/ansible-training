@@ -79,6 +79,17 @@ class TestLibelles(unittest.TestCase):
         for name, d in (("fr", self.fr), ("en", self.en)):
             self.assertEqual([k for k in NEW_KEYS if k not in d], [], "clé(s) du sélecteur absente(s) de %s.js" % name)
 
+    def test_libelles_des_blocs_lab_et_reveal_sont_des_cles_d_interface(self):
+        """Les libellés ajoutés par le site aux blocs lab / reveal sont des clés (jamais du français en dur)."""
+        for name, d in (("fr", self.fr), ("en", self.en)):
+            for key in ("block.lab", "block.reveal", "block.revealSlide"):
+                self.assertIn(key, d, "clé %s absente de %s.js" % (key, name))
+            self.assertEqual(RE_PARAM.findall(d["block.revealSlide"]), ["n"],
+                             "block.revealSlide doit porter exactement le paramètre {n} dans %s.js" % name)
+            self.assertNotIn("{", d["block.lab"] + d["block.reveal"], "block.lab / block.reveal sans paramètre (%s.js)" % name)
+        self.assertNotEqual(self.fr["block.lab"], self.en["block.lab"], "block.lab non traduit")
+        self.assertNotEqual(self.fr["block.revealSlide"], self.en["block.revealSlide"], "block.revealSlide non traduit")
+
     def test_libelles_de_langue_dans_leur_propre_langue(self):
         self.assertEqual(self.fr.get("lang.labelFr"), self.en.get("lang.labelFr"), "« Français » ne se traduit pas")
         self.assertEqual(self.fr.get("lang.labelEn"), self.en.get("lang.labelEn"), "« English » ne se traduit pas")

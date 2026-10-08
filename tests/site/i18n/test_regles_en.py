@@ -149,6 +149,12 @@ class TestRegles(unittest.TestCase):
     def test_code_ajoute_dans_la_traduction(self):
         self.assert_flagged(lambda m: m.update(tagline_en="English <code>when</code> and <code>loop</code>."), "<code> différents")
 
+    def test_code_multiplicite(self):
+        def alter(m):
+            m["objectives"][0]["html"] = "Utiliser <code>when</code> et <code>when</code>."
+            m["objectives"][0]["html_en"] = "Use <code>when</code>."
+        self.assert_flagged(alter, "<code> différents")
+
     def test_ip_hors_documentation(self):
         self.assert_flagged(lambda m: m["slides"][1]["blocks"][0].update(explain_en="See slide 13: host 10.1.2.3."), "IP hors")
 

@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import site_support as S  # noqa: E402
 
 SCRIPT = Path(__file__).with_name("engine_langue.js")
-EXPECTED_CHECKS = 25  # nombre minimal de vérifications du script ; un moteur qui n'en exécute pas assez échoue
+EXPECTED_CHECKS = 30  # nombre minimal de vérifications du script ; un moteur qui n'en exécute pas assez échoue
 
 
 class TestMoteurLangue(unittest.TestCase):
@@ -41,7 +41,8 @@ class TestMoteurLangue(unittest.TestCase):
     def test_controles_cles(self):
         text = "\n".join(self.ok)
         for key in ("navigateur fr -> fr", "navigateur en -> en", "?lang invalide ignoré", "?lang > mémorisé",
-                    "raccourci l", "ancre conservée", "repli français quand _en absent"):
+                    "raccourci l", "ancre conservée", "repli français quand _en absent",
+                    "fr : label du reveal (block.revealSlide)", "en : label du reveal"):
             self.assertIn(key, text, "contrôle « %s » non exécuté" % key)
 
 

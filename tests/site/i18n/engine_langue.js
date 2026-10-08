@@ -1,6 +1,6 @@
 /* Test du moteur de langue (#51) : engine.js chargé dans `vm` avec un DOM factice, sans navigateur.
    Lancé depuis Python par tests/site/i18n/test_moteur_langue.py : `node engine_langue.js <racine du dépôt>`.
-   Repris du script de contrôle de course (25 vérifications) : résolution ?lang > mémorisé > navigateur, repli fr,
+   Repris du script de contrôle de course (30 vérifications) : résolution ?lang > mémorisé > navigateur, repli fr,
    t() / L(), quiz traduits, repli quand _en absent, bascule par clic et par `l`, ancre conservée, lang="en" sur le
    verbatim, aria-label et segment actif du bouton. Sortie : « ok   <contrôle> » ou « FAIL <contrôle> » ; code 1 si échec. */
 const fs = require('fs'), vm = require('vm'), path = require('path');
@@ -28,7 +28,7 @@ function run({ search = '', navLang = 'en-US', stored = null, hash = '#m99-1' })
   vm.runInContext(`COURSE.plan = [{ num: 99, id: 'm99', emoji: 'x', title: 'Mod', day: 'J1', range: [4, 5] }];
    COURSE.add({ id: 'm99', num: 99, emoji: 'x', title: 'Mod', tagline: 'Accroche', tagline_en: 'Tagline',
      objectives: [{ html: 'Objectif', html_en: 'Objective', ref: [4] }],
-     slides: [ { title: 'Verbatim title', src: [4], blocks: [ { t: 'text', html: 'Hello' }, { t: 'img', file: 'assets/img/a.png', alt: 'Légende', alt_en: 'Caption' } ] },
+     slides: [ { title: 'Verbatim title', src: [4], blocks: [ { t: 'text', html: 'Hello' }, { t: 'lab', steps: ['a'] }, { t: 'reveal', slide: 7, html: '<pre>x</pre>' }, { t: 'callout', kind: 'tip', html: 'c' }, { t: 'img', file: 'assets/img/a.png', alt: 'Légende', alt_en: 'Caption' } ] },
                { title: 'Quiz 1', title_en: 'Quiz one', extra: true, blocks: [ { t: 'quiz', q: 'Question ?', q_en: 'Question?', options: ['a', 'b', 'c'], options_en: ['A', 'B', 'C'], answer: 1, explain: 'Parce que', explain_en: 'Because', ref: [4] } ] },
                { title: 'Quiz 2', extra: true, blocks: [ { t: 'quiz', q: 'Seulement FR ?', options: ['x', 'y', 'z'], answer: 0, explain: 'FR', ref: [4] } ] } ],
      takeaways: [{ html: 'Retenir', html_en: 'Remember', ref: [4] }] });`, sb);
@@ -53,7 +53,7 @@ eq(r.lang(), 'en', 'clic bouton -> en'); eq(r.stored().lang, 'en', 'choix mémor
 eq(/lang="en"/.test(r.html()), false, 'en : pas de lang=en sur les blocs');
 eq(/alt="Caption"/.test(r.html()), true, 'en : alt anglais');
 eq(/Hello/.test(r.html()), true, 'verbatim inchangé');
-eq(r.els['#lang'].attrs['aria-label'], 'Language: français', 'aria-label bouton (en)');
+eq(r.els['#lang'].attrs['aria-label'], 'FR | EN — language: français', 'aria-label bouton (en)');
 eq(/<span class="on" title="English">EN<\/span>/.test(r.els['#lang'].innerHTML), true, 'EN surligné');
 // quiz
 r = run({ navLang: 'en-US', hash: '#m99-2' });
@@ -68,3 +68,12 @@ r = run({ navLang: 'en-US', hash: '#m99-3' }); eq(/Seulement FR \?/.test(r.html(
 r = run({ navLang: 'en-US', hash: '#m99-0' }); eq(/Objective/.test(r.html()) && /Tagline/.test(r.html()), true, 'couverture en anglais');
 // raccourci l
 r = run({ navLang: 'fr-FR', hash: '#m99-1' }); r.docListeners.keydown({ key: 'l', target: { matches: () => false, closest: () => null }, preventDefault() {} }); eq(r.lang(), 'en', 'raccourci l');
+
+// libellés d'interface ajoutés par le site : clés d'interface, lang de l'interface à l'intérieur du conteneur verbatim
+r = run({ navLang: 'fr-FR', hash: '#m99-1' });
+eq(/<span lang="fr">À réaliser<\/span>/.test(r.html()), true, 'fr : titre du lab par défaut (block.lab) en lang=fr');
+eq(/<summary><span lang="fr">Voir la solution \(slide 7\)<\/span><\/summary>/.test(r.html()), true, 'fr : label du reveal (block.revealSlide)');
+eq(/class="ch">.*<span lang="fr">Astuce<\/span>/.test(r.html()), true, 'fr : titre de callout par défaut en lang=fr');
+r.listeners['#lang:click'][0]();
+eq(/<span>To do<\/span>/.test(r.html()), true, 'en : titre du lab par défaut sans lang');
+eq(/<summary><span>Show solution \(slide 7\)<\/span><\/summary>/.test(r.html()), true, 'en : label du reveal');

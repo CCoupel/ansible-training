@@ -336,6 +336,52 @@ class TestValidateLangues(unittest.TestCase):
     def test_html_non_autorise_dans_une_traduction(self):
         self.assert_invalid(self.mutated(lambda m: m["objectives"][0].update(html_en="<script>alert(1)</script>")))
 
+    # --- libellés ajoutés par le site (lab / reveal) : clés d'interface, jamais en dur ; <code> avec multiplicité
+    def with_blocks(self, *blocks):
+        def add(m):
+            m["slides"][0]["blocks"].extend(blocks)
+        return self.mutated(add)
+
+    def test_lab_et_reveal_sans_libelle_en_dur_valides(self):
+        r = self.run_validate(self.with_blocks(
+            {"t": "lab", "steps": ["Étape"]}, {"t": "reveal", "slide": 13, "html": "<pre>x</pre>"}))
+        self.assertEqual(r.returncode, 0, self.out(r))
+
+    def test_lab_avec_titre_a_realiser_en_dur(self):
+        self.assert_invalid(self.with_blocks({"t": "lab", "title": "À réaliser", "steps": ["Étape"]}))
+
+    def test_reveal_avec_label_voir_la_solution_en_dur(self):
+        self.assert_invalid(self.with_blocks({"t": "reveal", "label": "Voir la solution (slide 13)", "html": "<pre>x</pre>"}))
+
+    def test_reveal_slide_hors_du_module(self):
+        self.assert_invalid(self.with_blocks({"t": "reveal", "slide": 999, "html": "<pre>x</pre>"}))
+
+    def test_code_en_multiplicite_un_code_en_trop(self):
+        def alter(m):
+            m["objectives"][0]["html"] = "Utiliser <code>when</code> et <code>when</code>."
+            m["objectives"][0]["html_en"] = "Use <code>when</code>."
+        self.assert_invalid(self.mutated(alter))
+
+    def test_code_en_multiplicite_un_code_manquant_dans_l_original(self):
+        def alter(m):
+            m["objectives"][0]["html"] = "Utiliser <code>when</code>."
+            m["objectives"][0]["html_en"] = "Use <code>when</code> and <code>when</code>."
+        self.assert_invalid(self.mutated(alter))
+
+    def test_code_identiques_avec_multiplicite_egale(self):
+        def alter(m):
+            m["objectives"][0]["html"] = "Utiliser <code>when</code> et <code>loop</code> puis <code>when</code>."
+            m["objectives"][0]["html_en"] = "Use <code>loop</code>, <code>when</code> and <code>when</code>."
+        r = self.run_validate(self.mutated(alter))
+        self.assertEqual(r.returncode, 0, self.out(r))
+
+    def test_code_en_multiplicite_dans_les_options_du_quiz(self):
+        def alter(m):
+            b = m["slides"][2]["blocks"][0]
+            b["options"] = ["A <code>x</code> <code>x</code>", "B", "C"]
+            b["options_en"] = ["A <code>x</code>", "B", "C"]
+        self.assert_invalid(self.mutated(alter))
+
     def test_module_sans_en_simple_avertissement(self):
         r = self.run_validate(valid_module())
         self.assertEqual(r.returncode, 0, self.out(r))
