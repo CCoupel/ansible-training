@@ -8,7 +8,7 @@ Principe : l'identité d'une slide est l'attribut `id` de <p:sldId> (stable), so
     {"slides": [{"id": 256, "part": "ppt/slides/slide1.xml", "hidden": false}, ...]}
 Position dans la liste = numéro de slide utilisé partout dans le dépôt.
 
-Usage : python3 tools/renumber.py [--check | --apply] [--root DIR] [--pptx FICHIER]
+Usage : python3 tools/renumber.py [--check | --apply [--no-text-check]] [--root DIR] [--pptx FICHIER]
   --check (défaut)  calcule la correspondance ancien -> nouveau numéro, écrit build/renumber-plan.md
   --apply           applique les réécritures, renomme les images sNNN-k.png, met à jour expected.json puis
                     réécrit slide_index.json EN DERNIER
@@ -299,7 +299,7 @@ def write_atomic(path, text):
     os.replace(tmp, path)
 
 
-def run(root, pptx, apply):
+def run(root, pptx, apply, no_text_check=False):
     root = os.path.abspath(root)
     pptx = pptx or os.path.join(root, PPTX_NAME)
     if not os.path.isfile(pptx):
@@ -321,6 +321,9 @@ def run(root, pptx, apply):
     if shifted:
         old_texts, src = find_old_deck(root, old_ids)
         if old_texts is None:
+            if apply and not no_text_check:
+                raise Fail("contrôle du texte avant/après impossible (%s) ; --apply refusé. "
+                           "Si le risque est assumé : relancer avec --no-text-check" % src)
             notes.append("contrôle du texte avant/après SAUTÉ : %s" % src)
         else:
             bad = [o for o, n in mapping.items() if old_texts[o - 1] != new_texts[n - 1]]
@@ -375,9 +378,11 @@ def run(root, pptx, apply):
             for rel in list(new_files):
                 if rel.startswith("modules/") or rel == IMAGES_REL:
                     t = new_files[rel]
-                    for a, b in renames:
-                        t = re.sub(r"(?<![\w-])%s(?![\w-])" % re.escape(a), "\0" + b, t)
-                    new_files[rel] = t.replace("\0", "")
+                    # une seule passe (dictionnaire ancien -> nouveau) : jamais de double décalage
+                    ren = dict(renames)
+                    pat = r"(?<![\w-])(?:%s)(?![\w-])" % "|".join(
+                        re.escape(a) for a in sorted(ren, key=len, reverse=True))
+                    new_files[rel] = re.sub(pat, lambda mo: ren[mo.group(0)], t)
 
     rw.log.sort(key=lambda e: (e[0], e[1]))
     if rw.errors:
@@ -506,10 +511,12 @@ def main():
     g.add_argument("--check", action="store_true", help="calcule et écrit build/renumber-plan.md (défaut)")
     g.add_argument("--apply", action="store_true", help="applique les réécritures")
     ap.add_argument("--root", default=REPO, help="racine du dépôt (défaut : celui de l'outil)")
+    ap.add_argument("--no-text-check", action="store_true",
+                    help="--apply : accepter l'absence d'ancien PPTX pour le contrôle du texte avant/après")
     ap.add_argument("--pptx", help="PPTX à lire (défaut : <root>/%s)" % PPTX_NAME)
     a = ap.parse_args()
     try:
-        return run(a.root, a.pptx, a.apply)
+        return run(a.root, a.pptx, a.apply, a.no_text_check)
     except Fail as e:
         print("ERREUR  renumber : %s" % e, file=sys.stderr)
         return 1
