@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* MIT License — Copyright (c) 2026 CCoupel
    Valide le schéma des modules du site (voir CONVENTIONS.md).
-   Usage : node tools/validate.js [--root <dir>] [fichier.js ...]
+   Usage : node tools/validate.js [--root <dir>] [--strict-i18n] [fichier.js ...]
+     --strict-i18n (ou I18N_STRICT=1) : un module sans aucune traduction `_en` est une erreur (sinon un avertissement).
      sans fichier : contrôle global (modules/, plan.js, i18n, index.html, images) ;
      avec fichiers : schéma de ces modules seuls + doublons de `src` entre eux (pas de contrôle global).
    Sortie : « ERREUR  fichier : message » (exit 1) ; « warn » = avertissement (n'échoue pas).
@@ -29,6 +30,7 @@ const argv = process.argv.slice(2);
 const ri = argv.indexOf('--root');
 const ROOT = ri >= 0 ? path.resolve(argv[ri + 1]) : path.join(__dirname, '..');
 const fileArgs = argv.filter((a, i) => !a.startsWith('--') && !(ri >= 0 && i === ri + 1));
+const STRICT_I18N = argv.includes('--strict-i18n') || process.env.I18N_STRICT === '1';
 const globalChecks = fileArgs.length === 0;
 
 let errors = 0, warns = 0;
@@ -130,6 +132,99 @@ function checkAttrs(file, where, field, text) {
       err(file, `${where}, champ ${field} : lien externe sans target="_blank" rel="noopener"`);
     } else if (!/^(https:|#)/i.test(href[1])) err(file, `${where}, champ ${field} : href non autorisé (https ou ancre seulement)`);
   }
+}
+
+/* ---------- Contenu bilingue : champs frères `X_en` (voir CONVENTIONS.md, « Langues ») ---------- */
+// Liste fermée des champs traduisibles ; tout autre champ est verbatim (texte du PPTX) et ne peut pas porter de `_en`.
+const EN_FIELDS = { module: ['tagline'], item: ['html'], slide: ['title'], quiz: ['q', 'options', 'explain'], img: ['alt', 'caption'], galleryItem: ['alt', 'caption'], diagram: [] };
+const codesOf = t => [...new Set([...String(t).matchAll(/<code>([\s\S]*?)<\/code>/g)].map(m => m[1]))].sort();
+function checkI18nModule(file, mod) {
+  let slots = 0, done = 0;
+  const missing = [];
+  // Un champ traduisible `field` de `obj` : vérifie `field_en` (forme, HTML, <code>) et compte la complétude.
+  const pair = (obj, field, where, kind) => {
+    const base = obj[field], en = obj[field + '_en'];
+    const isArr = Array.isArray(base);
+    const baseOk = isArr ? base.length > 0 : (typeof base === 'string' && base.trim() !== '');
+    if (en !== undefined) {
+      if (!baseOk) { err(file, `${where} : ${field}_en sans ${field}`); return; }
+      if (isArr) {
+        if (!Array.isArray(en) || en.length !== base.length) { err(file, `${where} : ${field}_en doit avoir ${base.length} éléments comme ${field}`); return; }
+        en.forEach((x, i) => {
+          if (typeof x !== 'string' || !x.trim()) { err(file, `${where} : ${field}_en[${i + 1}] vide ou invalide`); return; }
+          checkHtml(file, where, `${field}_en[${i + 1}]`, x);
+          if (JSON.stringify(codesOf(x)) !== JSON.stringify(codesOf(base[i]))) err(file, `${where} : ${field}_en[${i + 1}] : les <code> doivent être identiques au français`);
+        });
+      } else {
+        if (typeof en !== 'string' || !en.trim()) { err(file, `${where} : ${field}_en vide ou invalide`); return; }
+        checkHtml(file, where, `${field}_en`, en);
+        if (JSON.stringify(codesOf(en)) !== JSON.stringify(codesOf(base))) err(file, `${where} : ${field}_en : les <code> doivent être identiques au français`);
+      }
+    }
+    if (baseOk) { slots++; if (en !== undefined && !(isArr ? en.length === 0 : !String(en).trim())) done++; else missing.push(`${where} ${field}`); }
+  };
+  // `_en` interdit hors de la liste fermée.
+  const forbid = (obj, allowed, where, extra = []) => {
+    if (!obj || typeof obj !== 'object') return;
+    Object.keys(obj).filter(k => k.endsWith('_en')).forEach(k => {
+      const f = k.slice(0, -3);
+      if (!allowed.includes(f) && !extra.includes(k)) err(file, `${where} : ${k} interdit (champ verbatim ou non traduisible)`);
+    });
+  };
+  forbid(mod, EN_FIELDS.module, 'module');
+  pair(mod, 'tagline', 'module', 'module');
+  for (const k of ['objectives', 'takeaways']) (Array.isArray(mod[k]) ? mod[k] : []).forEach((o, i) => {
+    const w = `${k} ${i + 1}`;
+    forbid(o, EN_FIELDS.item, w);
+    if (o && typeof o === 'object') pair(o, 'html', w, 'item');
+  });
+  (Array.isArray(mod.slides) ? mod.slides : []).forEach((s, i) => {
+    if (!s || typeof s !== 'object') return;
+    const at = `slide ${i + 1}`;
+    forbid(s, s.extra === true ? EN_FIELDS.slide : [], at);
+    if (s.extra === true) pair(s, 'title', at, 'slide');
+    (Array.isArray(s.blocks) ? s.blocks : []).forEach((b, j) => {
+      if (!b || typeof b !== 'object') return;
+      const bt = `${at} bloc ${j + 1} (${b.t})`;
+      if (b.t === 'quiz') { forbid(b, EN_FIELDS.quiz, bt); EN_FIELDS.quiz.forEach(f => pair(b, f, bt, 'quiz')); }
+      else if (b.t === 'img') {
+        forbid(b, EN_FIELDS.img, bt);
+        pair(b, 'alt', bt, 'img');
+        if (b.caption !== undefined) pair(b, 'caption', bt, 'img'); else if (b.caption_en !== undefined) err(file, `${bt} : caption_en sans caption`);
+      } else if (b.t === 'gallery') {
+        forbid(b, [], bt);
+        (Array.isArray(b.items) ? b.items : []).forEach((im, k) => {
+          const w = `${bt} image ${k + 1}`;
+          forbid(im, EN_FIELDS.galleryItem, w);
+          if (im && typeof im === 'object') {
+            if (im.alt !== undefined && String(im.alt) !== '') pair(im, 'alt', w, 'galleryItem'); else if (im.alt_en !== undefined) err(file, `${w} : alt_en sans alt`);
+            if (im.caption !== undefined) pair(im, 'caption', w, 'galleryItem'); else if (im.caption_en !== undefined) err(file, `${w} : caption_en sans caption`);
+          }
+        });
+      } else if (b.t === 'diagram') {
+        forbid(b, [], bt, ['svg_en']);
+        const h = String(b.html || '');
+        const tit = /<title\b[^>]*>([^<]+)<\/title>/i.exec(h), des = /<desc\b[^>]*>([^<]+)<\/desc>/i.exec(h);
+        const e = b.svg_en;
+        if (e !== undefined && (!e || typeof e !== 'object' || Array.isArray(e))) err(file, `${bt} : svg_en doit être { title, desc }`);
+        else {
+          if (e) Object.keys(e).forEach(k => { if (!['title', 'desc'].includes(k)) err(file, `${bt} : svg_en.${k} inconnu (title, desc)`); });
+          for (const [name, m] of [['title', tit], ['desc', des]]) {
+            if (e && e[name] !== undefined) {
+              if (!m) err(file, `${bt} : svg_en.${name} sans <${name}> dans le SVG`);
+              else if (typeof e[name] !== 'string' || !e[name].trim()) err(file, `${bt} : svg_en.${name} vide`);
+              else checkHtml(file, bt, `svg_en.${name}`, e[name]);
+            }
+            if (m) { slots++; if (e && typeof e[name] === 'string' && e[name].trim()) done++; else missing.push(`${bt} svg_en.${name}`); }
+          }
+        }
+      } else forbid(b, [], bt);
+    });
+  });
+  if (done === 0) {
+    const msg = `module non traduit en anglais (aucun champ _en ; ${slots} champ(s) à traduire)`;
+    if (STRICT_I18N) err(file, msg); else warn(file, msg);
+  } else if (done < slots) err(file, `traduction anglaise incomplète : ${done}/${slots} champs (tout ou rien) ; manquants : ${missing.slice(0, 6).join(' ; ')}${missing.length > 6 ? ' …' : ''}`);
 }
 
 /* ---------- Références vers des slides PPTX ---------- */
@@ -255,6 +350,7 @@ function checkSchema(file, mod) {
       if (b.t === 'lab') labs++;
     });
   });
+  checkI18nModule(file, mod);
   if (!quizzes) err(file, 'aucun quiz (1 à 3 attendus)');
   else if (quizzes > 3) warn(file, `${quizzes} quiz (3 maximum recommandés)`);
   // Slides de contenu = hors Bonus (les quiz sont des slides `extra: true`) ; 35 = borne du plan EDA (module le plus long).
@@ -342,6 +438,31 @@ if (FR) {
   for (const k of Object.keys(FR).sort()) if (!need.has(k)) err(i18nFile, `clé "${k}" orpheline (jamais utilisée par engine.js ni index.html) : l'utiliser ou la supprimer`);
 }
 
+// libellés anglais : mêmes clés, mêmes paramètres {…}, valeurs non vides
+{
+  const enFile = path.join(ROOT, 'assets', 'i18n', 'en.js');
+  let EN = null;
+  if (!fs.existsSync(enFile)) err(enFile, 'assets/i18n/en.js absent');
+  else {
+    const COURSE = {};
+    if (runIn(enFile, { COURSE })) EN = COURSE.i18n && COURSE.i18n.en;
+    if (!EN || typeof EN !== 'object') err(enFile, 'COURSE.i18n.en absent');
+  }
+  if (FR && EN) {
+    const params = v => [...String(v).matchAll(/\{(\w+)\}/g)].map(m => m[1]).sort().join(',');
+    for (const k of Object.keys(FR).sort()) {
+      if (!(k in EN)) { err(enFile, `clé "${k}" absente (présente en français)`); continue; }
+      if (typeof EN[k] !== 'string') err(enFile, `clé "${k}" : chaîne attendue`);
+      else {
+        if (!EN[k].trim()) err(enFile, `clé "${k}" : valeur vide`);
+        if (params(EN[k]) !== params(FR[k])) err(enFile, `clé "${k}" : paramètres {…} différents du français (fr : ${params(FR[k]) || 'aucun'} ; en : ${params(EN[k]) || 'aucun'})`);
+      }
+      if (typeof FR[k] === 'string' && !FR[k].trim()) err(i18nFile, `clé "${k}" : valeur vide`);
+    }
+    for (const k of Object.keys(EN).sort()) if (!(k in FR)) err(enFile, `clé "${k}" absente du français (orpheline)`);
+  }
+}
+
 // meta.js et index.html
 if (!fs.existsSync(path.join(ROOT, 'assets', 'meta.js'))) err('meta.js', 'assets/meta.js absent (node tools/sync-meta.js)');
 const indexFile = path.join(ROOT, 'index.html');
@@ -355,7 +476,7 @@ else {
   }
   const pos = n => scripts.indexOf(n);
   if (pos('assets/meta.js') < 0 || pos('assets/meta.js') > pos('assets/engine.js')) err('index.html', 'assets/meta.js doit être chargé avant assets/engine.js');
-  if (pos('assets/engine.js') < 0 || pos('assets/i18n/fr.js') < pos('assets/engine.js') || pos('assets/plan.js') < pos('assets/i18n/fr.js')) err('index.html', 'ordre attendu : meta.js, engine.js, i18n/fr.js, plan.js, modules');
+  if (pos('assets/engine.js') < 0 || pos('assets/i18n/fr.js') < pos('assets/engine.js') || pos('assets/i18n/en.js') < pos('assets/i18n/fr.js') || pos('assets/plan.js') < pos('assets/i18n/en.js')) err('index.html', 'ordre attendu : meta.js, engine.js, i18n/fr.js, i18n/en.js, plan.js, modules');
   for (const name of Object.keys(loaded)) if (!scripts.includes(`modules/${name}`)) err(path.join(modDir, name), 'module non chargé par index.html');
 }
 
