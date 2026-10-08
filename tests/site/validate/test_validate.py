@@ -378,20 +378,19 @@ class TestValidateTailleModule(unittest.TestCase):
                     b["ref"] = [13]
         return mod
 
-    def warnings(self, r):
-        m = re.search(r"(\d+) avertissement\(s\)", r.stdout + r.stderr)
-        self.assertIsNotNone(m, (r.stdout + r.stderr)[-400:])
-        return int(m.group(1))
+    def size_warnings(self, r):
+        """Avertissements de TAILLE seulement (le module fixture n'est pas traduit : l'avertissement i18n est hors sujet)."""
+        return len(re.findall(r"warn\s.*slides de contenu hors Bonus", r.stdout + r.stderr))
 
     def test_30_slides_de_contenu_et_3_quiz_sans_avertissement(self):
         r = self.check(self.sized_module(30))
         self.assertEqual(r.returncode, 0, (r.stdout + r.stderr)[-600:])
-        self.assertEqual(self.warnings(r), 0, (r.stdout + r.stderr)[-600:])
+        self.assertEqual(self.size_warnings(r), 0, (r.stdout + r.stderr)[-600:])
 
     def test_36_slides_de_contenu_avertissent_sans_echouer(self):
         r = self.check(self.sized_module(36))
         self.assertEqual(r.returncode, 0, (r.stdout + r.stderr)[-600:])
-        self.assertEqual(self.warnings(r), 1, (r.stdout + r.stderr)[-600:])
+        self.assertEqual(self.size_warnings(r), 1, (r.stdout + r.stderr)[-600:])
 
 
 if __name__ == "__main__":
