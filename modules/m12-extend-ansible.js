@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm12', num: 12, emoji: '🛠️',
   title: 'Extend Ansible',
   tagline: 'Piloter l\'exécution avec les stratégies, étendre Ansible avec des plugins et écrire un module.',
+  tagline_en: 'Control execution with strategies, extend Ansible with plugins and write a module.',
   objectives: [
-    { html: 'Décrire les stratégies d\'exécution : <code>linear</code> (par défaut), <code>free</code> et host-pinned.', ref: [163, 164] },
-    { html: 'Contrôler l\'exécution avec <code>serial</code>, <code>throttle</code> et <code>run_once</code>.', ref: [165, 166] },
-    { html: 'Citer les types de plugins : connexion, callback, inventaire, lookup, vars et filtres.', ref: [168, 169] },
-    { html: 'Expliquer le rôle d\'un callback : réagir aux événements de l\'exécution d\'un playbook.', ref: [170] },
-    { html: 'Décrire les étapes d\'un module personnalisé : déclarer les entrées, lire les paramètres, retourner les valeurs.', ref: [175, 176, 177] }
+    { html: 'Décrire les stratégies d\'exécution : <code>linear</code> (par défaut), <code>free</code> et host-pinned.', html_en: 'Describe the execution strategies: <code>linear</code> (default), <code>free</code> and host-pinned.', ref: [163, 164] },
+    { html: 'Contrôler l\'exécution avec <code>serial</code>, <code>throttle</code> et <code>run_once</code>.', html_en: 'Control execution with <code>serial</code>, <code>throttle</code> and <code>run_once</code>.', ref: [165, 166] },
+    { html: 'Citer les types de plugins : connexion, callback, inventaire, lookup, vars et filtres.', html_en: 'List the plugin types: connection, callback, inventory, lookup, vars and filters.', ref: [168, 169] },
+    { html: 'Expliquer le rôle d\'un callback : réagir aux événements de l\'exécution d\'un playbook.', html_en: 'Explain the role of a callback: reacting to the events of a playbook run.', ref: [170] },
+    { html: 'Décrire les étapes d\'un module personnalisé : déclarer les entrées, lire les paramètres, retourner les valeurs.', html_en: 'Describe the steps of a custom module: declare the inputs, read the parameters, return the values.', ref: [175, 176, 177] }
   ],
   slides: [
     { title: 'Strategie:', src: [162],
@@ -228,28 +229,34 @@ def TCP(IP, PORT) :
         { t: 'lab', title: 'Exercice:', steps: ['Write a module ‘REPLACEinFile’ :<br>- return changed=true if a replace was success<br>- return changed=false if no replace was done<br>- return failed=true if replacement is not successfull', '3 parameters:<br>- find<br>- replace<br>- file'] },
         { t: 'reveal', slide: 182, html: '<pre># File: library/replace_in_file.py\nimport os\ndef main():\n    module = AnsibleModule(\n        argument_spec=dict(\n            find=dict(required=True, type=\'str\'),\n            replace=dict(required=True, type=\'str\'),\n            file=dict(required=True, type=\'str\')\n        )\n    )\n    find = module.params[\'find\']\n    replace = module.params[\'replace\']\n    file_path = module.params[\'file\']\n    if not os.path.exists(file_path):\n        module.fail_json(msg=f"File {file_path} does not exist")\n    with open(file_path, \'r\') as f:\n        content = f.read()\n    if find not in content:\n        module.exit_json(changed=False)\n    new_content = content.replace(find, replace)\n    if new_content == content:\n        module.exit_json(changed=False)\n    with open(file_path, \'w\') as f:\n        f.write(new_content)\n    module.exit_json(changed=True)\nif __name__ == \'__main__\':\n    main()\n---\n- name: Replace string in file\n  replace_in_file:\n    find: \'old_string\'\n    replace: \'new_string\'\n    file: \'/path/to/file.txt\'</pre>' }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle stratégie d\'exécution est la stratégie par défaut ?',
-        options: ['Free', 'Host-pinned', 'Linear'], answer: 2,
-        explain: 'Slide 163 : « Linear Strategy: The default strategy where tasks are executed in a linear fashion, one after the other, across all hosts ».', ref: [163] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quelle stratégie d\'exécution est la stratégie par défaut ?', q_en: 'Which execution strategy is the default one?',
+        options: ['Free', 'Host-pinned', 'Linear'],
+        options_en: ['Free', 'Host-pinned', 'Linear'], answer: 2,
+        explain: 'Slide 163 : « Linear Strategy: The default strategy where tasks are executed in a linear fashion, one after the other, across all hosts ».',
+        explain_en: 'Slide 163: “Linear Strategy: The default strategy where tasks are executed in a linear fashion, one after the other, across all hosts”.', ref: [163] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Que fait <code>run_once</code> ?',
-        options: ['La tâche est exécutée sur tous les hôtes en parallèle', 'La tâche n\'est exécutée que sur le premier hôte du lot', 'La tâche n\'est exécutée qu\'une fois par jour'], answer: 1,
-        explain: 'Slide 166 : « Run_Once: The task is run only on the FIRST host of the batch ».', ref: [166] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Que fait <code>run_once</code> ?', q_en: 'What does <code>run_once</code> do?',
+        options: ['La tâche est exécutée sur tous les hôtes en parallèle', 'La tâche n\'est exécutée que sur le premier hôte du lot', 'La tâche n\'est exécutée qu\'une fois par jour'],
+        options_en: ['The task runs on every host of the batch in parallel', 'The task runs only on the first host of the batch', 'The task runs only once a day'], answer: 1,
+        explain: 'Slide 166 : « Run_Once: The task is run only on the FIRST host of the batch ».',
+        explain_en: 'Slide 166: “Run_Once: The task is run only on the FIRST host of the batch”.', ref: [166] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Dans l\'exemple de la slide 177, quelle méthode retourne les valeurs du module ?',
-        options: ['module.exit_json', 'module.params', 'module.argument_spec'], answer: 0,
-        explain: 'La slide 177 appelle <code>module.exit_json</code> avec <code>changed</code>, <code>stderr</code> et <code>stdout</code> ; <code>module.params</code> sert à lire les entrées (slide 176).', ref: [176, 177] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Dans l\'exemple de la slide 177, quelle méthode retourne les valeurs du module ?', q_en: 'In the example on slide 177, which method returns the module values?',
+        options: ['module.exit_json', 'module.params', 'module.argument_spec'],
+        options_en: ['module.exit_json', 'module.params', 'module.argument_spec'], answer: 0,
+        explain: 'La slide 177 appelle <code>module.exit_json</code> avec <code>changed</code>, <code>stderr</code> et <code>stdout</code> ; <code>module.params</code> sert à lire les entrées (slide 176).',
+        explain_en: 'Slide 177 calls <code>module.exit_json</code> with <code>changed</code>, <code>stderr</code> and <code>stdout</code>; <code>module.params</code> is used to read the inputs (slide 176).', ref: [176, 177] }
     ] }
   ],
   takeaways: [
-    { html: 'La stratégie <code>linear</code> est la stratégie par défaut : chaque tâche s\'exécute sur tous les hôtes avant de passer à la suivante.', ref: [163, 164] },
-    { html: 'La stratégie <code>free</code> laisse chaque hôte exécuter le play jusqu\'au bout sans attendre les autres.', ref: [164] },
-    { html: '<code>serial</code> traite un sous-ensemble d\'hôtes à la fois ; <code>throttle</code> limite le parallélisme d\'une tâche ; <code>run_once</code> n\'exécute la tâche que sur le premier hôte du lot.', ref: [165, 166] },
-    { html: 'Les plugins étendent Ansible : connexion, callback, inventaire, lookup, vars et filtres.', ref: [168, 169] },
-    { html: 'Un callback se branche sur des événements comme le début ou la fin d\'une tâche ou d\'un playbook.', ref: [170] },
-    { html: 'Un module personnalisé peut être écrit dans n\'importe quel langage (Python est courant) ; il déclare ses paramètres avec <code>AnsibleModule</code> et retourne ses résultats avec <code>exit_json</code>.', ref: [167, 175, 177] }
+    { html: 'La stratégie <code>linear</code> est la stratégie par défaut : chaque tâche s\'exécute sur tous les hôtes avant de passer à la suivante.', html_en: 'The <code>linear</code> strategy is the default: each task runs on all hosts before moving on to the next.', ref: [163, 164] },
+    { html: 'La stratégie <code>free</code> laisse chaque hôte exécuter le play jusqu\'au bout sans attendre les autres.', html_en: 'The <code>free</code> strategy lets each host run the play to the end without waiting for the others.', ref: [164] },
+    { html: '<code>serial</code> traite un sous-ensemble d\'hôtes à la fois ; <code>throttle</code> limite le parallélisme d\'une tâche ; <code>run_once</code> n\'exécute la tâche que sur le premier hôte du lot.', html_en: '<code>serial</code> processes a subset of hosts at a time; <code>throttle</code> limits the parallelism of a task; <code>run_once</code> runs the task only on the first host of the batch.', ref: [165, 166] },
+    { html: 'Les plugins étendent Ansible : connexion, callback, inventaire, lookup, vars et filtres.', html_en: 'Plugins extend Ansible: connection, callback, inventory, lookup, vars and filters.', ref: [168, 169] },
+    { html: 'Un callback se branche sur des événements comme le début ou la fin d\'une tâche ou d\'un playbook.', html_en: 'A callback hooks into events such as the start or the end of a task or a playbook.', ref: [170] },
+    { html: 'Un module personnalisé peut être écrit dans n\'importe quel langage (Python est courant) ; il déclare ses paramètres avec <code>AnsibleModule</code> et retourne ses résultats avec <code>exit_json</code>.', html_en: 'A custom module can be written in any language (Python is common); it declares its parameters with <code>AnsibleModule</code> and returns its results with <code>exit_json</code>.', ref: [167, 175, 177] }
   ]
 });

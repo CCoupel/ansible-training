@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm11', num: 11, emoji: '📦',
   title: 'Roles, collections & Galaxy',
   tagline: 'Réutiliser le contenu Ansible avec les rôles, les collections et Ansible Galaxy.',
+  tagline_en: 'Reuse Ansible content with roles, collections and Ansible Galaxy.',
   objectives: [
-    { html: 'Définir un rôle : un moyen d\'organiser tâches, variables, fichiers, templates et modules en unités réutilisables.', ref: [142] },
-    { html: 'Appeler des rôles dans un play avec <code>roles</code> et distinguer <code>include_role</code> (dynamique) de <code>import_role</code> (statique).', ref: [145] },
-    { html: 'Décrire l\'arborescence d\'un rôle (<code>tasks</code>, <code>handlers</code>, <code>templates</code>, <code>files</code>, <code>vars</code>, <code>defaults</code>, <code>meta</code>).', ref: [146] },
-    { html: 'Définir une collection et la situer par rapport aux rôles.', ref: [143, 148] },
-    { html: 'Installer des rôles depuis Galaxy avec <code>ansible-galaxy</code> et les déclarer dans <code>roles/requirements.yml</code>.', ref: [155, 156] }
+    { html: 'Définir un rôle : un moyen d\'organiser tâches, variables, fichiers, templates et modules en unités réutilisables.', html_en: 'Define a role: a way to organize tasks, variables, files, templates and modules into reusable units.', ref: [142] },
+    { html: 'Appeler des rôles dans un play avec <code>roles</code> et distinguer <code>include_role</code> (dynamique) de <code>import_role</code> (statique).', html_en: 'Call roles in a play with <code>roles</code> and tell <code>include_role</code> (dynamic) from <code>import_role</code> (static).', ref: [145] },
+    { html: 'Décrire l\'arborescence d\'un rôle (<code>tasks</code>, <code>handlers</code>, <code>templates</code>, <code>files</code>, <code>vars</code>, <code>defaults</code>, <code>meta</code>).', html_en: 'Describe the directory structure of a role (<code>tasks</code>, <code>handlers</code>, <code>templates</code>, <code>files</code>, <code>vars</code>, <code>defaults</code>, <code>meta</code>).', ref: [146] },
+    { html: 'Définir une collection et la situer par rapport aux rôles.', html_en: 'Define a collection and place it in relation to roles.', ref: [143, 148] },
+    { html: 'Installer des rôles depuis Galaxy avec <code>ansible-galaxy</code> et les déclarer dans <code>roles/requirements.yml</code>.', html_en: 'Install roles from Galaxy with <code>ansible-galaxy</code> and declare them in <code>roles/requirements.yml</code>.', ref: [155, 156] }
   ],
   slides: [
     { title: 'Ansible Roles:', src: [142],
@@ -139,7 +140,7 @@ argument_specs:
       ] },
     { title: 'Re-usable: GALAXY (overview)', src: [153],
       blocks: [
-        { t: 'diagram', wide: true, html: '<svg viewBox="0 0 560 260" role="img" aria-labelledby="m11-svg1-t" aria-describedby="m11-svg1-d" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif" font-size="13" fill="currentColor"><title id="m11-svg1-t">Rôles partagés via Galaxy</title><desc id="m11-svg1-d">Deux rôles (Role), chacun regroupant cinq ensembles de tâches (Tasks), sont publiés sur Galaxy.</desc><defs><marker id="ar-m11-svg1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs><rect x="10" y="10" width="150" height="230" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="85" y="30" text-anchor="middle" font-weight="700">Role</text><rect x="25" y="40" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="57" text-anchor="middle" font-weight="700">Tasks</text><rect x="25" y="76" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="93" text-anchor="middle" font-weight="700">Tasks</text><rect x="25" y="112" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="129" text-anchor="middle" font-weight="700">Tasks</text><rect x="25" y="148" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="165" text-anchor="middle" font-weight="700">Tasks</text><rect x="25" y="184" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="201" text-anchor="middle" font-weight="700">Tasks</text><rect x="200" y="10" width="150" height="230" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="275" y="30" text-anchor="middle" font-weight="700">Role</text><rect x="215" y="40" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="57" text-anchor="middle" font-weight="700">Tasks</text><rect x="215" y="76" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="93" text-anchor="middle" font-weight="700">Tasks</text><rect x="215" y="112" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="129" text-anchor="middle" font-weight="700">Tasks</text><rect x="215" y="148" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="165" text-anchor="middle" font-weight="700">Tasks</text><rect x="215" y="184" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="201" text-anchor="middle" font-weight="700">Tasks</text><rect x="420" y="90" width="120" height="60" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="480.0" y="107" text-anchor="middle" font-weight="700">Galaxy</text><line x1="160" y1="125" x2="418" y2="120" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar-m11-svg1)"/><line x1="350" y1="125" x2="418" y2="125" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar-m11-svg1)"/></svg>' },
+        { t: 'diagram', wide: true, html: '<svg viewBox="0 0 560 260" role="img" aria-labelledby="m11-svg1-t" aria-describedby="m11-svg1-d" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif" font-size="13" fill="currentColor"><title id="m11-svg1-t">Rôles partagés via Galaxy</title><desc id="m11-svg1-d">Deux rôles (Role), chacun regroupant cinq ensembles de tâches (Tasks), sont publiés sur Galaxy.</desc><defs><marker id="ar-m11-svg1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs><rect x="10" y="10" width="150" height="230" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="85" y="30" text-anchor="middle" font-weight="700">Role</text><rect x="25" y="40" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="57" text-anchor="middle" font-weight="700">Tasks</text><rect x="25" y="76" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="93" text-anchor="middle" font-weight="700">Tasks</text><rect x="25" y="112" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="129" text-anchor="middle" font-weight="700">Tasks</text><rect x="25" y="148" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="165" text-anchor="middle" font-weight="700">Tasks</text><rect x="25" y="184" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="85.0" y="201" text-anchor="middle" font-weight="700">Tasks</text><rect x="200" y="10" width="150" height="230" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="275" y="30" text-anchor="middle" font-weight="700">Role</text><rect x="215" y="40" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="57" text-anchor="middle" font-weight="700">Tasks</text><rect x="215" y="76" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="93" text-anchor="middle" font-weight="700">Tasks</text><rect x="215" y="112" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="129" text-anchor="middle" font-weight="700">Tasks</text><rect x="215" y="148" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="165" text-anchor="middle" font-weight="700">Tasks</text><rect x="215" y="184" width="120" height="28" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/><text x="275.0" y="201" text-anchor="middle" font-weight="700">Tasks</text><rect x="420" y="90" width="120" height="60" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="480.0" y="107" text-anchor="middle" font-weight="700">Galaxy</text><line x1="160" y1="125" x2="418" y2="120" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar-m11-svg1)"/><line x1="350" y1="125" x2="418" y2="125" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar-m11-svg1)"/></svg>', svg_en: { title: 'Roles shared through Galaxy', desc: 'Two roles (Role), each grouping five sets of tasks (Tasks), are published on Galaxy.' } },
         { t: 'text', html: '<a href="https://galaxy.ansible.com/search?order_by=-relevance&amp;page_size=10" target="_blank" rel="noopener">https://galaxy.ansible.com/search?order_by=-relevance&amp;page_size=10</a>' }
       ] },
     { title: 'Re-usable: GALAXY (ansible-galaxy --help)', src: [154],
@@ -250,28 +251,34 @@ ansible-galaxy collection publish \\
     --token xxx \\
     my_namespace-miq-1.0.1.tar.gz` }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel appel de rôle est dynamique ?',
-        options: ['include_role', 'import_role', 'ansible-galaxy role init'], answer: 0,
-        explain: 'Slide 145 : <code>include_role</code> est annoté « Dynamic Role » et <code>import_role</code> « Static Role ».', ref: [145] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quel appel de rôle est dynamique ?', q_en: 'Which role call is dynamic?',
+        options: ['include_role', 'import_role', 'ansible-galaxy role init'],
+        options_en: ['The include_role keyword', 'The import_role keyword', 'The ansible-galaxy role init command'], answer: 0,
+        explain: 'Slide 145 : <code>include_role</code> est annoté « Dynamic Role » et <code>import_role</code> « Static Role ».',
+        explain_en: 'Slide 145: <code>include_role</code> is annotated “Dynamic Role” and <code>import_role</code> “Static Role”.', ref: [145] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Où les rôles Ansible Galaxy sont-ils installés par défaut ?',
-        options: ['/etc/ansible/roles', '/usr/share/ansible/roles', '~/.ansible/roles'], answer: 2,
-        explain: 'Slide 158 : « By default, Ansible Galaxy roles are installed in the <code>~/.ansible/roles</code> directory ».', ref: [158] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Où les rôles Ansible Galaxy sont-ils installés par défaut ?', q_en: 'Where are Ansible Galaxy roles installed by default?',
+        options: ['/etc/ansible/roles', '/usr/share/ansible/roles', '~/.ansible/roles'],
+        options_en: ['/etc/ansible/roles', '/usr/share/ansible/roles', '~/.ansible/roles'], answer: 2,
+        explain: 'Slide 158 : « By default, Ansible Galaxy roles are installed in the <code>~/.ansible/roles</code> directory ».',
+        explain_en: 'Slide 158: “By default, Ansible Galaxy roles are installed in the <code>~/.ansible/roles</code> directory”.', ref: [158] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle structure est présentée comme « la manière standard de distribuer et de gérer du contenu Ansible » ?',
-        options: ['Un inventaire', 'Une collection', 'Un playbook'], answer: 1,
-        explain: 'Slide 143 : « Ansible Collections: The standard way to distribute and manage Ansible content ».', ref: [143] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Quelle structure est présentée comme « la manière standard de distribuer et de gérer du contenu Ansible » ?', q_en: 'Which structure is presented as “the standard way to distribute and manage Ansible content”?',
+        options: ['Un inventaire', 'Une collection', 'Un playbook'],
+        options_en: ['An inventory', 'A collection', 'A playbook'], answer: 1,
+        explain: 'Slide 143 : « Ansible Collections: The standard way to distribute and manage Ansible content ».',
+        explain_en: 'Slide 143: “Ansible Collections: The standard way to distribute and manage Ansible content”.', ref: [143] }
     ] }
   ],
   takeaways: [
-    { html: 'Un rôle regroupe tâches, variables, fichiers, templates et modules en unités réutilisables et simplifie les playbooks complexes.', ref: [142] },
-    { html: 'Les rôles chargent automatiquement <code>vars_files</code>, tâches et handlers à partir d\'une structure de fichiers connue.', ref: [145] },
-    { html: '<code>include_role</code> est dynamique, <code>import_role</code> est statique.', ref: [145] },
-    { html: 'Une collection est la manière standard de distribuer et de gérer du contenu Ansible : rôles, modules et plugins, avec versions et dépendances.', ref: [143] },
-    { html: 'Ansible Galaxy est le dépôt public de partage de rôles et de collections ; la commande <code>ansible-galaxy</code> permet de les rechercher et de les installer.', ref: [144] },
-    { html: 'Un rôle partagé doit être documenté, par exemple dans <code>meta/argument_specs.yml</code>.', ref: [147] }
+    { html: 'Un rôle regroupe tâches, variables, fichiers, templates et modules en unités réutilisables et simplifie les playbooks complexes.', html_en: 'A role groups tasks, variables, files, templates and modules into reusable units and simplifies complex playbooks.', ref: [142] },
+    { html: 'Les rôles chargent automatiquement <code>vars_files</code>, tâches et handlers à partir d\'une structure de fichiers connue.', html_en: 'Roles automatically load <code>vars_files</code>, tasks and handlers from a known file structure.', ref: [145] },
+    { html: '<code>include_role</code> est dynamique, <code>import_role</code> est statique.', html_en: '<code>include_role</code> is dynamic, <code>import_role</code> is static.', ref: [145] },
+    { html: 'Une collection est la manière standard de distribuer et de gérer du contenu Ansible : rôles, modules et plugins, avec versions et dépendances.', html_en: 'A collection is the standard way to distribute and manage Ansible content: roles, modules and plugins, with versions and dependencies.', ref: [143] },
+    { html: 'Ansible Galaxy est le dépôt public de partage de rôles et de collections ; la commande <code>ansible-galaxy</code> permet de les rechercher et de les installer.', html_en: 'Ansible Galaxy is the public repository for sharing roles and collections; the <code>ansible-galaxy</code> command searches for and installs them.', ref: [144] },
+    { html: 'Un rôle partagé doit être documenté, par exemple dans <code>meta/argument_specs.yml</code>.', html_en: 'A shared role should be documented, for example in <code>meta/argument_specs.yml</code>.', ref: [147] }
   ]
 });
