@@ -54,7 +54,7 @@ Champs d'une slide :
 | Champ | Rôle |
 |---|---|
 | `title` | texte brut (échappé par le moteur) |
-| `src` | **obligatoire** hors `extra` : numéros des slides PPTX d'origine, entiers 4-223, triés, jamais une slide masquée (193, 210, 217), dans la plage du module, sans doublon entre modules. Affiche le badge « PPTX · slide N » |
+| `src` | **obligatoire** hors `extra` : numéros des slides PPTX d'origine, entiers de 4 au nombre de slides du deck, triés, jamais une slide masquée (nombre et masquées lus dans `tests/slides/expected.json`), dans la plage du module, sans doublon entre modules. Affiche le badge « PPTX · slide N » |
 | `extra: true` | slide de **contenu additionnel** (quiz) : pas de `src`, badge « Bonus HTML », exclue de la parité |
 | `notes` | notes du formateur du PPTX (chaîne ou liste de chaînes, HTML limité) ; panneau ouvert par `n` ; **uniquement** celles du PPTX |
 | `tag` | petit badge optionnel (« exercice »…) |
@@ -135,10 +135,23 @@ Objectifs, « À retenir » et quiz n'existent que dans le HTML (jamais reporté
 |---|---|
 | `node tools/validate.js [fichier.js…]` | schéma des modules, `plan.js`, `i18n`, `index.html`, images ; sans argument : contrôle global |
 | `node tools/sync-meta.js [--check] [--version X.Y.Z] [--date JJ/MM/AAAA]` | génère / contrôle `assets/meta.js` depuis `project-config.json` |
-| `node tools/dump-course.js [--extras]` | `build/course.json` (entrée de la parité) ; `--extras` : `build/extras-review.md` (relecture humaine) |
+| `node tools/dump-course.js [--extras]` | `build/course.json` (entrée de la parité ; chaque module porte `range` et `day`) ; `--extras` : `build/extras-review.md` (relecture humaine) |
+| `python3 tools/renumber.py [--check\|--apply]` | renumérotation des références de slides après une insertion dans le PPTX (voir « Livraison PPTX + HTML ») ; codes retour 0 rien à faire, 2 changements en attente/appliqués, 1 erreur |
 | `node tools/package.js` | `build/Ansible-Training-HTML.zip` déterministe : fichiers suivis de `index.html`, `assets/`, `modules/` **et** `Ansible Training.pptx` à la racine (le lien de téléchargement de l'accueil reste valable) ; refuse si ces chemins ont des modifications non commitées |
 | `python3 tools/check_links.py --offline` / `--online` | forme des URL (tests) / vérification HTTP à débit limité (jamais en CI) |
 | `python3 -m unittest discover -s tests/site` | tests du site (parité, contenu additionnel, livraison, outils) |
+
+## Livraison PPTX + HTML (process #5)
+
+Le numéro d'une slide est sa position dans le PPTX ; son identité est l'attribut `id` de `<p:sldId>`. `tests/slides/slide_index.json` fige l'ordre connu (`{"slides": [{"id", "part", "hidden"}, …]}`) et `tests/slides/expected.json` le nombre de slides et les masquées : aucune valeur de comptage n'est écrite en dur dans les outils ou les tests.
+
+Toute insertion de slides suit cet ordre, **dans le même lot** que le module HTML correspondant :
+
+1. **Gabarits** (`dev-slides`) : insérer des slides gabarits (titre seul, layout définitif), sans rédiger le contenu. Insertions seules.
+2. **Renumérotation** : `python3 tools/renumber.py --check` (relire `build/renumber-plan.md`), puis `--apply` sur un arbre propre. L'outil décale `src`/`ref` des modules, `range` de `assets/plan.js`, les champs `slide`/`slides` de `images.json` et `parity_exceptions.json`, les listes de slides des tests d'obsolescence, renomme les images `sNNN-k.png`, met à jour `expected.json`, puis réécrit `slide_index.json` en dernier. Il refuse une suppression ou un réordonnancement (procédure manuelle), ne touche pas la prose (le rapport la liste) et est idempotent.
+3. **Contrôle QA** : suites strictes (`PARITY_STRICT=1`, `LOTS_STRICT=1`), `validate.js` sans erreur, `renumber.py --check` = rien à faire. Aucune rédaction avant ce contrôle.
+4. **Contenu** : rédiger les slides (`dev-slides`), puis le module HTML (`course`) ; l'entrée du module est ajoutée à `assets/plan.js` (le contrôle de contiguïté des plages le rappelle).
+5. **Release** : test strict « aucun module à venir » (chaque module de `plan.js` est chargé par `index.html`) ; la slide 2 et `assets/meta.js` portent la même version et date.
 
 ## Version et date
 
