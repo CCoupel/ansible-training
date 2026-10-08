@@ -5,22 +5,22 @@ COURSE.add({
   title: 'Automation integration',
   tagline: 'Respecter des règles d\'intégration pour des playbooks et des rôles utilisables par une plateforme d\'automatisation.',
   objectives: [
-    { html: 'Appliquer les règles d\'intégration des playbooks : des groupes plutôt que des VM dans les listes d\'hôtes.', ref: [229] },
-    { html: 'Documenter un playbook avec un README : vue d\'ensemble, prérequis, variables et exemple d\'utilisation.', ref: [230] },
-    { html: 'Fournir les outils sous forme de rôle, avec des métadonnées <code>galaxy_info</code>.', ref: [231] },
-    { html: 'Appliquer les règles « One for All » : aucun secret dans les rôles, variables internes préfixées, fichier <code>Sanity.yml</code>.', ref: [232] },
-    { html: 'Organiser un rôle selon le modèle CRUD : <code>Create</code>, <code>Read</code>, <code>Update</code>, <code>Delete</code>.', ref: [233] }
+    { html: 'Appliquer les règles d\'intégration des playbooks : des groupes plutôt que des VM dans les listes d\'hôtes.', ref: [260] },
+    { html: 'Documenter un playbook avec un README : vue d\'ensemble, prérequis, variables et exemple d\'utilisation.', ref: [261] },
+    { html: 'Fournir les outils sous forme de rôle, avec des métadonnées <code>galaxy_info</code>.', ref: [262] },
+    { html: 'Appliquer les règles « One for All » : aucun secret dans les rôles, variables internes préfixées, fichier <code>Sanity.yml</code>.', ref: [263] },
+    { html: 'Organiser un rôle selon le modèle CRUD : <code>Create</code>, <code>Read</code>, <code>Update</code>, <code>Delete</code>.', ref: [264] }
   ],
   slides: [
-    { title: 'Cas concret', src: [228],
+    { title: 'Cas concret', src: [259],
       blocks: [
         { t: 'text', html: 'Automation Integration Rules' }
       ] },
-    { title: 'Playbooks', src: [229],
+    { title: 'Playbooks', src: [260],
       blocks: [
         { t: 'bullets', items: ['Don’t use VM in host lists, use group intersection<ul><li>Vms are grouped by solution/environment/function</li><li>Hosts: "&lt;solution&gt;:&amp;&lt;environment&gt;:&amp;&lt;function&gt;"</li></ul>', 'Don\'t reference environment variables', 'miq_action provides whether provisionning, retiring, reconfigurering', 'miq tags are available in<ul><li>miq_tags:{&lt;classification name&gt;:{\'name\': &lt;tag name&gt;, description\':&lt;tag description&gt;}}</li><li>Integration example (ManageIQ / CloudForms, legacy)</li></ul>'] }
       ] },
-    { title: '# My Playbook: Network Tester', src: [230],
+    { title: '# My Playbook: Network Tester', src: [261],
       blocks: [
         { t: 'code', lang: 'text', code: `================================
 ## Overview
@@ -38,7 +38,7 @@ Optional variables:
 * \`connection_message\`: The connection message to send (default: "Hello, world!")
 ## Example Usage` }
       ] },
-    { title: 'Roles', src: [231],
+    { title: 'Roles', src: [262],
       blocks: [
         { t: 'bullets', items: ['tools should be as a Role', 'Meta information set for documentation'] },
         { t: 'code', lang: 'yaml', code: `galaxy_info:
@@ -80,7 +80,7 @@ Optional variables:
 
 dependencies: []` }
       ] },
-    { title: 'One for All', src: [232],
+    { title: 'One for All', src: [263],
       blocks: [
         { t: 'bullets', items: ['no secrets in the role/playbooks =&gt; VAULT'] },
         { t: 'text', html: '<b>fact naming conflicts:</b>' },
@@ -90,32 +90,32 @@ dependencies: []` }
         { t: 'text', html: '<b>Sanity.yml:</b>' },
         { t: 'bullets', items: ['do some checks, assertion and validation of the extra vars and context', 'Use a dedicated fact to assert/validate role execution (&lt;role&gt;_execution: [true/false])', 'the main.yml  must call<ul><li>Sanity check files</li><li>the corresponding task files</li></ul>'] }
       ] },
-    { title: 'Roles: CRUD structure', src: [233],
+    { title: 'Roles: CRUD structure', src: [264],
       blocks: [
         { t: 'bullets', items: ['It should be convenient to Implement a CRUD (Create, Read, Update, Delete)<ul><li>MyRole/<ul><li>vars/<ul><li>default.yml</li></ul></li><li>tasks/<ul><li>sanity.yml</li><li>main.yml</li><li>Create.yml</li><li>Read.yml</li><li>Update.yml</li><li>Delete.yml</li></ul></li></ul></li></ul>', 'Set well descriptive name for all tasks and plays', 'Avoid useless tasks, use conditions (when)', 'Use the handlers to avoid multiple runs of a single tache'] }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Où les variables internes d\'un rôle doivent-elles être déclarées ?',
         options: ['Dans l\'inventaire, à partir des variables de groupe', 'Sur la ligne de commande, à partir des extra vars', 'Dans defaults/main.yml, à partir des variables externes'], answer: 2,
-        explain: 'Slide 222 : « internal role vars MUST be declared in the default/main.yml and initialized from external role vars » (la slide écrit default/main.yml ; le répertoire standard d\'un rôle s\'appelle defaults/).', ref: [232] }
+        explain: 'Slide 222 : « internal role vars MUST be declared in the default/main.yml and initialized from external role vars » (la slide écrit default/main.yml ; le répertoire standard d\'un rôle s\'appelle defaults/).', ref: [263] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Quel mécanisme la slide 223 recommande-t-elle pour éviter plusieurs exécutions d\'une même tâche ?',
         options: ['Les tags', 'Les handlers', 'ignore_errors'], answer: 1,
-        explain: 'Slide 223 : « Use the handlers to avoid multiple runs of a single tache ».', ref: [233] }
+        explain: 'Slide 223 : « Use the handlers to avoid multiple runs of a single tache ».', ref: [264] }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Que faut-il utiliser à la place des VM dans les listes d\'hôtes d\'un playbook ?',
         options: ['Une intersection de groupes', 'Une liste d\'adresses IP', 'Un fichier d\'inventaire par VM'], answer: 0,
-        explain: 'Slide 219 : « Don’t use VM in host lists, use group intersection » ; les VM sont regroupées par solution, environnement et fonction.', ref: [229] }
+        explain: 'Slide 219 : « Don’t use VM in host lists, use group intersection » ; les VM sont regroupées par solution, environnement et fonction.', ref: [260] }
     ] }
   ],
   takeaways: [
-    { html: 'Ne pas utiliser des VM dans les listes d\'hôtes : utiliser l\'intersection de groupes (solution, environnement, fonction).', ref: [229] },
-    { html: 'Ne pas référencer les variables d\'environnement.', ref: [229] },
-    { html: 'Les outils doivent être fournis sous forme de rôle, avec des métadonnées pour la documentation (<code>galaxy_info</code>).', ref: [231] },
-    { html: 'Aucun secret dans les rôles ou les playbooks : utiliser Vault.', ref: [232] },
-    { html: 'Les variables internes d\'un rôle suivent le format <code>_&lt;role_name&gt;_&lt;var_name&gt;</code> et sont déclarées dans defaults/main.yml (la slide écrit « default/main.yml »).', ref: [232] },
-    { html: 'Utiliser des conditions pour éviter les tâches inutiles, et des handlers pour éviter les exécutions multiples d\'une même tâche.', ref: [233] }
+    { html: 'Ne pas utiliser des VM dans les listes d\'hôtes : utiliser l\'intersection de groupes (solution, environnement, fonction).', ref: [260] },
+    { html: 'Ne pas référencer les variables d\'environnement.', ref: [260] },
+    { html: 'Les outils doivent être fournis sous forme de rôle, avec des métadonnées pour la documentation (<code>galaxy_info</code>).', ref: [262] },
+    { html: 'Aucun secret dans les rôles ou les playbooks : utiliser Vault.', ref: [263] },
+    { html: 'Les variables internes d\'un rôle suivent le format <code>_&lt;role_name&gt;_&lt;var_name&gt;</code> et sont déclarées dans defaults/main.yml (la slide écrit « default/main.yml »).', ref: [263] },
+    { html: 'Utiliser des conditions pour éviter les tâches inutiles, et des handlers pour éviter les exécutions multiples d\'une même tâche.', ref: [264] }
   ]
 });

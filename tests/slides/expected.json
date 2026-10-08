@@ -1,5 +1,5 @@
 {
   "_comment": "Valeurs attendues par check_pptx.py (V4/V5). A mettre a jour ici, dans le meme commit, quand le deck change legitimement (slide ajoutee/retiree, slide masquee deplacee, support HTML de v0.2.0). Les variables d'environnement EXPECTED_SLIDES / EXPECTED_HIDDEN restent prioritaires.",
-  "slides": 233,
-  "hidden": [203, 220, 227]
+  "slides": 264,
+  "hidden": [234, 251, 258]
 }
