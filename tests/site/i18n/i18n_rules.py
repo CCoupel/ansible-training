@@ -18,6 +18,10 @@ import re
 
 ALLOWED_EN = {"tagline_en", "html_en", "q_en", "options_en", "explain_en", "title_en", "alt_en", "caption_en", "svg_en"}
 WORDS_GIVEAWAY = ("only", "just", "simply", "always", "never")
+# Noms de tags (tagged, always, never…) : identifiants, pas des qualificatifs — exemptés de la règle des mots révélateurs.
+# Formes admises : « The <nom> tag » et « The tag named <nom> » (glossaire §4, règle 3).
+RE_TAG_NAME = re.compile(r"\b(?:the\s+(?:%s)\s+tag|the\s+tag\s+named\s+(?:%s))\b" % (
+    "|".join(WORDS_GIVEAWAY), "|".join(WORDS_GIVEAWAY)), re.I)
 RE_CODE = re.compile(r"<code>(.*?)</code>", re.S | re.I)
 RE_IP = re.compile(r"(?<![\d.])(\d{1,3}(?:\.\d{1,3}){3})(?![\d])")
 RE_SLIDE = re.compile(r"(?i)\bslides?\s+(\d+)")
@@ -164,10 +168,11 @@ def quiz_errors(mod):
         if mean and not (0.7 * mean <= len(plain[ans]) <= 1.3 * mean):
             errs.append("%s : la bonne réponse (%d car.) s'écarte de plus de 30 %% de la moyenne des distracteurs (%.0f)"
                         % (w, len(plain[ans]), mean))
+        checked = [RE_TAG_NAME.sub(" ", o) for o in plain]  # noms de tags exemptés
         for word in WORDS_GIVEAWAY:
             rx = re.compile(r"\b%s\b" % word, re.I)
-            in_wrong = any(rx.search(o) for i, o in enumerate(plain) if i != ans)
-            if in_wrong and not rx.search(plain[ans]):
+            in_wrong = any(rx.search(o) for i, o in enumerate(checked) if i != ans)
+            if in_wrong and not rx.search(checked[ans]):
                 errs.append("%s : « %s » réservé aux mauvaises réponses" % (w, word))
         if any(RE_CODE.search(o) for o in en):
             errs.append("%s : <code> dans les options (la forme révèle la réponse)" % w)

@@ -132,6 +132,20 @@ class TestRegles(unittest.TestCase):
         m["slides"][1]["blocks"][0]["options_en"] = ["Just a keyword of the play", "Just a module of the play", "Just a file of the play"]
         self.assertEqual(R.quiz_errors(m), [])
 
+    def test_nom_de_tag_exempte_de_la_regle_des_mots_reveles(self):
+        """« The never tag » / « The tag named always » : identifiants (tags Ansible), pas des qualificatifs."""
+        m = module_en()
+        m["slides"][1]["blocks"][0]["options_en"] = ["The tagged tag of the play", "The never tag of the play", "The tag named always"]
+        self.assertEqual(R.quiz_errors(m), [])
+
+    def test_never_comme_qualificatif_reste_refuse(self):
+        self.assert_flagged(lambda m: m["slides"][1]["blocks"][0]["options_en"].__setitem__(
+            1, "A module that can never be skipped"), "« never » réservé")
+
+    def test_always_qualificatif_reste_refuse_meme_avec_un_tag_voisin(self):
+        self.assert_flagged(lambda m: m["slides"][1]["blocks"][0]["options_en"].__setitem__(
+            1, "The never tag always runs"), "« always » réservé")
+
     def test_code_dans_les_options(self):
         self.assert_flagged(lambda m: m["slides"][1]["blocks"][0]["options_en"].__setitem__(0, "The <code>when</code> key"),
                             "<code> dans les options")
