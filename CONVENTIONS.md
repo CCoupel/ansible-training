@@ -167,7 +167,7 @@ La version et les versions de référence affichées sur l'accueil viennent de `
 Le texte du PPTX est repris tel quel ; ces points sont à connaître avant de projeter ou de faire copier un exemple :
 
 - **m11, slide 152** : la solution du lab (rôle `reboot-server`) est un playbook invalide (`tasks:` sans `hosts:`, tâche `Regather Facts` mal indentée, nom de play copié d'un autre exercice). À corriger à l'oral ou dans le PPTX avant de faire copier la solution.
-- **m17, slide 222** : « default/main.yml » est une coquille ; le répertoire d'un rôle s'appelle `defaults/`.
-- **m16, slide 203** : « with_item » est une coquille ; le mot-clé est `with_items`.
+- **m17, slide 263** : « default/main.yml » est une coquille ; le répertoire d'un rôle s'appelle `defaults/`.
+- **m16, slide 244** : « with_item » est une coquille ; le mot-clé est `with_items`.
 - **m02, slide 29** : `-l Web` alors que le groupe est `WEB` ; les noms de groupes sont sensibles à la casse.
 - **m11, slide 147** : l'exemple `argument_specs` contient un nom d'auteur (décision : conservé).
