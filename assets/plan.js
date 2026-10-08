@@ -1,4 +1,4 @@
-/* Manifeste du plan de formation (15 modules) — voir CONVENTIONS.md et docs/PLAN.md.
+/* Manifeste du plan de formation — voir CONVENTIONS.md et docs/PLAN.md.
    Source du sommaire et de l'agenda de l'accueil. Un module listé ici mais non chargé (pas de <script> dans
    index.html) s'affiche « à venir » (grisé, non ouvrable).
    day   : jour de l'agenda (slide 3 du PPTX) — J1, J2 ou J3 ; libellés dans assets/i18n/fr.js (clés day.*).
@@ -16,7 +16,7 @@ COURSE.plan = [
   { num: 10, id: 'm10', emoji: '🔒', title: 'Vault',                    day: 'J2', range: [135, 141] },
   { num: 11, id: 'm11', emoji: '📦', title: 'Roles, collections & Galaxy', day: 'J3', range: [142, 161] },
   { num: 12, id: 'm12', emoji: '🛠️', title: 'Extend Ansible',           day: 'J3', range: [162, 182] },
-  { num: 13, id: 'm13', emoji: '🌐', title: 'Real use case',            day: 'J3', range: [183, 192] },
-  { num: 14, id: 'm14', emoji: '✅', title: 'Best practices',           day: 'J3', range: [193, 216] },
-  { num: 15, id: 'm15', emoji: '🔗', title: 'Automation integration',   day: 'J3', range: [217, 223] }
+  { num: 15, id: 'm15', emoji: '🌐', title: 'Real use case',            day: 'J3', range: [183, 192] },
+  { num: 16, id: 'm16', emoji: '✅', title: 'Best practices',           day: 'J3', range: [193, 216] },
+  { num: 17, id: 'm17', emoji: '🔗', title: 'Automation integration',   day: 'J3', range: [217, 223] }
 ];

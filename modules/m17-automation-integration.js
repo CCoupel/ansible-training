@@ -1,7 +1,7 @@
 /* Module 15 — Automation integration (slides PPTX 218 à 223). Conversion verbatim : le texte des slides n'est pas reformulé.
    Contenu additionnel (objectifs, À retenir, quiz) : dérivé uniquement de ces slides, voir `ref`. */
 COURSE.add({
-  id: 'm15', num: 15, emoji: '🔗',
+  id: 'm17', num: 17, emoji: '🔗',
   title: 'Automation integration',
   tagline: 'Respecter des règles d\'intégration pour des playbooks et des rôles utilisables par une plateforme d\'automatisation.',
   objectives: [

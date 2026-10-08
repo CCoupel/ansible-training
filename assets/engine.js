@@ -10,7 +10,7 @@
   const pad = n => String(n).padStart(2, '0');
 
   /* ---------- Préférences et progression (localStorage, tolérant à son indisponibilité) ---------- */
-  const KEY = 'ansible-training-v1';
+  const KEY = 'ansible-training-v2';
   const store = {
     get() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } },
     set(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* stockage indisponible : le site reste utilisable */ } }

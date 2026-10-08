@@ -9,7 +9,7 @@ Source de vérité du **site** (version HTML du support) : choix techniques, sch
 - Node (stdlib) pour les outils, Python (stdlib) pour les tests et le contrôle des liens.
 - Interface **en français** ; les libellés sont **tous** dans `assets/i18n/fr.js` (jamais en dur dans `engine.js` / `index.html`) afin de préparer la traduction de l'interface (#51). Le **contenu des slides** reprend le texte du PPTX tel quel (langue d'origine, majoritairement l'anglais) ; le contenu additionnel est en français.
 - Accent bleu Ansible, thème clair/sombre (touche `t`, préférence mémorisée, `prefers-color-scheme` par défaut), responsive.
-- Persistance : `localStorage`, clé `ansible-training-v1` (progression, scores de quiz, thème, panneau de notes, dernière slide). Tolérant à l'indisponibilité du stockage.
+- Persistance : `localStorage`, clé `ansible-training-v2` (progression, scores de quiz, thème, panneau de notes, dernière slide). Tolérant à l'indisponibilité du stockage.
 
 ## Statut des fichiers
 
@@ -162,7 +162,7 @@ La version et les versions de référence affichées sur l'accueil viennent de `
 Le texte du PPTX est repris tel quel ; ces points sont à connaître avant de projeter ou de faire copier un exemple :
 
 - **m11, slide 152** : la solution du lab (rôle `reboot-server`) est un playbook invalide (`tasks:` sans `hosts:`, tâche `Regather Facts` mal indentée, nom de play copié d'un autre exercice). À corriger à l'oral ou dans le PPTX avant de faire copier la solution.
-- **m15, slide 222** : « default/main.yml » est une coquille ; le répertoire d'un rôle s'appelle `defaults/`.
-- **m14, slide 203** : « with_item » est une coquille ; le mot-clé est `with_items`.
+- **m17, slide 222** : « default/main.yml » est une coquille ; le répertoire d'un rôle s'appelle `defaults/`.
+- **m16, slide 203** : « with_item » est une coquille ; le mot-clé est `with_items`.
 - **m02, slide 29** : `-l Web` alors que le groupe est `WEB` ; les noms de groupes sont sensibles à la casse.
 - **m11, slide 147** : l'exemple `argument_specs` contient un nom d'auteur (décision : conservé).
