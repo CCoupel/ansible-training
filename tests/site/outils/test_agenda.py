@@ -4,8 +4,7 @@ La slide 3 liste, par colonne « Day N : », des libellés de modules et des pau
 libellé d'agenda → id de module permet de comparer, jour par jour et dans l'ordre, les modules de l'agenda aux
 modules de même `day` (J1..J4) du plan.
   - tolérés : les libellés non-modules (« Lunch Break », lignes vides) ; plusieurs libellés pour un même module
-    (ex. « Introduction », « What is Ansible » → m01) ; m14 (Event-Driven Ansible) à l'agenda dès le lot 1 mais
-    absent de plan.js avant le lot 2 ;
+    (ex. « Introduction », « What is Ansible » → m01) ; un module « réservé » (RESERVED, vide depuis le lot 2) présent à l'agenda mais pas encore dans plan.js ;
   - refusés : un module de plan.js absent de l'agenda ; un libellé inconnu de la table (à ajouter ici) ; un module
     dans le mauvais jour ou dans le mauvais ordre ; un nombre de jours différent de 4.
 Les messages citent jours et ids de modules, jamais le texte des slides.
@@ -23,7 +22,7 @@ import site_support as S  # noqa: E402
 
 AGENDA_SLIDE = 3
 DAYS = 4
-RESERVED = {"m14"}  # présent à l'agenda dès le lot 1, ajouté à plan.js au lot 2
+RESERVED = set()  # m14 (Event-Driven Ansible) est dans plan.js depuis le lot 2 : plus aucun module réservé
 NON_MODULE = {"lunch break"}
 
 # libellé de l'agenda (minuscules, espaces normalisés) -> id de module

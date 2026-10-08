@@ -326,16 +326,20 @@ class TestMoyenne(SlidesCase):
     def test_issue_7_eda_notions_et_syntaxe_presentes(self):
         slides = self._eda_slides()
         missing = []  # pas de subTest : le mécanisme « lot non fait » ne voit que l'échec du test lui-même
-        for motif, label in ((r"ansible-rulebook", "ansible-rulebook"),
-                             (r"ansible\.eda\.webhook", "ansible.eda.webhook"),
-                             (r"^\s*(?:-\s+)?rules\s*:", "rules:"),
+        for motif, label in ((r"\bansible-rulebook\b", "ansible-rulebook"),
+                             (r"\bansible\.eda\.webhook\s*:", "source ansible.eda.webhook:"),
+                             (r"^\s*rules\s*:\s*$", "rules:"),
                              (r"^\s*(?:-\s+)?condition\s*:", "condition:"),
-                             (r"run_playbook", "run_playbook"),
-                             (r"run_job_template", "run_job_template"),
-                             (r"throttle", "throttle"),
-                             (r"once_within", "once_within"),
-                             (r"decision[\s-]+environment", "decision environment"),
-                             (r"ansible_eda\.event|event\.payload|ansible_eda", "ansible_eda.event")):
+                             (r"^\s*run_playbook\s*:\s*$", "action run_playbook:"),
+                             (r"^\s*run_job_template\s*:\s*$", "action run_job_template:"),
+                             (r"^\s*throttle\s*:\s*$", "throttle:"),
+                             (r"^\s*once_within\s*:\s*\d+\s+\w+", "once_within: <durée>"),
+                             (r"\bgroup_by_attributes\b", "group_by_attributes"),
+                             (r"\b[Dd]ecision environments?\b", "decision environment"),
+                             (r"\{\{\s*ansible_eda\.event\b", "{{ ansible_eda.event }} dans un playbook"),
+                             (r"\bJava 17\b|\bjava-17-", "Java 17"),
+                             (r"\bpost_event\s*:", "action post_event:"),
+                             (r"--print-events", "--print-events")):
             rx = re.compile(motif, FLAGS)
             if not any(rx.search(t) for _, t in _texts("slides", slides)):
                 missing.append(label)
@@ -344,8 +348,9 @@ class TestMoyenne(SlidesCase):
     def test_issue_7_eda_formes_obsoletes_absentes(self):
         slides = self._eda_slides()
         self.absent(r"ansible-events", slides=slides, why="(ancien nom du projet)")
-        self.absent(r"benthomasson\.eda", slides=slides, why="(ancien espace de noms de la collection)")
+        self.absent(r"benthomasson", slides=slides, why="(ancien espace de noms de la collection)")
         self.absent(r"--websocket-address", slides=slides, why="(option remplacée par --websocket-url)")
+        self.absent(r"ansible-rulebook\.readthedocs", slides=slides, why="(documentation déplacée sous docs.ansible.com/projects/rulebook)")
 
     def test_issue_20_ansible_engine(self):
         self.absent(r"Ansible(?:['’]s)?\s+(?:Automation\s+)?Engine", scope="both")
