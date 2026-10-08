@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm03', num: 3, emoji: '📜',
   title: 'Playbooks',
   tagline: 'Lire et comprendre un playbook : plays, tâches, modules, blocs, import et include.',
+  tagline_en: 'Read and understand a playbook: plays, tasks, modules, blocks, import and include.',
   objectives: [
-    { html: 'Décrire un playbook : un fichier YAML simple et lisible qui définit une série de tâches à exécuter.', ref: [31] },
-    { html: 'Identifier les éléments d\'un playbook : plays, hôtes de l\'inventaire, tâches, modules et paramètres.', ref: [32] },
-    { html: 'Lire un playbook qui installe et démarre Apache (<code>hosts</code>, <code>vars</code>, <code>remote_user</code>, <code>tasks</code>).', ref: [34] },
-    { html: 'Grouper des tâches avec <code>block</code> et conditionner une tâche avec <code>when</code>.', ref: [41, 42] },
-    { html: 'Distinguer les <code>import*</code> (statiques) des <code>include*</code> (dynamiques).', ref: [43] }
+    { html: 'Décrire un playbook : un fichier YAML simple et lisible qui définit une série de tâches à exécuter.', html_en: 'Describe a playbook: a simple, readable YAML file that defines a series of tasks to run.', ref: [31] },
+    { html: 'Identifier les éléments d\'un playbook : plays, hôtes de l\'inventaire, tâches, modules et paramètres.', html_en: 'Identify the elements of a playbook: plays, inventory hosts, tasks, modules and parameters.', ref: [32] },
+    { html: 'Lire un playbook qui installe et démarre Apache (<code>hosts</code>, <code>vars</code>, <code>remote_user</code>, <code>tasks</code>).', html_en: 'Read a playbook that installs and starts Apache (<code>hosts</code>, <code>vars</code>, <code>remote_user</code>, <code>tasks</code>).', ref: [34] },
+    { html: 'Grouper des tâches avec <code>block</code> et conditionner une tâche avec <code>when</code>.', html_en: 'Group tasks with <code>block</code> and make a task conditional with <code>when</code>.', ref: [41, 42] },
+    { html: 'Distinguer les <code>import*</code> (statiques) des <code>include*</code> (dynamiques).', html_en: 'Tell the <code>import*</code> keywords (static) from the <code>include*</code> keywords (dynamic).', ref: [43] }
   ],
   slides: [
     { title: 'Playbook', src: [30],
@@ -128,28 +129,34 @@ SRV-1                      : ok=3    changed=1    unreachable=0    failed=0    s
         { t: 'text', html: '<b>Include =&gt; dynamic</b>' },
         { t: 'bullets', items: ['All include* statements are processed as they encountered during the execution of the playbook.', 'loop can be used with an include,', 'the included tasks or role will be executed once for each item in the loop.', 'Tags which only exist inside a dynamic include will not show up in --list-tags output.', 'Tasks which only exist inside a dynamic include will not show up in --list-tasks output.', 'Trigger is only in the dynamic include itself.', 'You cannot use --start-at-task to begin execution at a task inside a dynamic include.'] }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'À quoi sert le champ <code>name</code> d\'une tâche ?',
-        options: ['Il est obligatoire et identifie le module appelé', 'Il définit l\'hôte cible de la tâche', 'Il documente la tâche et apparaît dans AWX'], answer: 2,
-        explain: 'Les notes de la slide 35 : les champs <code>name</code> sont des commentaires lisibles, facultatifs mais utiles ; ces textes apparaissent aussi dans automation controller / AWX.', ref: [35] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'À quoi sert le champ <code>name</code> d\'une tâche ?', q_en: 'What is the <code>name</code> field of a task for?',
+        options: ['Il est obligatoire et identifie le module appelé', 'Il définit l\'hôte cible de la tâche', 'Il documente la tâche et apparaît dans AWX'],
+        options_en: ['It is mandatory and identifies the module called', 'It sets the target host of the task', 'It documents the task and appears in AWX'], answer: 2,
+        explain: 'Les notes de la slide 35 : les champs <code>name</code> sont des commentaires lisibles, facultatifs mais utiles ; ces textes apparaissent aussi dans automation controller / AWX.',
+        explain_en: 'The notes of slide 35: <code>name</code> fields are human-readable comments, optional but useful; these strings also show up in automation controller / AWX.', ref: [35] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle affirmation sur les <code>include*</code> est exacte ?',
-        options: ['Leurs tâches apparaissent toujours dans la sortie de --list-tasks', 'Ils sont traités pendant l\'exécution du playbook et acceptent une boucle', 'Ils sont pré-traités au moment où le playbook est analysé'], answer: 1,
-        explain: 'Slide 43 : « Include => dynamic » ; une boucle peut être utilisée avec un include, alors que les tâches d\'un include dynamique n\'apparaissent pas dans la sortie de <code>--list-tasks</code>.', ref: [43] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Quelle affirmation sur les <code>include*</code> est exacte ?', q_en: 'Which statement about <code>include*</code> is correct?',
+        options: ['Leurs tâches apparaissent toujours dans la sortie de --list-tasks', 'Ils sont traités pendant l\'exécution du playbook et acceptent une boucle', 'Ils sont pré-traités au moment où le playbook est analysé'],
+        options_en: ['Their tasks appear in the output of --list-tasks', 'They are processed while the playbook runs and accept a loop', 'They are pre-processed when the playbook is parsed'], answer: 1,
+        explain: 'Slide 43 : « Include => dynamic » ; une boucle peut être utilisée avec un include, alors que les tâches d\'un include dynamique n\'apparaissent pas dans la sortie de <code>--list-tasks</code>.',
+        explain_en: 'Slide 43: “Include => dynamic”; a loop can be used with an include, whereas the tasks of a dynamic include do not appear in the <code>--list-tasks</code> output.', ref: [43] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Que garantit l\'idempotence d\'un playbook ?',
-        options: ['Rejouer le playbook ne change plus le système après la première application', 'Le playbook s\'exécute plus vite à chaque nouveau lancement sur le même hôte', 'Les tâches du playbook s\'exécutent en parallèle sur tous les hôtes à la fois'], answer: 0,
-        explain: 'Slide 31 : « Idempotency: Ensures that applying the same playbook multiple times will not change the system after the first application ».', ref: [31] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Que garantit l\'idempotence d\'un playbook ?', q_en: 'What does the idempotence of a playbook guarantee?',
+        options: ['Rejouer le playbook ne change plus le système après la première application', 'Le playbook s\'exécute plus vite à chaque nouveau lancement sur le même hôte', 'Les tâches du playbook s\'exécutent en parallèle sur tous les hôtes à la fois'],
+        options_en: ['Running the playbook again no longer changes the system after the first run', 'The playbook runs faster each time it is launched on the same host', 'The tasks of the playbook run in parallel on all hosts at once'], answer: 0,
+        explain: 'Slide 31 : « Idempotency: Ensures that applying the same playbook multiple times will not change the system after the first application ».',
+        explain_en: 'Slide 31: “Idempotency: Ensures that applying the same playbook multiple times will not change the system after the first application”.', ref: [31] }
     ] }
   ],
   takeaways: [
-    { html: 'Un playbook est écrit en YAML : ce sont des fichiers simples et lisibles qui définissent une série de tâches à exécuter.', ref: [31] },
-    { html: 'Un playbook est une liste de plays ; chaque play cible des hôtes de l\'inventaire et liste des tâches, des modules et leurs paramètres.', ref: [32] },
-    { html: 'Les playbooks ont une syntaxe déclarative, une structure modulaire et sont idempotents : les appliquer plusieurs fois ne change pas le système après la première application.', ref: [31] },
-    { html: 'Le champ <code>name</code> est facultatif mais utile comme commentaire ; il apparaît aussi dans automation controller / AWX.', ref: [35] },
-    { html: '<code>block</code> regroupe des tâches ; <code>when</code> conditionne l\'exécution d\'une tâche.', ref: [41, 42] },
-    { html: 'Les <code>import*</code> sont traités au chargement du playbook (statique) ; les <code>include*</code> pendant son exécution (dynamique).', ref: [43] }
+    { html: 'Un playbook est écrit en YAML : ce sont des fichiers simples et lisibles qui définissent une série de tâches à exécuter.', html_en: 'A playbook is written in YAML: simple, readable files that define a series of tasks to run.', ref: [31] },
+    { html: 'Un playbook est une liste de plays ; chaque play cible des hôtes de l\'inventaire et liste des tâches, des modules et leurs paramètres.', html_en: 'A playbook is a list of plays; each play targets inventory hosts and lists tasks, modules and their parameters.', ref: [32] },
+    { html: 'Les playbooks ont une syntaxe déclarative, une structure modulaire et sont idempotents : les appliquer plusieurs fois ne change pas le système après la première application.', html_en: 'Playbooks have a declarative syntax and a modular structure, and they are idempotent: applying them several times does not change the system after the first run.', ref: [31] },
+    { html: 'Le champ <code>name</code> est facultatif mais utile comme commentaire ; il apparaît aussi dans automation controller / AWX.', html_en: 'The <code>name</code> field is optional but useful as a comment; it also shows up in automation controller / AWX.', ref: [35] },
+    { html: '<code>block</code> regroupe des tâches ; <code>when</code> conditionne l\'exécution d\'une tâche.', html_en: '<code>block</code> groups tasks; <code>when</code> makes a task conditional.', ref: [41, 42] },
+    { html: 'Les <code>import*</code> sont traités au chargement du playbook (statique) ; les <code>include*</code> pendant son exécution (dynamique).', html_en: 'The <code>import*</code> keywords are processed when the playbook loads (static); the <code>include*</code> keywords while it runs (dynamic).', ref: [43] }
   ]
 });

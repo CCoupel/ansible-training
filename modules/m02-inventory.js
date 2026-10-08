@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm02', num: 2, emoji: '📇',
   title: 'Inventory',
   tagline: 'Lister les hôtes gérés par Ansible, les organiser en groupes et choisir le format de l\'inventaire.',
+  tagline_en: 'List the hosts Ansible manages, organize them into groups and choose the inventory format.',
   objectives: [
-    { html: 'Définir un inventaire : la liste des hôtes gérés par Ansible, éventuellement organisés en groupes.', ref: [14] },
-    { html: 'Structurer des hôtes en groupes à plat ou en arborescence avec la section <code>:children</code>.', ref: [15, 16] },
-    { html: 'Comparer les formats INI, YAML et JSON : lisibilité, hiérarchie, commentaires, vitesse d\'analyse.', ref: [17, 19, 21, 23] },
-    { html: 'Écrire le même inventaire aux formats INI, JSON et YAML.', ref: [25, 26, 27] },
-    { html: 'Tester un inventaire avec <code>ansible-inventory</code>, l\'utiliser avec <code>-i</code> et le limiter avec <code>-l</code>.', ref: [29] }
+    { html: 'Définir un inventaire : la liste des hôtes gérés par Ansible, éventuellement organisés en groupes.', html_en: 'Define an inventory: the list of hosts managed by Ansible, optionally organized into groups.', ref: [14] },
+    { html: 'Structurer des hôtes en groupes à plat ou en arborescence avec la section <code>:children</code>.', html_en: 'Structure hosts into flat groups or a tree with the <code>:children</code> section.', ref: [15, 16] },
+    { html: 'Comparer les formats INI, YAML et JSON : lisibilité, hiérarchie, commentaires, vitesse d\'analyse.', html_en: 'Compare the INI, YAML and JSON formats: readability, hierarchy, comments, parsing speed.', ref: [17, 19, 21, 23] },
+    { html: 'Écrire le même inventaire aux formats INI, JSON et YAML.', html_en: 'Write the same inventory in the INI, JSON and YAML formats.', ref: [25, 26, 27] },
+    { html: 'Tester un inventaire avec <code>ansible-inventory</code>, l\'utiliser avec <code>-i</code> et le limiter avec <code>-l</code>.', html_en: 'Test an inventory with <code>ansible-inventory</code>, use it with <code>-i</code> and limit it with <code>-l</code>.', ref: [29] }
   ],
   slides: [
     { title: 'Inventory', src: [13], blocks: [
@@ -284,28 +285,34 @@ srv2-12 ansible_host=192.168.1.212 ansible_user=root` }
         { t: 'text', html: '<b>Limit Inventory:</b>' },
         { t: 'code', lang: 'console', code: '# ansible-playbook -i my_Inventory_script.py -l Web my_playbook.yml' }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Où se trouve le fichier d\'inventaire par défaut d\'Ansible ?',
-        options: ['/var/lib/ansible/hosts', '/etc/ansible/hosts', '/etc/ansible/inventory.ini'], answer: 1,
-        explain: 'Le fichier d\'inventaire par défaut est <code>/etc/ansible/hosts</code> (cf. slide 14).', ref: [14] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Où se trouve le fichier d\'inventaire par défaut d\'Ansible ?', q_en: 'Where is the default Ansible inventory file?',
+        options: ['/var/lib/ansible/hosts', '/etc/ansible/hosts', '/etc/ansible/inventory.ini'],
+        options_en: ['/var/lib/ansible/hosts', '/etc/ansible/hosts', '/etc/ansible/inventory.ini'], answer: 1,
+        explain: 'Le fichier d\'inventaire par défaut est <code>/etc/ansible/hosts</code> (cf. slide 14).',
+        explain_en: 'The default inventory file is <code>/etc/ansible/hosts</code> (see slide 14).', ref: [14] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Parmi INI, YAML et JSON, quel format n\'accepte pas les commentaires ?',
-        options: ['INI', 'YAML', 'JSON'], answer: 2,
-        explain: 'Le tableau comparatif indique « Comments Support : No » pour JSON (cf. slide 23, et « No comments support » en slide 19).', ref: [19, 23] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Parmi INI, YAML et JSON, quel format n\'accepte pas les commentaires ?', q_en: 'Among INI, YAML and JSON, which format does not accept comments?',
+        options: ['INI', 'YAML', 'JSON'],
+        options_en: ['INI', 'YAML', 'JSON'], answer: 2,
+        explain: 'Le tableau comparatif indique « Comments Support : No » pour JSON (cf. slide 23, et « No comments support » en slide 19).',
+        explain_en: 'The comparison table shows “Comments Support : No” for JSON (see slide 23, and “No comments support” on slide 19).', ref: [19, 23] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Que fait l\'option <code>-l</code> dans <code>ansible-playbook -i my_Inventory_script.py -l Web my_playbook.yml</code> ?',
-        options: ['Elle limite l\'exécution aux hôtes du groupe Web', 'Elle affiche la liste complète des hôtes de l\'inventaire', 'Elle charge un fichier de journal pour l\'exécution'], answer: 0,
-        explain: 'Sous « Limit Inventory », la slide 29 utilise <code>-l Web</code> pour limiter l\'inventaire ; la liste complète s\'obtient avec <code>ansible-inventory -i test_inventory --list</code>.', ref: [29] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Que fait l\'option <code>-l</code> dans <code>ansible-playbook -i my_Inventory_script.py -l Web my_playbook.yml</code> ?', q_en: 'What does the <code>-l</code> option do in <code>ansible-playbook -i my_Inventory_script.py -l Web my_playbook.yml</code>?',
+        options: ['Elle limite l\'exécution aux hôtes du groupe Web', 'Elle affiche la liste complète des hôtes de l\'inventaire', 'Elle charge un fichier de journal pour l\'exécution'],
+        options_en: ['It limits the run to the hosts of the Web group', 'It prints the full list of the inventory hosts', 'It loads a log file for the run'], answer: 0,
+        explain: 'Sous « Limit Inventory », la slide 29 utilise <code>-l Web</code> pour limiter l\'inventaire ; la liste complète s\'obtient avec <code>ansible-inventory -i test_inventory --list</code>.',
+        explain_en: 'Under “Limit Inventory”, slide 29 uses <code>-l Web</code> to limit the inventory; the full list comes from <code>ansible-inventory -i test_inventory --list</code>.', ref: [29] }
     ] }
   ],
   takeaways: [
-    { html: 'Un inventaire est la liste des nœuds gérés (les hôtes) qu\'Ansible configure ; les hôtes peuvent être organisés en groupes.', ref: [14] },
-    { html: 'Le fichier d\'inventaire par défaut est <code>/etc/ansible/hosts</code>.', ref: [14] },
-    { html: 'La section <code>:children</code> permet de construire une arborescence de groupes.', ref: [16, 25] },
-    { html: 'INI est simple mais sa structure de données est limitée à deux niveaux de hiérarchie (les groupes s\'imbriquent avec <code>:children</code>) ; YAML et JSON gèrent une hiérarchie complète, et JSON n\'accepte pas les commentaires.', ref: [16, 17, 19, 23] },
-    { html: 'Un inventaire dynamique est généré par des plugins à partir de sources externes, par exemple <code>amazon.aws.aws_ec2</code> ou <code>netbox.netbox.nb_inventory</code>.', ref: [14, 28] },
-    { html: '<code>ansible-inventory -i test_inventory --list</code> teste un inventaire ; l\'option <code>-l</code> (par exemple <code>-l Web</code>) limite l\'exécution.', ref: [29] }
+    { html: 'Un inventaire est la liste des nœuds gérés (les hôtes) qu\'Ansible configure ; les hôtes peuvent être organisés en groupes.', html_en: 'An inventory is the list of managed nodes (the hosts) that Ansible configures; hosts can be organized into groups.', ref: [14] },
+    { html: 'Le fichier d\'inventaire par défaut est <code>/etc/ansible/hosts</code>.', html_en: 'The default inventory file is <code>/etc/ansible/hosts</code>.', ref: [14] },
+    { html: 'La section <code>:children</code> permet de construire une arborescence de groupes.', html_en: 'The <code>:children</code> section builds a tree of groups.', ref: [16, 25] },
+    { html: 'INI est simple mais sa structure de données est limitée à deux niveaux de hiérarchie (les groupes s\'imbriquent avec <code>:children</code>) ; YAML et JSON gèrent une hiérarchie complète, et JSON n\'accepte pas les commentaires.', html_en: 'INI is simple but its data structure is limited to two levels of hierarchy (groups nest with <code>:children</code>); YAML and JSON support a full hierarchy, and JSON does not accept comments.', ref: [16, 17, 19, 23] },
+    { html: 'Un inventaire dynamique est généré par des plugins à partir de sources externes, par exemple <code>amazon.aws.aws_ec2</code> ou <code>netbox.netbox.nb_inventory</code>.', html_en: 'A dynamic inventory is generated by plugins from external sources, for example <code>amazon.aws.aws_ec2</code> or <code>netbox.netbox.nb_inventory</code>.', ref: [14, 28] },
+    { html: '<code>ansible-inventory -i test_inventory --list</code> teste un inventaire ; l\'option <code>-l</code> (par exemple <code>-l Web</code>) limite l\'exécution.', html_en: '<code>ansible-inventory -i test_inventory --list</code> tests an inventory; the <code>-l</code> option (for example <code>-l Web</code>) limits the run.', ref: [29] }
   ]
 });
