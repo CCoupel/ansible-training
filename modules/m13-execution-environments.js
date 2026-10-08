@@ -152,7 +152,7 @@ $ ansible-creator init playbook my_namespace.my_project ./my_project` }
     ] },
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Quel mode d\'<code>ansible-navigator</code> affiche une sortie classique, comme <code>ansible-playbook</code> ?',
-        options: ['interactive', 'replay', 'stdout'], answer: 2,
+        options: ['interactive', 'stdout', 'replay'], answer: 1,
         explain: 'Slide 188 : « stdout: classic output, like ansible-playbook » ; <code>interactive</code> est le mode par défaut.', ref: [188] }
     ] }
   ],
