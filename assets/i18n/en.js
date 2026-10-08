@@ -24,8 +24,8 @@ COURSE.i18n['en'] = {
   'nav.hint': '← → navigate · m contents · n notes · t theme · l language · / search',
   'nav.soon': 'soon',
 
-  'lang.fr': 'Français',
-  'lang.en': 'English',
+  'lang.labelFr': 'Français',
+  'lang.labelEn': 'English',
 
   'search.placeholder': 'Search ( / )',
   'search.aria': 'Search the course',

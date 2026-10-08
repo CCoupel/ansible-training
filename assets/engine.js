@@ -415,7 +415,7 @@
     }));
     const lb = $('#lang');
     if (lb) {
-      lb.innerHTML = `<span class="${LANG === 'fr' ? 'on' : ''}" title="${esc(t('lang.fr'))}">FR</span><span class="bar" aria-hidden="true">|</span><span class="${LANG === 'en' ? 'on' : ''}" title="${esc(t('lang.en'))}">EN</span>`;
+      lb.innerHTML = `<span class="${LANG === 'fr' ? 'on' : ''}" title="${esc(t('lang.labelFr'))}">FR</span><span class="bar" aria-hidden="true">|</span><span class="${LANG === 'en' ? 'on' : ''}" title="${esc(t('lang.labelEn'))}">EN</span>`;
       lb.setAttribute('aria-label', t('nav.langAria'));
       lb.title = t('nav.lang');
     }
