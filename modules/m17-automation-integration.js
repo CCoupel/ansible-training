@@ -1,4 +1,4 @@
-/* Module 15 — Automation integration (slides PPTX 218 à 223). Conversion verbatim : le texte des slides n'est pas reformulé.
+/* Module 17 — Automation integration (slides PPTX 228 à 233). Conversion verbatim : le texte des slides n'est pas reformulé.
    Contenu additionnel (objectifs, À retenir, quiz) : dérivé uniquement de ces slides, voir `ref`. */
 COURSE.add({
   id: 'm17', num: 17, emoji: '🔗',

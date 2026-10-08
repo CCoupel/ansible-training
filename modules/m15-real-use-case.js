@@ -1,4 +1,4 @@
-/* Module 13 — Real use case (slides PPTX 183 à 192). Conversion verbatim : le texte des slides n'est pas reformulé.
+/* Module 15 — Real use case (slides PPTX 193 à 202). Conversion verbatim : le texte des slides n'est pas reformulé.
    Contenu additionnel (objectifs, À retenir, quiz) : dérivé uniquement de ces slides, voir `ref`. */
 COURSE.add({
   id: 'm15', num: 15, emoji: '🌐',

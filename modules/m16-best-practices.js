@@ -1,4 +1,4 @@
-/* Module 14 — Best practices (slides PPTX 194 à 216). Conversion verbatim : le texte des slides n'est pas reformulé.
+/* Module 16 — Best practices (slides PPTX 204 à 226). Conversion verbatim : le texte des slides n'est pas reformulé.
    Contenu additionnel (objectifs, À retenir, quiz) : dérivé uniquement de ces slides, voir `ref`. */
 COURSE.add({
   id: 'm16', num: 16, emoji: '✅',
