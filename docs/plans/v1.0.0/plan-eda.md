@@ -13,7 +13,11 @@
 |---|---|---|
 | Position du module | **Après m13 Execution Environments** (insertion au milieu du support, après m12) | Renumérotation outillée (`tools/renumber.py`) au lot 2 |
 | Langue des slides PPTX | **Anglais** | Cohérent avec le corps du support ; le site fr/en (#51) affiche les slides verbatim |
-| Agenda | **Day 3** (pas de « Day 4 ») | Slide 3 mise à jour ; Day 3 dépasse une journée (voir section 7) |
+| Agenda | **Day 4** (coupe C : m14 ouvre le Day 4) | Formation sur 4 jours. Day 3 = m11, m12, m13 ; Day 4 = m14, m15, m16, m17. Slide 3 et `day: 'J4'` dans `assets/plan.js` (voir section 12) |
+| Rédaction des slides | **Deux passages** : E1-E17 puis E18-E31 | Contrôle intermédiaire entre les deux passages ; même numérotation finale |
+| Exemples et lab | **Livrés dans le zip HTML** (`labs/eda/`, `examples/eda/`) | `package.js` embarque ces dossiers ; le zip passe à 53 entrées (voir section 7) |
+| Lab | **Webhook local** (`127.0.0.1`) | Pas de service externe nécessaire |
+| Contrôle de structure | **stdlib Python** en CI ; lab testé = **procédure manuelle** | Pas de dépendance Java ni `ansible-rulebook` en CI |
 | HTML du module (#8) | **Lot 2**, avec les slides (#7) | Parité stricte verte à chaque fin de lot |
 
 ## 2. Identité et position
@@ -68,12 +72,12 @@ Règles de rédaction des quiz (CONVENTIONS) : options de longueur voisine, pas 
 
 - **`labs/eda/`** : énoncé et solution du lab E28-E30 (webhook → remédiation).
 - **`examples/eda/`** : rulebooks et playbooks d'exemple, avec des noms neutres (`my_namespace`, `example.com`, `127.0.0.1`).
-- Hors zip : `labs/` et `examples/` ne sont pas inclus dans `package.js` sauf décision contraire.
-- Contrôle CI : test de structure YAML uniquement. Le lab n'est pas exécuté en CI (Java 17+ et `ansible-rulebook` absents). Le critère « lab testé » (#9) relève d'une **procédure manuelle**.
+- **Livraison** : `labs/eda/` et `examples/eda/` sont embarqués dans le zip HTML par `package.js`. Le zip passe de 52 à **53 entrées** : le seul fichier ajouté est `modules/m14-event-driven-ansible.js` (les quiz sont dans ce fichier, aucune image nouvelle). Les fichiers de `labs/eda/` et `examples/eda/` s'ajoutent à ce compte ; le décompte exact est fixé à la clôture du lot 2.
+- Contrôle CI : test de structure (YAML et stdlib Python uniquement). Le lab n'est pas exécuté en CI (Java 17+ et `ansible-rulebook` absents). Le critère « lab testé » (#9) relève d'une **procédure manuelle** avec un webhook local sur `127.0.0.1`.
 
 ## 8. Procédure d'insertion (lot 2)
 
-Toute insertion de slides suit la procédure du lot 1 (process #5, section « Livraison PPTX + HTML » de CONVENTIONS.md) :
+Toute insertion de slides suit la procédure du lot 1 (process #5, section « Livraison PPTX + HTML » de CONVENTIONS.md). La rédaction se fait en **deux passages** : E1-E17 d'abord, puis E18-E31 après contrôle intermédiaire, sans renuméroter entre les deux passages.
 
 | Étape | Qui | Contenu | Point de contrôle |
 |---|---|---|---|
@@ -84,7 +88,19 @@ Toute insertion de slides suit la procédure du lot 1 (process #5, section « Li
 
 Garde-fous de `tools/renumber.py` : insertions seules, idempotence (`slide_index.json`), écriture atomique, arbre propre, motifs de code stricts, contrôle après coup du texte des slides décalées.
 
-Renumérotation attendue (à calculer par l'outil) : m14 193-223, m15 224-233, m16 234-257, m17 258-264 ; slides masquées 234, 251, 258 ; total 264. Ces valeurs ne sont jamais saisies à la main.
+Valeurs attendues après le lot 2 (calculées par l'outil, jamais saisies à la main) :
+
+| Élément | Valeur |
+|---|---|
+| m14 Event-Driven Ansible | slides 193-223 (N = 31, insertion après la slide 192) |
+| m15 Real use case | slides 224-233 |
+| m16 Best practices | slides 234-257 |
+| m17 Automation integration | slides 258-264 |
+| Slides masquées | 234, 251, 258 |
+| Total | 264 slides |
+| Image décalée | `s219-1.png` → `s250-1.png` (slide 219 devient 250) |
+
+Les deux passages n'ajoutent pas de slide : le total de 264 correspond à N = 31 quel que soit le découpage.
 
 **Progression** : le lot 2 ne change pas la clé `localStorage` (`ansible-training-v2`, décidée au lot 1).
 
@@ -115,12 +131,15 @@ Les formes dépréciées ne doivent pas apparaître (test d'obsolescence, à dé
 |---|---|---|---|
 | Renumérotation incomplète au lot 2 | Moyen | Élevé | `tools/renumber.py` (motifs stricts, contrôle de texte), C2 avant rédaction |
 | Contenu EDA obsolète (options, noms de sources) | Moyen | Moyen | vérification datée (section 9), tests d'absence de formes dépréciées |
-| Day 3 surchargé (~2 h 45 ajoutées) | Certain | Moyen (pédagogique) | signalé à l'utilisateur ; décision de formateur (survol, lecture en autonomie) |
+| Day 4 chargé (m14 à m17 sur une seule journée) | Certain | Moyen (pédagogique) | signalé à l'utilisateur ; décision de formateur (survol, lecture en autonomie) |
 | Lab non testable en CI | Élevé | Moyen | test de structure YAML en CI ; procédure manuelle pour « lab testé » |
 | Fuite de références internes dans les exemples | Faible | Élevé | noms neutres, `check_pptx.py`, `check_site.py` |
 
 ## 12. Impact sur l'agenda (slide 3)
 
-Day 3 cible : Roles and Galaxy, Strategies, Extend Ansible, Write a Module, Execution Environments | pause déjeuner | **Event-Driven Ansible**, Real Use Case, Best Practices, Automation Integration.
+Agenda à 4 jours (coupe C) :
 
-Le Day 3 passe à environ 1,4 journée en présentiel. La colonne Day 3 de la slide 3 passe de 8 à 10 lignes : revue visuelle obligatoire. Le sommaire du site (`day: 'J3'`) affiche alors 7 modules au Jour 3.
+- **Day 3** : Roles and Galaxy, Strategies, Extend Ansible, Write a Module, Execution Environments (m11, m12, m13 ; `day: 'J3'`).
+- **Day 4** : Event-Driven Ansible (m14, `day: 'J4'`), Real Use Case (m15), Best Practices (m16), Automation Integration (m17).
+
+Le Day 4 ouvre avec m14 ; le Day 3 n'est plus surchargé par le module EDA. La slide 3 doit afficher ces deux colonnes : revue visuelle obligatoire pour le débordement éventuel de la colonne Day 4. Le sommaire du site affiche les modules m14 à m17 au Jour 4.
