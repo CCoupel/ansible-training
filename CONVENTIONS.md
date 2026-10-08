@@ -113,6 +113,7 @@ Tous acceptent `frag` et `wide`. Champs « HTML » : balises autorisées `b i em
 Objectifs, « À retenir » et quiz n'existent que dans le HTML (jamais reportés dans le PPTX), sont badgés « Bonus HTML » et **exclus de la parité**.
 
 - **Quantités par module** : 3-5 objectifs, 4-6 « À retenir », 1-3 quiz (3-4 options, une seule bonne réponse défendable).
+- **Borne de comptage des slides** : `tools/validate.js` compte les slides de contenu hors Bonus (les quiz, `extra: true`, ne comptent pas) et avertit si un module en a moins de 6 ou plus de 35 ; 35 est la borne du module le plus long (m14 Event-Driven Ansible).
 - **Source** : dérivé **uniquement** du contenu du module. Chaque objectif, point « À retenir » et quiz porte `ref: [N, …]` (slides PPTX du **même** module). Aucune commande, option, module Ansible, comportement ou version absent du PPTX.
 - **`<code>`** d'un texte additionnel : doit apparaître dans le texte PPTX (slides + notes) des slides `ref` (vérifié par test).
 - **Options de quiz : longueur voisine** (la bonne réponse n'est jamais nettement plus longue que les distracteurs : écart de 30 % au plus) et **sans « uniquement » / « seulement » réservés aux mauvaises réponses** ; les bonnes réponses sont réparties sur toutes les positions.
