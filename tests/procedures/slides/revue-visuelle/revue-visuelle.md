@@ -1,4 +1,4 @@
-# Procédure de Test — Revue visuelle du support (milestone v0.1.1)
+# Procédure de Test — Revue visuelle du support (milestone v0.1.1, complétée en v1.0.0)
 
 **Version** : 0.1.1
 **Date** : 2026-10-06
@@ -151,6 +151,39 @@ qu'ils ne peuvent pas voir. Elle se joue **après** que `obsolescence/` et `anti
 |-------|--------|-----------------|----------------|------|
 | 1 | Ouvrir le mode Orateur sur 5 slides au hasard parmi celles qui avaient la note « The real work… » (ex. 34, 40, 74, 95, 130) | Phrase passe-partout disparue, autre contenu de note conservé | | |
 | 2 | Notes des slides 17 à 25, 44 et 95 | Plus de TODO (« changer de groupe », « A revoir », « chqnged ») | | |
+
+**Verdict** : [ ] PASS  [ ] FAIL
+
+---
+
+### Scenario 10 — Agenda à 4 colonnes (slide 3, v1.0.0)
+
+**Objectif** : Vérifier que l'agenda tient sur 4 jours, lisible, et cohérent avec le site (`test_agenda` vérifie le texte, pas la mise en page).
+
+| Etape | Action | Resultat Attendu | Resultat Obtenu | OK ? |
+|-------|--------|-----------------|----------------|------|
+| 1 | Afficher la slide 3 en mode diaporama | 4 colonnes « Day 1 : » à « Day 4 : », de largeur égale, alignées en haut | | |
+| 2 | Contrôler chaque colonne | Aucune ligne coupée, tronquée ni débordant du cadre ; même police et même taille dans les 4 colonnes | | |
+| 3 | Repérer « Lunch Break » | Présent dans chacune des 4 colonnes, au même niveau visuel que les autres lignes | | |
+| 4 | Lire l'ordre des modules | Day 3 : Roles and Galaxy, Strategies, Extend Ansible, Write a Module, Execution Environments ; Day 4 : Event-Driven Ansible, Real Use Case, Best Practices, Automation Integration | | |
+| 5 | Comparer avec l'agenda de l'accueil du site (`index.html`) | Mêmes modules, dans les mêmes jours | | |
+
+**Verdict** : [ ] PASS  [ ] FAIL
+
+---
+
+### Scenario 11 — Module Execution Environments (slides 183 à 192, v1.0.0)
+
+**Objectif** : Vérifier la mise en page et la lisibilité des 10 slides du module (en anglais).
+
+| Etape | Action | Resultat Attendu | Resultat Obtenu | OK ? |
+|-------|--------|-----------------|----------------|------|
+| 1 | Parcourir les slides 183 à 192 | Section « Execution Environments » (183) entre « Write a Module » (182) et « Real use case » (193) ; aucun texte hors cadre ni chevauchement | | |
+| 2 | Slides 186, 187, 189 (code `execution-environment.yml`, `ansible-builder`, `ansible-navigator`) | Code entièrement visible, indentation YAML cohérente, police du code identique à celle des autres modules | | |
+| 3 | Slide 185 (schéma des couches d'un EE) | Schéma lisible, libellés non coupés, aucune image ni logo de l'organisation d'origine | | |
+| 4 | Slides 191 et 192 (exercice et solution) | Même mise en page que les exercices existants (m03, m11) ; énoncé et solution lisibles | | |
+| 5 | Volet « Sections » de PowerPoint | Section « Execution Environments » entre « Modules » et « Real Use Case » | | |
+| 6 | Slides masquées | Toujours exactement 203, 220 et 227 | | |
 
 **Verdict** : [ ] PASS  [ ] FAIL
 

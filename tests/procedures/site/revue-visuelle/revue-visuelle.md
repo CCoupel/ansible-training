@@ -28,7 +28,7 @@ Elle se joue **après** que `python3 -m unittest discover -s tests/site` est ver
 |-------|--------|-----------------|----------------|------|
 | 1 | Double-cliquer `index.html` | La page s'affiche sans erreur ; aucune requête réseau (console, onglet Réseau) | | |
 | 2 | Lire la couverture | Titre de la formation, version `vX.Y.Z` = valeur de `.claude/project-config.json` (3 premiers nombres), date de livraison, « Référence : ansible-core 2.20 » | | |
-| 3 | Lire l'agenda | Jours J1 / J2 / « pour aller plus loin » cohérents avec la slide 3 du PPTX | | |
+| 3 | Lire l'agenda | Jours 1 à 4 cohérents avec la slide 3 du PPTX (mêmes modules, mêmes jours) | | |
 | 4 | Cliquer le lien de téléchargement du PPTX | Le fichier `Ansible Training.pptx` est proposé (lien relatif, espace encodé) | | |
 | 5 | Lire le sommaire | 15 modules listés ; les modules livrés sont ouvrables, les autres grisés « à venir » (revue n° 2) ou absents du grisé (revue n° 3) | | |
 

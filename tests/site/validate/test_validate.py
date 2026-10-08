@@ -12,6 +12,8 @@ Exécution : python3 -m unittest discover -s tests/site -p "test_validate.py" -v
 import copy
 import json
 import os
+import re
+import shutil
 import sys
 import tempfile
 import unittest
@@ -189,6 +191,56 @@ class TestValidateRepo(unittest.TestCase):
             with self.subTest(module=mid):
                 self.assertIn(mid, S.MODULE_RANGES)
                 self.assertEqual(m.get("num"), int(mid[1:]))
+
+
+class TestValidateJoursDuPlan(unittest.TestCase):
+    """`day` de assets/plan.js : J1 à J4 acceptés (agenda à 4 jours), tout autre jour (J5) refusé.
+
+    Contrôle global sur une copie du dépôt (`validate.js --root`), un seul `day` altéré à la fois."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.root = Path(self._tmp.name)
+        for name in ("assets", "modules", "index.html"):
+            src = S.ROOT / name
+            if src.is_dir():
+                shutil.copytree(src, self.root / name)
+            else:
+                shutil.copy(src, self.root / name)
+        (self.root / "tests" / "slides").mkdir(parents=True)
+        shutil.copy(S.ROOT / "tests" / "slides" / "expected.json", self.root / "tests" / "slides" / "expected.json")
+
+    def set_day(self, module_id, day):
+        p = self.root / "assets" / "plan.js"
+        text = p.read_text(encoding="utf-8")
+        new, n = re.subn(r"(id: '%s'[^}]*?day: ')J\d(')" % module_id, r"\g<1>%s\g<2>" % day, text)
+        self.assertEqual(n, 1, "module %s introuvable dans plan.js" % module_id)
+        p.write_text(new, encoding="utf-8")
+
+    def validate(self):
+        return S.node("tools/validate.js", "--root", self.root)
+
+    def test_plan_actuel_valide_temoin(self):
+        r = self.validate()
+        self.assertEqual(r.returncode, 0, (r.stdout + r.stderr)[-600:])
+
+    def test_day_j4_accepte(self):
+        self.set_day("m17", "J4")
+        r = self.validate()
+        self.assertEqual(r.returncode, 0, (r.stdout + r.stderr)[-600:])
+
+    def test_day_j5_inconnu_refuse(self):
+        self.set_day("m17", "J5")
+        r = self.validate()
+        self.assertEqual(r.returncode, 1, (r.stdout + r.stderr)[-600:])
+        out = r.stdout + r.stderr
+        self.assertIn("ERREUR", out)
+        self.assertIn("J5", out)
+
+    def test_day_j0_refuse(self):
+        self.set_day("m01", "J0")
+        self.assertEqual(self.validate().returncode, 1)
 
 
 if __name__ == "__main__":
