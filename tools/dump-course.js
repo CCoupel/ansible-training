@@ -2,7 +2,7 @@
 /* MIT License — Copyright (c) 2026 CCoupel
    Exporte le contenu du site en JSON (entrée des tests de parité en Python : jamais de parsing JS côté Python).
    Usage : node tools/dump-course.js [--extras] [--out <fichier>]
-     (sans option)  écrit build/course.json  { modules: [ { id, num, title, day, emoji, tagline, ..., slides } ] }
+     (sans option)  écrit build/course.json  { modules: [ { id, num, title, day, range, emoji, tagline, ..., slides } ] }
      --extras       écrit en plus build/extras-review.md : le contenu additionnel (objectifs, À retenir, quiz) de chaque
                     module avec, en regard, le texte PPTX des slides `ref` — support de relecture humaine (#R1/#R2).
    Les fichiers de build/ ne sont pas commités. Node stdlib uniquement (lecture du PPTX via zlib). */
@@ -34,7 +34,7 @@ for (const name of (fs.existsSync(modDir) ? fs.readdirSync(modDir).sort() : []).
   runFile(path.join(modDir, name), { COURSE: { add(m) { mod = m; } } });
   if (!mod) fail(`${name} : aucun appel COURSE.add`);
   const p = plan.find(x => x.id === mod.id) || {};
-  modules.push(Object.assign({ day: p.day || null }, mod));
+  modules.push(Object.assign({ day: p.day || null, range: p.range || null }, mod));
 }
 modules.sort((a, b) => a.num - b.num);
 

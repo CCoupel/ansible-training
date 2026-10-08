@@ -23,7 +23,8 @@ const CALLOUTS = ['tip', 'warn', 'trap', 'note', 'awx'];
 const DAYS = ['J1', 'J2', 'J3'];
 const HTML_TAGS = new Set(['b', 'i', 'em', 'strong', 'code', 'br', 'a', 'span', 'ul', 'ol', 'li', 'p', 'kbd', 'sub', 'sup', 'mark', 'small', 'pre']);
 const TAG_RE = /<\/?([A-Za-z][A-Za-z0-9-]*)/g;
-const SLIDE_MIN = 4, SLIDE_MAX = 223;
+// Repli si tests/slides/expected.json est absent ou illisible (la source de vérité est expected.json).
+const SLIDE_MIN = 4, SLIDE_MAX_FALLBACK = 223;
 const HIDDEN_FALLBACK = [193, 210, 217];
 
 const argv = process.argv.slice(2);
@@ -38,14 +39,20 @@ const warn = (f, m) => { warns++; console.warn(`warn    ${path.basename(f)} : ${
 const strs = x => (Array.isArray(x) ? x : [x]).filter(v => typeof v === 'string');
 const isInt = n => Number.isInteger(n);
 
-function hiddenSlides() {
+// Compteurs attendus du deck : tests/slides/expected.json { slides, hidden } (mis à jour par tools/renumber.py).
+function expectedDeck() {
   try {
     const e = JSON.parse(fs.readFileSync(path.join(ROOT, 'tests', 'slides', 'expected.json'), 'utf8'));
-    if (Array.isArray(e.hidden)) return e.hidden.map(Number);
+    return {
+      slides: Number.isInteger(e.slides) ? e.slides : SLIDE_MAX_FALLBACK,
+      hidden: Array.isArray(e.hidden) ? e.hidden.map(Number) : HIDDEN_FALLBACK
+    };
   } catch (e) { /* repli */ }
-  return HIDDEN_FALLBACK;
+  return { slides: SLIDE_MAX_FALLBACK, hidden: HIDDEN_FALLBACK };
 }
-const HIDDEN = new Set(hiddenSlides());
+const EXPECTED = expectedDeck();
+const SLIDE_MAX = EXPECTED.slides;
+const HIDDEN = new Set(EXPECTED.hidden);
 
 /* ---------- Données de référence : plan, images ---------- */
 function runIn(file, sandbox) {
