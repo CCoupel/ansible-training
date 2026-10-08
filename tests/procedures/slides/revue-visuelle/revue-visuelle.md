@@ -189,6 +189,28 @@ qu'ils ne peuvent pas voir. Elle se joue **après** que `obsolescence/` et `anti
 
 ---
 
+### Scenario 12 — Module Event-Driven Ansible (slides 193 à 223, v1.0.0)
+
+**Objectif** : vérifier la mise en page des 31 slides (anglais) dans PowerPoint ; `test_issue_7_*` ne voit pas les débordements. Les cadres de code sont en police réduite (8,5 à 10 pt).
+
+| Etape | Action | Resultat Attendu | Resultat Obtenu | OK ? |
+|-------|--------|-----------------|----------------|------|
+| 1 | Parcourir les slides 193 à 223 en diaporama | Section « Event-Driven Ansible » (193) entre « Execution Environments » (192) et « Real use case » (224) ; aucun texte hors cadre ni chevauchement | | |
+| 2 | Slide 195 (schéma source → règle → action) | Trois blocs alignés, flèches ou liens visibles, libellés non coupés, aucune image de l'organisation d'origine | | |
+| 3 | Slide 197 (installation) | Toutes les commandes `$` et les notes sous le code tiennent dans la slide | | |
+| 4 | Slide 200 (panorama des sources, police réduite) | Liste entière visible, lisible à la distance d'une salle de formation | | |
+| 5 | Slides 205 à 208 (opérateurs, chaînes, `all`/`any`, faits) | Le YAML du rulebook et les lignes `curl -d` tiennent dans le cadre de code ; indentation visible et cohérente | | |
+| 6 | Slides 211, 213, 217, 218 (`run_playbook`, `actions`, decision environment, EDA controller) | Code et explications entiers dans leur cadre, aucune ligne coupée | | |
+| 7 | Slides 220 à 222 (exercice, test `curl`, solution) | Énoncé et prérequis lisibles ; commandes `curl` entières ; solution : rulebook et playbook visibles sans débordement | | |
+| 8 | Comparer le code des slides 199 à 209 et 222 avec `examples/eda/` et `labs/eda/solution/` | Identique (le test `test_eda_concordance` le vérifie ; contrôle visuel de la lisibilité seulement) | | |
+| 9 | Slide 3 (agenda) et volet « Sections » | Day 4 commence par « Event-Driven Ansible » ; section « Event-Driven Ansible » entre « Execution Environments » et « Real Use Case » | | |
+| 10 | Slides masquées | Toujours exactement 234, 251 et 258 | | |
+| 11 | Vérifier l'absence de référence à l'organisation d'origine (images, notes) | Aucune (scénario 4 obligatoire avant publication) | | |
+
+**Verdict** : [ ] PASS  [ ] FAIL
+
+---
+
 ## Criteres de Validation
 
 - [ ] Tous les scénarios passent

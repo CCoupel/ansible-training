@@ -163,6 +163,26 @@ Notes attendues sur : 12, 29, 35, 36, 37, 38, 43, 63, 66, 67, 108, 111.
 
 **Verdict** : [ ] PASS  [ ] FAIL
 
+### Scenario 11 — Module 14 Event-Driven Ansible (v1.0.0)
+
+**Objectif** : vérifier le rendu du module m14 (31 slides PPTX 193 à 223, Jour 4) dans le site.
+
+| Etape | Action | Resultat Attendu | Resultat Obtenu | OK ? |
+|-------|--------|-----------------|----------------|------|
+| 1 | Ouvrir le sommaire et l'agenda de l'accueil | Module 14 « Event-Driven Ansible » présent, ouvrable, au **Jour 4** avec les modules 15, 16, 17 ; Jour 3 = modules 11, 12, 13 | | |
+| 2 | Slide « Architecture : source, rule, action » (bloc `flow`) | Chaîne horizontale source → rulebook → action lisible, légende présente, aucune coupure en thème clair et sombre ; en 375 px, retour à la ligne ou défilement sans débordement de la page | | |
+| 3 | Slides à pile de couches (`layers`) et composants | Couches lisibles, libellés complets, contraste correct dans les deux thèmes | | |
+| 4 | Slides de rulebooks (YAML long : opérateurs, chaînes, `all`/`any`, faits, throttle) | Bloc de code entier lisible (défilement horizontal si besoin), indentation YAML conservée, bouton Copier fonctionnel | | |
+| 5 | Exercice « webhook remediation » (`lab` + `reveal`) | L'énoncé est visible, la solution (rulebook + playbook) masquée jusqu'au clic sur le bouton ; après clic, deux blocs de code lisibles | | |
+| 6 | Couverture : objectifs, À retenir, quiz | 3 à 5 objectifs, 4 à 6 À retenir, 3 quiz badgés « Bonus HTML » ; le quiz donne la bonne réponse et l'explication | | |
+| 7 | Navigation ← → et touche `/` (recherche de « throttle ») | Le module se parcourt de la première à la dernière slide ; la recherche trouve la slide du `throttle` | | |
+| 8 | Comparer avec le PPTX (slides 193 à 223) | Aucune slide manquante, ordre identique, aucun texte tronqué ; liens de la dernière slide valides | | |
+| 9 | Chercher tout nom d'hôte, domaine, IP | Uniquement `127.0.0.1`, `192.0.2.x`, `example.com`, `controller.example.com` | | |
+
+**Verdict** : [ ] PASS  [ ] FAIL
+
+---
+
 ## Criteres de Validation
 
 - [ ] Tous les scénarios 1 à 9 PASS (10 en revue n° 3)

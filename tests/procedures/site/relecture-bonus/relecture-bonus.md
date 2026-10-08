@@ -69,6 +69,24 @@ ils ne jugent ni l'exactitude, ni le ton, ni la qualité des distracteurs. Cette
 
 **Verdict** : [ ] PASS  [ ] FAIL
 
+### Scenario 5 — Module 14 Event-Driven Ansible (R1/R2 du Bonus m14, v1.0.0)
+
+**Objectif** : relire le Bonus du module m14 (sujet technique qui évolue vite : `ansible-rulebook`, collection `ansible.eda`).
+
+| Etape | Action | Resultat Attendu | Resultat Obtenu | OK ? |
+|-------|--------|-----------------|----------------|------|
+| 1 | Dans `build/extras-review.md`, lire chaque objectif, À retenir et quiz du module 14 avec ses slides `ref` (193 à 223) | Chaque texte se lit dans les slides citées ; rien d'inventé | | |
+| 2 | Vérifier les éléments techniques cités (sources, opérateurs, options de `throttle`, actions, options de ligne de commande, prérequis Java) | Ils figurent dans les slides `ref` ; aucune forme obsolète (`ansible-events`, ancien espace de noms de la collection, `--websocket-address`) | | |
+| 3 | Quiz sur `all` / `any` | Une seule bonne réponse ; l'explication rappelle que `all` n'est pas un `and` et que `any` n'est pas un `or` | | |
+| 4 | Quiz sur `throttle` ou sur les actions | Les distracteurs sont des erreurs classiques du module (par exemple oublier `group_by_attributes`), pas des pièges absurdes | | |
+| 5 | Quiz sur le lab ou l'architecture | Réponse conforme aux slides 220-222 (webhook local `127.0.0.1:5000`, simulation de redémarrage) | | |
+| 6 | Cohérence avec le module 13 | Le decision environment est présenté comme un environnement d'exécution pour rulebooks, avec renvoi vers `ansible-builder` (module 13) | | |
+| 7 | Confidentialité | Aucune IP hors 127.0.0.1 / 192.0.2.x, aucun nom d'hôte ou de société réel | | |
+
+**Verdict** : [ ] PASS  [ ] FAIL
+
+---
+
 ## Criteres de Validation
 
 - [ ] Aucun texte inventé ou inexact (un seul texte inexact = retour à `course` pour correction)
