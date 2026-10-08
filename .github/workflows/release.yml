@@ -251,3 +251,13 @@ jobs:
               gh release create "$TAG" dist-release/* --title "$TAG" --generate-notes --verify-tag --repo "$REPO"
             fi
           fi
+
+  # Mise en ligne du site GitHub Pages après la release (même méthode qu'openshift-course).
+  # Les permissions ci-dessous bornent celles du workflow appelé.
+  pages:
+    needs: release
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml

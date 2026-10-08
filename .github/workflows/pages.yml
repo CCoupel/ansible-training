@@ -1,0 +1,66 @@
+name: pages
+
+# Déploiement du site HTML sur GitHub Pages (source : GitHub Actions, build_type=workflow).
+# - appelé par release.yml après la publication d'une release (workflow_call)
+# - ou lancé manuellement (workflow_dispatch)
+# - seuls les fichiers du site sont publiés (rien de docs/, tests/, tools/, .claude/, _work/) ;
+#   .nojekyll est placé dans l'artefact : aucun traitement Jekyll
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Installer Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Valider le site
+        run: node tools/validate.js --strict-i18n
+
+      - name: Préparer l'artefact (uniquement les fichiers du site)
+        run: |
+          mkdir _site
+          cp -r index.html assets modules examples labs _site/
+          cp "Ansible Training.pptx" _site/
+          touch _site/.nojekyll
+
+      - name: Configurer Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+
+      - name: Envoyer l'artefact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Déployer sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
