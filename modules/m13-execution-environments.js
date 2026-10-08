@@ -38,7 +38,7 @@ COURSE.add({
         ] },
         { t: 'bullets', items: [
           'Built layer by layer<ul><li>Bottom: a base image</li><li>Top: what your content needs</li></ul>',
-          'Community images<ul><li>GitHub Container Registry: ansible-community/community-ee-minimal (ansible-core only)</li><li>community-ee-base adds base collections</li></ul>'
+          'Community images exist<ul><li>GitHub Container Registry: ansible-community/community-ee-minimal</li></ul>'
         ] }
       ] },
     { title: 'ansible-builder: execution-environment.yml', src: [186],
@@ -52,19 +52,20 @@ images:
 
 dependencies:
   ansible_core:
-    package_pip: ansible-core
+    package_pip: ansible-core~=2.20.0
   ansible_runner:
     package_pip: ansible-runner
+  python_interpreter:
+    package_system: python3.12
+    python_path: /usr/bin/python3.12
   galaxy: requirements.yml
   python: requirements.txt
-  system: bindep.txt
-
-additional_build_steps:
-  append_final:
-    - RUN echo "EE ready"` },
+  system: bindep.txt` },
         { t: 'bullets', items: [
-          'version: 3 is required<ul><li>Without it, Ansible Builder assumes the legacy schema</li></ul>',
-          'Main sections<ul><li>images: the base image</li><li>dependencies: ansible_core, ansible_runner, galaxy, python, system</li><li>additional_build_steps: extra build instructions</li></ul>'
+          'version: 3 needs Ansible Builder 3.x',
+          'Pin a recent Python and ansible-core<ul><li>ansible-core 2.20 needs Python 3.12 or later</li><li>python_interpreter installs it in the image</li></ul>',
+          'Referenced files<ul><li>requirements.yml, requirements.txt and bindep.txt are expected next to this file</li></ul>',
+          'Also available: additional_build_steps'
         ] }
       ] },
     { title: 'ansible-builder: build', src: [187],
@@ -107,7 +108,7 @@ ansible-navigator:
     enable: true` },
         { t: 'bullets', items: [
           '--eei: EE image',
-          '--pull-policy: when to pull',
+          '--pull-policy never: use the local image, do not download it<ul><li>The EE was built locally</li></ul>',
           'A playbook artifact is saved for each run'
         ] },
         { t: 'text', html: '<code>ansible-navigator replay &lt;artifact&gt;.json</code>' }
@@ -117,6 +118,7 @@ ansible-navigator:
         { t: 'bullets', items: [
           'ansible-dev-tools: one package<ul><li>ansible-builder, ansible-core, ansible-creator</li><li>ansible-dev-environment, ansible-lint</li><li>ansible-navigator, ansible-sign, molecule</li><li>pytest-ansible, tox-ansible</li></ul>',
           'ansible-creator: scaffold content<ul><li>init collection</li><li>init playbook</li></ul>',
+          'Arguments may vary between versions: check ansible-creator init --help',
           'Container image<ul><li>GitHub Container Registry: ansible/community-ansible-dev-tools</li></ul>'
         ] },
         { t: 'code', lang: 'console', code: `$ pip install ansible-dev-tools
@@ -129,18 +131,19 @@ $ ansible-creator init playbook my_namespace.my_project ./my_project` }
       blocks: [
         { t: 'lab', title: 'Build an EE and run a playbook in it',
           steps: [
-            'Write an execution-environment.yml (version 3) that adds the collection community.general',
+            'Write an execution-environment.yml (version 3) with a recent Python, ansible-core 2.20 and the collection community.general',
             'Build the image my_ee:1.0 with ansible-builder',
             'List it with ansible-navigator images',
+            'Show the ansible-core version inside the EE: ansible-navigator exec --eei my_ee:1.0 -- ansible --version',
             'Run a playbook that calls ansible.builtin.ping on localhost inside the EE',
             'Prerequisite: Podman or Docker installed'
           ] },
-        { t: 'reveal', label: 'Exercise: solution', html: '<pre># execution-environment.yml\n---\nversion: 3\n\nimages:\n  base_image:\n    name: docker.io/redhat/ubi9:latest\n\ndependencies:\n  ansible_core:\n    package_pip: ansible-core\n  ansible_runner:\n    package_pip: ansible-runner\n  galaxy:\n    collections:\n      - name: community.general\n# ping.yml\n---\n- hosts: localhost\n  gather_facts: false\n  tasks:\n    - ansible.builtin.ping:\n\n$ ansible-builder build --tag=my_ee:1.0\n$ ansible-navigator images\n$ ansible-navigator run ping.yml \\\n    --eei my_ee:1.0 --pull-policy never \\\n    --mode stdout</pre>' }
+        { t: 'reveal', label: 'Exercise: solution', html: '<pre># execution-environment.yml\n---\nversion: 3\n\nimages:\n  base_image:\n    name: docker.io/redhat/ubi9:latest\n\ndependencies:\n  ansible_core:\n    package_pip: ansible-core~=2.20.0\n  ansible_runner:\n    package_pip: ansible-runner\n  python_interpreter:\n    package_system: python3.12\n    python_path: /usr/bin/python3.12\n  galaxy:\n    collections:\n      - name: community.general\n# ping.yml\n---\n- name: Ping localhost from the EE\n  hosts: localhost\n  gather_facts: false\n  tasks:\n    - name: Check the connection\n      ansible.builtin.ping:\n\n$ ansible-builder build --tag=my_ee:1.0\n$ ansible-navigator images\n$ ansible-navigator run ping.yml \\\n    --eei my_ee:1.0 --pull-policy never \\\n    --mode stdout\n$ ansible-navigator exec --eei my_ee:1.0 \\\n    -- ansible --version</pre>' }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle ligne est requise dans <code>execution-environment.yml</code> pour que Ansible Builder n\'utilise pas l\'ancien schéma ?',
-        options: ['version: 1', 'version: 3', 'version: latest'], answer: 1,
-        explain: 'Slide 186 : « version: 3 is required » ; sans elle, Ansible Builder suppose l\'ancien schéma (« legacy »).', ref: [186] }
+      { t: 'quiz', q: 'Quelle version minimale de Python demande <code>ansible-core</code> 2.20, d\'après la slide 186 ?',
+        options: ['Python 3.6 ou plus', 'Python 3.9 ou plus', 'Python 3.12 ou plus'], answer: 2,
+        explain: 'Slide 186 : « ansible-core 2.20 needs Python 3.12 or later » ; <code>python_interpreter</code> l\'installe dans l\'image.', ref: [186] }
     ] },
     { title: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Quelle commande écrit les instructions et le contexte de build sans construire l\'image ?',
@@ -156,7 +159,7 @@ $ ansible-creator init playbook my_namespace.my_project ./my_project` }
   takeaways: [
     { html: 'Un Execution Environment est une image conteneur qui joue le rôle de nœud de contrôle Ansible : <code>ansible-core</code>, <code>ansible-runner</code>, Python, collections et leurs dépendances.', ref: [184] },
     { html: 'Le même EE s\'exécute à l\'identique sur un poste, en CI et dans AWX / automation controller : on le construit une fois, on l\'exécute partout où tourne un moteur de conteneurs.', ref: [184] },
-    { html: 'Dans <code>execution-environment.yml</code>, <code>version: 3</code> est requis ; sans lui, Ansible Builder suppose l\'ancien schéma.', ref: [186] },
+    { html: 'Dans <code>execution-environment.yml</code>, <code>version: 3</code> demande Ansible Builder 3.x ; <code>ansible-core</code> 2.20 demande Python 3.12 ou plus, installé par <code>python_interpreter</code>.', ref: [186] },
     { html: '<code>ansible-builder build</code> crée le contexte et construit l\'image, <code>create</code> écrit seulement le contexte ; Podman est le moteur par défaut, <code>--container-runtime=docker</code> sélectionne Docker.', ref: [187] },
     { html: '<code>ansible-navigator run</code> lance un playbook dans un EE avec <code>--eei</code> ; le mode <code>interactive</code> est le défaut, <code>stdout</code> donne la sortie classique.', ref: [188, 189] },
     { html: '<code>ansible-dev-tools</code> regroupe les outils (builder, navigator, creator, lint…) dans un seul paquet : <code>pip install ansible-dev-tools</code>.', ref: [190] }
