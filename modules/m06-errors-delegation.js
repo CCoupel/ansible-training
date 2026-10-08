@@ -75,9 +75,9 @@ tasks:
     { title: 'Exercice: proxy', src: [75, 76],
       blocks: [
         { t: 'text', html: '<small>Filtres</small>' },
-        { t: 'lab', title: 'À réaliser', steps: ['- Write a playbook :', '- check connectivity by accessing URL without proxy', '- if failed,<br>- check connectivity by accessing URL with proxy<br>- define global_proxy fact when not failed'] },
+        { t: 'lab', steps: ['- Write a playbook :', '- check connectivity by accessing URL without proxy', '- if failed,<br>- check connectivity by accessing URL with proxy<br>- define global_proxy fact when not failed'] },
         { t: 'bullets', items: ['Test: https://gitlab.com', 'Proxy: http://proxy.example.com:8080'] },
-        { t: 'reveal', label: 'Voir la solution (slide 76)', html: '<pre>- name: Check connectivity and define proxy\n  hosts: all\n  tasks:\n    - block:\n        - name: Check connectivity without proxy\n          uri:\n            url: https://gitlab.com\n            use_proxy: no\n            return_content: no\n      rescue:\n        - name: Check connectivity with proxy(deuxième tentative)\n          uri:\n            url: https://gitlab.com\n            use_proxy: yes\n            return_content: no\n          environment:\n            https_proxy:  "http://proxy.example.com:8080"\n        - name: define global proxy\n          set_fact:\n            global_proxy: "http://proxy.example.com:8080"</pre>' }
+        { t: 'reveal', slide: 76, html: '<pre>- name: Check connectivity and define proxy\n  hosts: all\n  tasks:\n    - block:\n        - name: Check connectivity without proxy\n          uri:\n            url: https://gitlab.com\n            use_proxy: no\n            return_content: no\n      rescue:\n        - name: Check connectivity with proxy(deuxième tentative)\n          uri:\n            url: https://gitlab.com\n            use_proxy: yes\n            return_content: no\n          environment:\n            https_proxy:  "http://proxy.example.com:8080"\n        - name: define global proxy\n          set_fact:\n            global_proxy: "http://proxy.example.com:8080"</pre>' }
       ] },
     { title: 'Delegation', src: [77],
       blocks: [
@@ -107,8 +107,8 @@ tasks:
       ] },
     { title: 'Exercice: delegation', src: [80, 81],
       blocks: [
-        { t: 'lab', title: 'À réaliser', steps: ['- ping inventory hosts', '- add hostname in /tmp/hosts of the controller'] },
-        { t: 'reveal', label: 'Voir la solution (slide 81)', html: '<pre>---\n- hosts: all\n  gather_facts: no\n  tasks:\n    - name: Ping inventory hosts\n      ping:\n      #register: myping\n    - name: Add hostname to /tmp/hosts on the controller\n      local_action:\n        module: lineinfile\n        path: /tmp/hosts\n        line: "{{ inventory_hostname }}"\n      #when: myping.ok is useless\n      #delegate_to: localhost\n      #connection: local</pre>' }
+        { t: 'lab', steps: ['- ping inventory hosts', '- add hostname in /tmp/hosts of the controller'] },
+        { t: 'reveal', slide: 81, html: '<pre>---\n- hosts: all\n  gather_facts: no\n  tasks:\n    - name: Ping inventory hosts\n      ping:\n      #register: myping\n    - name: Add hostname to /tmp/hosts on the controller\n      local_action:\n        module: lineinfile\n        path: /tmp/hosts\n        line: "{{ inventory_hostname }}"\n      #when: myping.ok is useless\n      #delegate_to: localhost\n      #connection: local</pre>' }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quel mot-clé exécute un bloc de tâches quel que soit le succès ou l\'échec du bloc principal ?',

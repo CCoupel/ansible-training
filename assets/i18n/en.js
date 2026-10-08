@@ -20,7 +20,7 @@ COURSE.i18n['en'] = {
   'nav.start': 'Start →',
   'nav.nextModule': 'Module {num} →',
   'nav.lang': 'Language (l)',
-  'nav.langAria': 'Language: français',
+  'nav.langAria': 'FR | EN — language: français',
   'nav.hint': '← → navigate · m contents · n notes · t theme · l language · / search',
   'nav.soon': 'soon',
 
@@ -70,6 +70,8 @@ COURSE.i18n['en'] = {
   'block.copy': 'Copy',
   'block.copied': 'Copied ✓',
   'block.reveal': 'Show the solution',
+  'block.revealSlide': 'Show solution (slide {n})',
+  'block.lab': 'To do',
   'block.redo': 'Try again',
   'block.unknown': 'Unknown block: {type}',
 

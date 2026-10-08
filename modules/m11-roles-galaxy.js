@@ -135,7 +135,7 @@ argument_specs:
     { title: 'Exercice: role', src: [151, 152],
       blocks: [
         { t: 'lab', title: 'Exercice:', steps: ['Create a Rôle to reboot and wait for the server to be UP and then re Gather facts'] },
-        { t: 'reveal', label: 'Voir la solution (slide 152)', html: '<pre># File: roles/reboot-server/tasks/main.yml\n---\n- name: Reboot server and wait for it to come back up\n  tasks:\n    - name: Reboot server\n      reboot:\n        msg: "Rebooting server"\n    - name: Wait for server to come back up\n      wait_for:\n        host: "{{ ansible_host }}"\n        port: 22\n        delay: 30\n        timeout: 300\n  - name: Regather Facts\n    setup:\n---\n- name: Check internet access and set proxy if needed\n  hosts: all\n  roles:\n    - reboot-server</pre>' }
+        { t: 'reveal', slide: 152, html: '<pre># File: roles/reboot-server/tasks/main.yml\n---\n- name: Reboot server and wait for it to come back up\n  tasks:\n    - name: Reboot server\n      reboot:\n        msg: "Rebooting server"\n    - name: Wait for server to come back up\n      wait_for:\n        host: "{{ ansible_host }}"\n        port: 22\n        delay: 30\n        timeout: 300\n  - name: Regather Facts\n    setup:\n---\n- name: Check internet access and set proxy if needed\n  hosts: all\n  roles:\n    - reboot-server</pre>' }
       ] },
     { title: 'Re-usable: GALAXY (overview)', src: [153],
       blocks: [
@@ -197,7 +197,7 @@ collections:
     { title: 'Re-usable: GALAXY (exercise)', src: [157, 158],
       blocks: [
         { t: 'lab', title: 'Exercise :', steps: ['Install the NGINX rôle from the galaxy', 'Where is it store?'] },
-        { t: 'reveal', label: 'Voir la solution (slide 158)', html: '<pre>ansible-galaxy install nginx\nBy default, Ansible Galaxy roles are installed in the `~/.ansible/roles` directory\nansible-galaxy install --roles-path /path/to/roles nginx\nroles:\n  - nginx</pre>' }
+        { t: 'reveal', slide: 158, html: '<pre>ansible-galaxy install nginx\nBy default, Ansible Galaxy roles are installed in the `~/.ansible/roles` directory\nansible-galaxy install --roles-path /path/to/roles nginx\nroles:\n  - nginx</pre>' }
       ] },
     { title: 'Re-usable: GALAXY (collection init)', src: [159],
       blocks: [

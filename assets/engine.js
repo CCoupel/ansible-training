@@ -94,7 +94,7 @@
     text: b => `<div class="blk text${fc(b)}${wide(b)}">${b.html}</div>`,
     bullets: b => `<ul class="blk bullets${wide(b)}">${b.items.map(i => `<li class="${b.frag ? 'frag' : ''}">${i}</li>`).join('')}</ul>`,
     code: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="codebox">
-      <div class="codebar"><span class="dots"><i></i><i></i><i></i></span><span class="fn">${esc(b.file || b.lang || '')}</span><button class="copy" type="button">${esc(t('block.copy'))}</button></div>
+      <div class="codebar"><span class="dots"><i></i><i></i><i></i></span><span class="fn">${esc(b.file || b.lang || '')}</span><button class="copy" type="button"${ui()}>${esc(t('block.copy'))}</button></div>
       <pre>${codeHtml(b.code, b.lang)}</pre></div>${L(b, 'caption') ? `<div class="codecap">${L(b, 'caption')}</div>` : ''}</div>`,
     cmds: b => `<div class="cmds${fc(b)}${wide(b)}">${b.items.map(([c, d]) => `<div class="cm">${esc(c)}</div><div>${d}</div>`).join('')}</div>`,
     table: b => `<div class="tablewrap${fc(b)}${wide(b)}"><table><thead><tr>${b.head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${
@@ -105,7 +105,7 @@
       ${b.verdict ? `<div class="verdict">${b.verdict}</div>` : ''}</div>`,
     callout: b => {
       const kind = CALLOUTS[b.kind] ? b.kind : 'note';
-      return `<div class="callout ${kind}${fc(b)}${wide(b)}"><div class="ch">${CALLOUTS[kind]} ${b.title || esc(t('callout.' + kind))}</div><p>${b.html}</p></div>`;
+      return `<div class="callout ${kind}${fc(b)}${wide(b)}"><div class="ch">${CALLOUTS[kind]} ${b.title || uiText(t('callout.' + kind))}</div><p>${b.html}</p></div>`;
     },
     flow: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="flow">${b.nodes.map((n, i) => {
       const o = typeof n === 'string' ? { label: n } : n;
@@ -119,9 +119,9 @@
       <div class="explain">${L(b, 'explain') || ''}</div>
       <button type="button" class="redo">${esc(t('block.redo'))}</button></div>`,
     // Les <pre> d'une solution sont rendus comme des blocs de code (fond thémé, défilement horizontal, bouton Copier).
-    reveal: b => `<details class="reveal${fc(b)}${wide(b)}"><summary>${b.label || esc(t('block.reveal'))}</summary><div>${String(b.html).replace(/<pre>([\s\S]*?)<\/pre>/g,
-      (m, inner) => `<div class="codebox"><div class="codebar"><span class="fn"></span><button class="copy" type="button">${esc(t('block.copy'))}</button></div><pre>${inner}</pre></div>`)}</div></details>`,
-    lab: b => `<div class="lab${fc(b)}${wide(b)}"><h3>${esc(t('icon.lab'))} ${b.title}</h3>${b.goal ? `<p class="goal">${b.goal}</p>` : ''}<ol>${
+    reveal: b => `<details class="reveal${fc(b)}${wide(b)}"><summary>${b.label || uiText(b.slide ? t('block.revealSlide', { n: b.slide }) : t('block.reveal'))}</summary><div>${String(b.html).replace(/<pre>([\s\S]*?)<\/pre>/g,
+      (m, inner) => `<div class="codebox"><div class="codebar"><span class="fn"></span><button class="copy" type="button"${ui()}>${esc(t('block.copy'))}</button></div><pre>${inner}</pre></div>`)}</div></details>`,
+    lab: b => `<div class="lab${fc(b)}${wide(b)}"><h3>${esc(t('icon.lab'))} ${b.title !== undefined ? b.title : uiText(t('block.lab'))}</h3>${b.goal ? `<p class="goal">${b.goal}</p>` : ''}<ol>${
       b.steps.map(s => `<li><label><input type="checkbox"><span>${s}</span></label></li>`).join('')}</ol></div>`,
     diagram: b => `<div class="${wide(b).trim()}${fc(b)}"><div class="diagram">${svgText(b)}</div>${L(b, 'caption') ? `<div class="dcap">${L(b, 'caption')}</div>` : ''}</div>`,
     img: b => `<figure class="blk imgblk${fc(b)}${wide(b)}"><img src="${esc(b.file)}" alt="${esc(L(b, 'alt') || '')}" loading="lazy">${L(b, 'caption') ? `<figcaption>${L(b, 'caption')}</figcaption>` : ''}</figure>`,
@@ -139,6 +139,9 @@
 
   // Texte verbatim du PPTX (anglais) : quand l'interface est en français, il est balisé lang="en" pour les lecteurs d'écran.
   const verb = s => (LANG === 'fr' && !s.extra ? ' lang="en"' : '');
+  // Libellé d'interface posé à l'intérieur d'un conteneur verbatim (lang="en") : il garde la langue de l'interface.
+  const ui = () => (LANG === 'fr' ? ' lang="fr"' : '');
+  const uiText = txt => `<span${ui()}>${esc(txt)}</span>`;
 
   /* ---------- Liste plate des slides ---------- */
   let modules = [];   // modules chargés, triés
@@ -232,7 +235,7 @@
     const s = f.slide;
     const notes = notesOf(s);
     return `<h2 class="stitle"${verb(s)}>${esc(f.title)}${tagHtml(s)}</h2>${srcHtml(s)}${renderBlocks(s, f.uid)}${
-      notes ? `<aside class="notes${state.notes ? ' on' : ''}" id="notes"${verb(s)}><b>${esc(t('notes.title'))}</b> — ${notes}</aside>` : ''}`;
+      notes ? `<aside class="notes${state.notes ? ' on' : ''}" id="notes"${verb(s)}><b${ui()}>${esc(t('notes.title'))}</b> — ${notes}</aside>` : ''}`;
   }
 
   /* ---------- Affichage ---------- */

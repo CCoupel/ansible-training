@@ -53,10 +53,10 @@ Min, max,
       ] },
     { title: 'Exercice: Filtres', src: [88, 89],
       blocks: [
-        { t: 'lab', title: 'À réaliser', steps: ['- Write a playbook to add a user with variables:', '- a mandatory name', '- a group as “nobody” if not provided'] },
+        { t: 'lab', steps: ['- Write a playbook to add a user with variables:', '- a mandatory name', '- a group as “nobody” if not provided'] },
         { t: 'code', lang: 'console', code: `ansible-playbook -i inventory set_user.yml -e user_name="toto" [-e user_group="titi"]
 ansible-playbook -i inventory set_user.yml -e "user_name='toto' user_group='titi'"` },
-        { t: 'reveal', label: 'Voir la solution (slide 89)', html: '<pre>---\n- hosts: all\n  become: true\n  vars:\n    The_Name: "{{ user_name | mandatory(\'user_name must be defined\') }}"\n    The_Group: "{{ user_group | default(\'nobody\') }}"\n  tasks:\n    - name: set Group\n      ansible.builtin.group:\n        name: "{{ The_Group }}"\n        state: present\n    - name: Add user with specified or default group\n      ansible.builtin.user:\n        name: "{{ The_Name }}"\n        group: "{{ The_Group }}"\n        state: present</pre>' }
+        { t: 'reveal', slide: 89, html: '<pre>---\n- hosts: all\n  become: true\n  vars:\n    The_Name: "{{ user_name | mandatory(\'user_name must be defined\') }}"\n    The_Group: "{{ user_group | default(\'nobody\') }}"\n  tasks:\n    - name: set Group\n      ansible.builtin.group:\n        name: "{{ The_Group }}"\n        state: present\n    - name: Add user with specified or default group\n      ansible.builtin.user:\n        name: "{{ The_Name }}"\n        group: "{{ The_Group }}"\n        state: present</pre>' }
       ] },
     { title: 'Lookup plugins', src: [90],
       blocks: [
@@ -162,7 +162,7 @@ Handlers:
         { t: 'text', html: 'Update /etc/environment:' },
         { t: 'code', lang: 'ini', code: `http_proxy= http://proxy.example.com:8080
  https_proxy= http://proxy.example.com:8080` },
-        { t: 'reveal', label: 'Voir la solution (slide 98)', html: '<pre>- name: Check internet access and set proxy if needed\n  hosts: all\n  tasks:\n    - name: Check internet access without proxy\n      uri:\n        url: http://gitlab.com\n        return_content: no\n      register: internet_check\n      ignore_errors: yes\n    - name: Set proxy variables if internet access fails\n      lineinfile:\n        dest: /etc/environment\n        regexp: "^{{ item.var }}="\n        line: "{{ item.var }}={{ item.value }}"\n        state: present\n      loop:\n        - { var: \'http_proxy\', value: \'http://proxy.example.com:8080\' }\n        - { var: \'https_proxy\', value: \'http://proxy.example.com:8080\' }\n      when: internet_check.failed\n      notify: Reboot_Required\n  handlers:\n    - name: Reboot the machine\n      Listen: Reboot_Required\n      reboot:\n        msg: "Reboot required after proxy update"</pre>' }
+        { t: 'reveal', slide: 98, html: '<pre>- name: Check internet access and set proxy if needed\n  hosts: all\n  tasks:\n    - name: Check internet access without proxy\n      uri:\n        url: http://gitlab.com\n        return_content: no\n      register: internet_check\n      ignore_errors: yes\n    - name: Set proxy variables if internet access fails\n      lineinfile:\n        dest: /etc/environment\n        regexp: "^{{ item.var }}="\n        line: "{{ item.var }}={{ item.value }}"\n        state: present\n      loop:\n        - { var: \'http_proxy\', value: \'http://proxy.example.com:8080\' }\n        - { var: \'https_proxy\', value: \'http://proxy.example.com:8080\' }\n      when: internet_check.failed\n      notify: Reboot_Required\n  handlers:\n    - name: Reboot the machine\n      Listen: Reboot_Required\n      reboot:\n        msg: "Reboot required after proxy update"</pre>' }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quel filtre fournit une valeur lorsqu\'une variable n\'est pas définie ?',

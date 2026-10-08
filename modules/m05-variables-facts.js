@@ -87,7 +87,7 @@ SRV2
       ] },
     { title: 'Exercice: variables', src: [61],
       blocks: [
-        { t: 'lab', title: 'À réaliser', steps: ['- Identify precedence and priority of vars', '- What is the precedence ordering?'] },
+        { t: 'lab', steps: ['- Identify precedence and priority of vars', '- What is the precedence ordering?'] },
         { t: 'code', lang: 'console', code: `ansible-playbook -i variables-inventory.ini variables.yml
 ansible-playbook -i variables-inventory.ini -e mon_param=set_by_cli variables.yml
 ansible-playbook -i variables-inventory.ini -e mon_param="{{ mon_param2 }}"  variables.yml` }
@@ -101,8 +101,8 @@ ansible-playbook -i variables-inventory.ini -e mon_param="{{ mon_param2 }}"  var
       notes: ['Exemple fichier facts.d', 'Utilisation des variable "{{ nom }}"', 'hostvars[ inventory_hostname][\'ansible_default_ipv4\'][\'address\']', 'Ansible_facts[\'ansible_default_ipv4\'][\'address\']'],
       blocks: [
         { t: 'text', html: '<small>CONDITIONS</small>' },
-        { t: 'lab', title: 'À réaliser', steps: ['- What are the default facts?', '- Add new facts like datacenter, project, environment, group', '- display the hostvars with gather_facts: no and yes', '- found the key in hostvars where the default ip is defined'] },
-        { t: 'reveal', label: 'Voir la solution (slide 67)', html: '<pre>hostvars[ inventory_hostname] =&gt; ansible_facts [\'ansible_default_ipv4\'][\'address\']\nAnsible_facts[\'ansible_default_ipv4\'][\'address\']</pre>' }
+        { t: 'lab', steps: ['- What are the default facts?', '- Add new facts like datacenter, project, environment, group', '- display the hostvars with gather_facts: no and yes', '- found the key in hostvars where the default ip is defined'] },
+        { t: 'reveal', slide: 67, html: '<pre>hostvars[ inventory_hostname] =&gt; ansible_facts [\'ansible_default_ipv4\'][\'address\']\nAnsible_facts[\'ansible_default_ipv4\'][\'address\']</pre>' }
       ] },
     { title: 'Facts:', src: [64],
       blocks: [

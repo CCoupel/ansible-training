@@ -74,7 +74,7 @@ COURSE.add({
       ] },
     { title: 'Exercice:', src: [55],
       blocks: [
-        { t: 'lab', title: 'À réaliser', steps: ['- get access to your environment with Ansible User', '-Validate from Manager that you can ssh to all nodes<br><code>ssh-keygen</code><br><code>ssh-copy-id</code>', '- Validate that you can become root on all nodes<br><code>sudo</code>', '- install Ansible core on controller node', '- setup inventory file:<br>add a group for all: MYSRVS<br>add a group for UBUNTU and ROCKY', '- Validate your inventory', '- ping your servers', '- ping your Rocky Servers'] }
+        { t: 'lab', steps: ['- get access to your environment with Ansible User', '-Validate from Manager that you can ssh to all nodes<br><code>ssh-keygen</code><br><code>ssh-copy-id</code>', '- Validate that you can become root on all nodes<br><code>sudo</code>', '- install Ansible core on controller node', '- setup inventory file:<br>add a group for all: MYSRVS<br>add a group for UBUNTU and ROCKY', '- Validate your inventory', '- ping your servers', '- ping your Rocky Servers'] }
       ] },
     { title: 'Quiz 1', extra: true, blocks: [
       { t: 'quiz', q: 'Quel type de modules est livré avec ansible-core ?',
