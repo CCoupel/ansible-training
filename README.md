@@ -73,7 +73,8 @@ git push origin v0.1.1
 1. **Validation du tag** : format `vX.Y.Z` requis ; doit être posé sur `main` (garde-fou CI)
 2. **Environnement** : Node 22, Python 3.12, secret `LEAK_PATTERNS` présent
 3. **Tests bloquants** (échec = arrêt) :
-   - Parité HTML-PPTX (`PARITY_STRICT=1`, 206 tests)
+   - Parité HTML-PPTX (`PARITY_STRICT=1`, 284 tests, traduction incluse)
+   - Traduction complète fr/en (`I18N_STRICT=1`, `node tools/validate.js --strict-i18n`)
    - Obsolescence PPTX (`LOTS_STRICT=1`, 46 tests)
    - Structure (`validate.js`), version dans `meta.js` (`sync-meta --check --version`)
 4. **Contrôles par artefact** :
@@ -149,9 +150,26 @@ Le workflow est conçu pour supporter des artefacts supplémentaires (HTML, PDF)
 - Variable `ARTIFACTS` dans le workflow : une ligne par artefact (`<source>|<asset>`)
 - Ajouter un contrôle dans l'étape « Contrôles » pour chaque nouveau type
 
+## Langues
+
+Le site HTML est disponible en **français** et en **anglais** :
+
+- **Sélecteur** : bouton « FR | EN » dans la barre du haut, à côté du thème ; raccourci clavier `l`.
+- **Langue par défaut** : celle du navigateur (français si elle commence par « fr », sinon anglais). Le choix est mémorisé dans le navigateur (clé `ansible-training-v2`).
+- **Forcer une langue** : ajouter `?lang=fr` ou `?lang=en` à l'adresse (par exemple `index.html?lang=en`) ; le paramètre est accepté puis mémorisé.
+- **Repli** : une chaîne absente en anglais s'affiche en français.
+
+**Traduit** : l'interface (menus, boutons, libellés `lab` et `reveal`) et le contenu « Bonus HTML » des 17 modules (tagline, objectifs, « À retenir », quiz, titres des slides complémentaires, textes alternatifs des images).
+
+**Non traduit** : le texte des slides et les notes du formateur, qui restent en anglais dans les deux langues (verbatim du PPTX), ainsi que les titres de modules (titres des sections du PPTX), le code et les identifiants.
+
+- Interface : `assets/i18n/fr.js` et `assets/i18n/en.js` (74 clés chacun).
+- Termes techniques, règles de l'anglais et conventions du Bonus : `docs/i18n/glossary.md`.
+- Relecture : l'anglais est relu par les agents du projet ; une relecture humaine est possible avant la release.
+
 ## Version HTML
 
-À partir de v0.2.0, le support est disponible en version HTML interactive : 17 modules (m01–m17, dont m13 Execution Environments et m14 Event-Driven Ansible, présents dans la version 1.0.0 en développement), 264 slides PPTX (dont 3 masquées, exclues du HTML), 51 quiz, objectifs et résumés par module, accessibilité complète (clavier, SVG nommés, alt descriptifs), interface en français.
+À partir de v0.2.0, le support est disponible en version HTML interactive : 17 modules (m01–m17, dont m13 Execution Environments et m14 Event-Driven Ansible, présents dans la version 1.0.0 en développement), 264 slides PPTX (dont 3 masquées, exclues du HTML), 51 quiz, objectifs et résumés par module, accessibilité complète (clavier, SVG nommés, alt descriptifs), interface et Bonus en français et en anglais (voir « Langues »).
 
 Le numéro d'un module suit son ordre d'affichage. Dans la version 1.0.0 en développement, le module m13 Execution Environments est inséré après m12 (lot 1), puis le module m14 Event-Driven Ansible après lui (lot 2) ; les anciens m13, m14 et m15 deviennent m15, m16 et m17. Les ancres `#m13-…` à `#m15-…` pointent désormais vers d'autres modules, et la progression enregistrée dans le navigateur repart à zéro (clé `ansible-training-v2`, voir CHANGELOG).
 
@@ -182,13 +200,13 @@ python3 -m http.server 8000
 
 Le fichier `Ansible-Training-HTML-vX.Y.Z.zip` publié sur GitHub (généré par `node tools/package.js`) contient :
 - `index.html` — page d'accueil du cours
-- `assets/` — moteur (engine.js), styles (style.css), images (img/), internationalisations (i18n/fr.js)
+- `assets/` — moteur (engine.js), styles (style.css), images (img/), interface en français et en anglais (i18n/fr.js, i18n/en.js)
 - `modules/` — 17 modules (m01–m17)
 - `examples/eda/` — exemples de rulebooks Event-Driven Ansible (téléchargeables depuis le zip)
 - `labs/eda/` — lab Event-Driven Ansible (énoncé et solution)
 - `Ansible Training.pptx` — support original à la racine (lien téléchargement disponible depuis l'accueil)
 
-**Total : 71 fichiers**, ouvrable en `file://` (double-clic) sans serveur.
+**Total : 72 fichiers**, ouvrable en `file://` (double-clic) sans serveur.
 
 **Aucun embarquement de** : `tools/`, `tests/`, `CONVENTIONS.md`, `build/`, `.github/`, `.claude/`, ou autres répertoires du dépôt.
 
@@ -205,7 +223,8 @@ La section ci-dessous décrit l'arborescence du **dépôt git**, y compris les f
 │   ├── plan.js                        # Manifeste : 17 modules, metadata
 │   ├── meta.js                        # Version, date, versions de référence (généré)
 │   ├── i18n/
-│   │   └── fr.js                      # Libellés en français
+│   │   ├── fr.js                      # Interface en français
+│   │   └── en.js                      # Interface en anglais
 │   └── img/
 │       ├── *.png                      # Images converties (19 WMF, 9 PNG)
 │       └── images.json                # Index des images (slide source, hash)
@@ -236,7 +255,7 @@ La section ci-dessous décrit l'arborescence du **dépôt git**, y compris les f
 ### Conventions et contenu
 
 - **Verbatim du PPTX** : texte copié exactement (coquilles conservées sauf si corrigées dans le PPTX)
-- **Quiz** : 51 quiz (3 par module), une seule réponse défendable, distracteurs tirés d'erreurs classiques du module
+- **Quiz** : 51 quiz (3 par module), une seule réponse défendable, distracteurs tirés d'erreurs classiques du module, traduits en anglais
 - **Objectifs et « À retenir »** : dérivés du contenu du module, en français, avec références aux slides sources
 - **Accessibilité** : clavier complet (flèches, Enter, Espace), SVG nommés, alt descriptif, notes du formateur (touche `n`)
 - **Thème** : clair/sombre (préférence utilisateur)
@@ -258,6 +277,9 @@ PARITY_STRICT=1 python3 -m unittest discover -s tests/site -p 'test_*.py'
 
 # Validation de structure
 node tools/validate.js
+
+# Validation de structure et traduction complète fr/en (mode de la release)
+node tools/validate.js --strict-i18n
 
 # Vérification des liens (hors-ligne : liens locaux uniquement)
 python3 tools/check_links.py --offline

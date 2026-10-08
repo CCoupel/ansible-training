@@ -309,16 +309,17 @@ ARTIFACTS: |
    - Python 3.12 (SHA épinglé `a26af69…`)
 
 3. **Tests bloquants** (échec = arrêt) :
-   - `PARITY_STRICT=1 python3 -m unittest discover -s tests/site` (206 tests, `RELEASE_TAG=$TAG` active version check slide 2)
+   - `PARITY_STRICT=1 python3 -m unittest discover -s tests/site` (284 tests, `RELEASE_TAG=$TAG` active version check slide 2)
+   - `I18N_STRICT: '1'` (`release.yml`) : traduction complète fr/en obligatoire, un module partiellement traduit bloque le tag
    - `LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence` (46 tests, validité du PPTX et versions)
-   - `node tools/validate.js` (structure HTML/SVG/quiz)
+   - `node tools/validate.js --strict-i18n` (structure HTML/SVG/quiz, parité des clés fr/en, traduction complète)
    - `node tools/sync-meta.js --check --version "${TAG#v}"` (meta.js contient la bonne version, pas de réécriture)
 
 4. **Artefacts** (3 par release) :
    - **PPTX** (`tests/slides/check_pptx.py`, anti-fuite avec `LEAK_PATTERNS`) :
      - Slide 2 affiche version du tag (ex. v0.2.0)
      - Slide 2 affiche date de livraison (JJ/MM/AAAA)
-   - **Zip HTML** (71 fichiers, dont `examples/eda/` et `labs/eda/`) :
+   - **Zip HTML** (72 fichiers, dont `examples/eda/`, `labs/eda/` et `assets/i18n/en.js`) :
      - Validité : `unzip -t` (archive OK)
      - Contenu : présence de `index.html`, `assets/meta.js`, `Ansible Training.pptx` à la racine
      - PPTX embarqué identique au PPTX du tag (`cmp`)
@@ -361,6 +362,8 @@ python3 tools/check_links.py  # mode connecté (requête HTTP, peut être lent/i
 ```
 
 **Avant tag** : le CI refusera la release si les tests locaux échouent. Vérifier localement avant de pousser le tag.
+
+**Revue bilingue du site** (manuelle, hors CI) : suivre `tests/procedures/site/revue-visuelle-bilingue/` (bascule FR | EN, `?lang=`, repli, libellés) avant le tag v1.0.0.
 
 **Lab EDA « testé »** (manuel, hors CI) : exécuter `tests/procedures/labs/eda/lab-teste.md` sur un poste avec Java 17+ et `ansible-rulebook` avant la release v1.0.0. La CI ne vérifie que la structure YAML de `labs/eda/` et `examples/eda/`.
 
