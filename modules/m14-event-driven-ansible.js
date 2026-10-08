@@ -744,7 +744,7 @@ curl -H 'Content-Type: application/json' -d '{"service": "my_service", "status":
     { title: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Que fait l\'action <code>run_job_template</code> ?',
         options: ['Elle lance un job template sur un contrôleur comme AWX', 'Elle lance un playbook situé à côté du rulebook', 'Elle envoie un nouvel événement au même ruleset', 'Elle affiche l\'événement reçu dans la console'], answer: 0,
-        explain: 'Slide 214 : « Runs a job template of a controller (for example AWX) » ; un playbook se lance avec <code>run_playbook</code> (slide 211), un nouvel événement s\'envoie avec <code>post_event</code> (slide 213).', ref: [210, 211, 214] }
+        explain: 'Slide 214 : « Runs a job template of a controller (for example AWX) » ; un playbook se lance avec <code>run_playbook</code> (slide 211), un nouvel événement s\'envoie avec <code>post_event</code> (slide 213).', ref: [210, 211, 213, 214] }
     ] }
   ],
   takeaways: [
