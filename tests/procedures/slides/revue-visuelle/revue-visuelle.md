@@ -31,8 +31,8 @@ qu'ils ne peuvent pas voir. Elle se joue **après** que `obsolescence/` et `anti
 |-------|--------|-----------------|----------------|------|
 | 1 | Ouvrir le PPTX dans PowerPoint | Aucun message « réparer le fichier » ni de contenu supprimé | | |
 | 2 | Ouvrir le PPTX dans LibreOffice Impress | Ouverture sans erreur | | |
-| 3 | Lire le compteur de slides | 223 slides | | |
-| 4 | Repérer les slides masquées (icône barrée dans le trieur) | Exactement 193, 210 et 217 | | |
+| 3 | Lire le compteur de slides | 233 slides | | |
+| 4 | Repérer les slides masquées (icône barrée dans le trieur) | Exactement 203, 220 et 227 | | |
 
 **Verdict** : [ ] PASS  [ ] FAIL
 
@@ -51,7 +51,7 @@ qu'ils ne peuvent pas voir. Elle se joue **après** que `obsolescence/` et `anti
 
 ---
 
-### Scenario 3 — Images conservées (slides 4 et 209)
+### Scenario 3 — Images conservées (slides 4 et 219)
 
 **Objectif** : Vérifier la légende « capture historique » (décision Q2) et l'intégrité des images.
 
@@ -59,7 +59,7 @@ qu'ils ne peuvent pas voir. Elle se joue **après** que `obsolescence/` et `anti
 |-------|--------|-----------------|----------------|------|
 | 1 | Afficher la slide 4 | L'image (tableau de bord daté) est toujours là, légende « capture historique » visible juste sous l'image, non masquée par l'image | | |
 | 2 | Lire le texte de la slide 4 | Parle d'« automation controller » et d'AWX, plus de « Tower » dans le texte ; espace restauré dans « runs Ansible » | | |
-| 3 | Afficher la slide 209 | Schéma conservé, légende « capture historique » visible ; texte « Galaxy NG / automation hub » conservé | | |
+| 3 | Afficher la slide 219 | Schéma conservé, légende « capture historique » visible ; texte « Galaxy NG / automation hub » conservé | | |
 | 4 | Vérifier la police et l'alignement des légendes | Cohérents avec le reste du deck, lisibles à la taille de projection | | |
 
 **Verdict** : [ ] PASS  [ ] FAIL
@@ -72,7 +72,7 @@ qu'ils ne peuvent pas voir. Elle se joue **après** que `obsolescence/` et `anti
 
 | Etape | Action | Resultat Attendu | Resultat Obtenu | OK ? |
 |-------|--------|-----------------|----------------|------|
-| 1 | Agrandir les images des slides 4 et 209 à 100 % | Aucun logo, nom d'hôte, utilisateur, URL, date interne ni élément de marque de l'organisation d'origine (la marque de l'éditeur tiers sur la slide 209 est acceptée) | | |
+| 1 | Agrandir les images des slides 4 et 219 à 100 % | Aucun logo, nom d'hôte, utilisateur, URL, date interne ni élément de marque de l'organisation d'origine (la marque de l'éditeur tiers sur la slide 219 est acceptée) | | |
 | 2 | Parcourir les slides qui contiennent des schémas ou images (écarts d'icônes, pieds de page, fonds) | Aucun logo ni mention de l'organisation d'origine | | |
 | 3 | Les 19 dessins vectoriels `.wmf` (schémas des slides 6 à 10 et voisines) : zoomer sur chacun | Aucun texte ou logo de l'organisation d'origine (point resté ouvert à la v0.1.0) | | |
 | 4 | Afficher la vue Masque des diapositives et chaque disposition (dont celle contenant « Confidential ») | Aucune marque de classification, logo ou pied de page d'origine | | |
@@ -102,10 +102,10 @@ qu'ils ne peuvent pas voir. Elle se joue **après** que `obsolescence/` et `anti
 
 | Etape | Action | Resultat Attendu | Resultat Obtenu | OK ? |
 |-------|--------|-----------------|----------------|------|
-| 1 | Lot 1 : slides 29, 41, 42, 65, 88, 89, 94, 102, 109, 128, 139, 140, 141, 198 | Aucun débordement, indentation YAML visible et cohérente | | |
-| 2 | Lots 2-4 : slides 4, 5, 8, 9, 10, 45, 149, 154, 156, 160, 161, 172, 179, 204, 207, 220, 221 | Idem ; le code Python de la slide 179 tient entièrement (police réduite plutôt que coupé) | | |
-| 3 | Lots 5-7 : slides 11, 28, 34-39, 93, 95, 101, 132, 134, 159, 160, 197, 200, 202, 216, 217, 219 | Idem ; slide 134 et 202 : indentation correcte, pas de `Tags:` ni de `block.:` | | |
-| 4 | Lots 8-10 : slides 2, 40, 110, 117, 143, 187, 212 | Idem ; slide 212 : avertissement `host_key_checking` lisible | | |
+| 1 | Lot 1 : slides 29, 41, 42, 65, 88, 89, 94, 102, 109, 128, 139, 140, 141, 208 | Aucun débordement, indentation YAML visible et cohérente | | |
+| 2 | Lots 2-4 : slides 4, 5, 8, 9, 10, 45, 149, 154, 156, 160, 161, 172, 179, 214, 217, 230, 231 | Idem ; le code Python de la slide 179 tient entièrement (police réduite plutôt que coupé) | | |
+| 3 | Lots 5-7 : slides 11, 28, 34-39, 93, 95, 101, 132, 134, 159, 160, 207, 210, 212, 226, 227, 229 | Idem ; slide 134 et 212 : indentation correcte, pas de `Tags:` ni de `block.:` | | |
+| 4 | Lots 8-10 : slides 2, 40, 110, 117, 143, 197, 222 | Idem ; slide 222 : avertissement `host_key_checking` lisible | | |
 | 5 | Passer chaque slide modifiée en mode diaporama | Rien n'est tronqué à la projection | | |
 
 **Verdict** : [ ] PASS  [ ] FAIL
@@ -134,10 +134,10 @@ qu'ils ne peuvent pas voir. Elle se joue **après** que `obsolescence/` et `anti
 
 | Etape | Action | Resultat Attendu | Resultat Obtenu | OK ? |
 |-------|--------|-----------------|----------------|------|
-| 1 | Slides 28, 160, 217, 219 | Mention « end of life » ou « legacy » visible et sobre (pas d'affirmation non sourcée) | | |
-| 2 | Slide 217 (masquée) | Toujours masquée ; en-tête « Integration example (ManageIQ / CloudForms, end of life) » | | |
-| 3 | Slide 210 (masquée) | Toujours masquée ; sortie `profile_tasks` sans date de 2021 ; hôtes et chemins anonymisés (`example.com`, `192.0.2.x`) | | |
-| 4 | Slide 193 (masquée) | Toujours masquée, contenu inchangé | | |
+| 1 | Slides 28, 160, 227, 229 | Mention « end of life » ou « legacy » visible et sobre (pas d'affirmation non sourcée) | | |
+| 2 | Slide 227 (masquée) | Toujours masquée ; en-tête « Integration example (ManageIQ / CloudForms, end of life) » | | |
+| 3 | Slide 220 (masquée) | Toujours masquée ; sortie `profile_tasks` sans date de 2021 ; hôtes et chemins anonymisés (`example.com`, `192.0.2.x`) | | |
+| 4 | Slide 203 (masquée) | Toujours masquée, contenu inchangé | | |
 
 **Verdict** : [ ] PASS  [ ] FAIL
 

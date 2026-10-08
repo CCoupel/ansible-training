@@ -18,7 +18,7 @@ Les versions de référence ne sont JAMAIS codées en dur : lues dans la clé
 `reference_version` de `.claude/project-config.json`.
 
 Numéros de slides = position dans ppt/presentation.xml (cf. plan planner-v0.1.1.md).
-Les images (slides 4 et 209, « TOWER » visible dans les PNG par décision Q2) sont hors
+Les images (slides 4 et 219, « TOWER » visible dans les PNG par décision Q2) sont hors
 périmètre de ces tests : seuls les textes XML (slides + notes + hyperliens) sont analysés.
 """
 
@@ -110,7 +110,7 @@ def quote_unbalanced(line):
     """Vrai si la valeur (ou l'élément de liste) commence par un type de guillemet droit, n'est
     JAMAIS refermée par ce même type et se termine par l'AUTRE type (ex. `'{{ item }}"`).
     Ne comptent pas : les guillemets de l'autre type à l'intérieur d'une chaîne correctement fermée
-    (`'<FilesMatch ".php">'`, slide 200), ni les clés JSON entre guillemets (`"type": 'str',`)."""
+    (`'<FilesMatch ".php">'`, slide 210), ni les clés JSON entre guillemets (`"type": 'str',`)."""
     m = _QUOTED_VALUE.match(line)
     if not m:
         return False
@@ -210,8 +210,8 @@ class TestTransverse(SlidesCase):
 
     def test_extension_balanced_quotes_in_code(self):
         """Une valeur ouverte avec un type de guillemet droit doit être fermée par le même
-        (ex. `name: '{{ item }}"` = YAML invalide, slide 216). Les guillemets de l'autre type
-        À L'INTÉRIEUR de la chaîne sont valides (`'<FilesMatch ".php">'`, slide 200)."""
+        (ex. `name: '{{ item }}"` = YAML invalide, slide 226). Les guillemets de l'autre type
+        À L'INTÉRIEUR de la chaîne sont valides (`'<FilesMatch ".php">'`, slide 210)."""
         bad = set()
         for s in DECK.slides:
             for line in s.text.split("\n"):
@@ -220,11 +220,11 @@ class TestTransverse(SlidesCase):
         self.assertEqual(sorted(bad), [], "guillemets droits mal appariés dans du code, slides %s" % sorted(bad))
 
     def test_balanced_quotes_detector_cases(self):
-        """Test piégé du détecteur : il attrape le cas réel de la slide 216 et laisse passer le YAML valide."""
+        """Test piégé du détecteur : il attrape le cas réel de la slide 226 et laisse passer le YAML valide."""
         for line in ("name: '{{ item }}\"", "  - name: \"{{ item }}'", "- '{{ item }}\"", "msg: 'abc\" ]"):
             self.assertTrue(quote_unbalanced(line), line)
         for line in (
-            "search_string: '<FilesMatch \".php[45]?$\">'",   # slide 200 : \" dans '...'
+            "search_string: '<FilesMatch \".php[45]?$\">'",   # slide 210 : \" dans '...'
             "msg: \"it's fine\"",                            # ' dans \"...\"
             "name: \"{{ item }}\"", "name: '{{ item }}'",
             "when: ansible_facts['distribution'] == 'CentOS'", "msg: say hello",
@@ -344,7 +344,7 @@ class TestMoyenne(SlidesCase):
     def test_issue_24_paquets_el5_6_7(self):
         self.absent(r"<=\s*['\"]?[567]\b|\bEL\s*[567]\b|Vault-", slides=[207])
         self.present(r"ansible\.builtin\.package", [207, 101])
-        # `ntp` reste légitime comme NOM DE TAG ou de play (« tags: ntp », « - name: NTP », slide 202) :
+        # `ntp` reste légitime comme NOM DE TAG ou de play (« tags: ntp », « - name: NTP », slide 212) :
         # seuls le paquet/service (ntp en liste ou name: ntp en minuscule, ntpd), deltarpm et gpm sont interdits.
         self.absent(r"\bntpd\b|\bdeltarpm\b|\bgpm\b|(?-i:name\s*:\s*ntp\s*$|^\s*-\s*ntp\s*$)", slides=[101, 212])
         self.present(r"\bchrony", [101, 212])

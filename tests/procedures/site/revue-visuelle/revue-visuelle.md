@@ -95,7 +95,7 @@ Notes attendues sur : 12, 29, 35, 36, 37, 38, 43, 63, 66, 67, 108, 111.
 | 1 | Ouvrir `build/img-contact.html` | Planche de toutes les images extraites | | |
 | 2 | Regarder chaque image à l'œil nu | Aucun logo, marquage, filigrane, capture d'écran ou texte d'organisation dans les pixels | | |
 | 3 | Pictos (slides 5, 6, 8, 9, anciens WMF) | Nets, non déformés, fond adapté aux deux thèmes | | |
-| 4 | Captures de documentation (slides 49-52, 87, 90, 209, 4) | Lisibles ; texte alternatif descriptif et neutre | | |
+| 4 | Captures de documentation (slides 49-52, 87, 90, 219, 4) | Lisibles ; texte alternatif descriptif et neutre | | |
 
 **Verdict** : [ ] PASS  [ ] FAIL
 
@@ -157,7 +157,7 @@ Notes attendues sur : 12, 29, 35, 36, 37, 38, 43, 63, 66, 67, 108, 111.
 
 | Etape | Action | Resultat Attendu | Resultat Obtenu | OK ? |
 |-------|--------|-----------------|----------------|------|
-| 1 | Ouvrir le PPTX dans PowerPoint (pas LibreOffice) | Aucun message de réparation ; 223 slides ; masquées 193, 210, 217 | | |
+| 1 | Ouvrir le PPTX dans PowerPoint (pas LibreOffice) | Aucun message de réparation ; 233 slides ; masquées 203, 220, 227 | | |
 | 2 | Slides 47, 120, 168, 169, 174 | Liens `/projects/ansible/latest/...` cliquables et valides | | |
 | 3 | Slide 2 | Version `vX.Y.Z` et date identiques à l'accueil HTML | | |
 
