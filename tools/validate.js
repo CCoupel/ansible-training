@@ -137,7 +137,8 @@ function checkAttrs(file, where, field, text) {
 /* ---------- Contenu bilingue : champs frères `X_en` (voir CONVENTIONS.md, « Langues ») ---------- */
 // Liste fermée des champs traduisibles ; tout autre champ est verbatim (texte du PPTX) et ne peut pas porter de `_en`.
 const EN_FIELDS = { module: ['tagline'], item: ['html'], slide: ['title'], quiz: ['q', 'options', 'explain'], img: ['alt', 'caption'], galleryItem: ['alt', 'caption'], diagram: [] };
-const codesOf = t => [...new Set([...String(t).matchAll(/<code>([\s\S]*?)<\/code>/g)].map(m => m[1]))].sort();
+// Multiplicité conservée : le français et l'anglais ont exactement les mêmes <code>, autant de fois.
+const codesOf = t => [...String(t).matchAll(/<code>([\s\S]*?)<\/code>/g)].map(m => m[1]).sort();
 function checkI18nModule(file, mod) {
   let slots = 0, done = 0;
   const missing = [];
@@ -306,8 +307,14 @@ function checkSchema(file, mod) {
       if (!b || !BLOCKS.includes(b.t)) return err(file, `${bt} : type inconnu`);
       rawHtmlFields(b).forEach(([field, tx]) => checkHtml(file, bt, field, tx));
       const need = { text: ['html'], bullets: ['items'], code: ['code'], cmds: ['items'], table: ['head', 'rows'], compare: ['left', 'right'],
-        callout: ['kind', 'html'], flow: ['nodes'], layers: ['items'], quiz: ['q', 'options', 'answer'], reveal: ['html'], lab: ['title', 'steps'], diagram: ['html'], img: ['file', 'alt'], gallery: ['items'] }[b.t];
+        callout: ['kind', 'html'], flow: ['nodes'], layers: ['items'], quiz: ['q', 'options', 'answer'], reveal: ['html'], lab: ['steps'], diagram: ['html'], img: ['file', 'alt'], gallery: ['items'] }[b.t];
       need.forEach(k => { if (b[k] === undefined || b[k] === '') err(file, `${bt} : champ "${k}" manquant`); });
+      // Libellés ajoutés par le site (absents du PPTX) : clés d'interface, jamais en dur (sinon du français resterait dans l'interface anglaise).
+      if (b.t === 'lab' && b.title !== undefined && /^\s*À réaliser\s*$/i.test(String(b.title))) err(file, `${bt} : titre « À réaliser » en dur ; supprimer title (clé d'interface block.lab)`);
+      if (b.t === 'reveal') {
+        if (b.label !== undefined && /^\s*Voir la solution\b/i.test(String(b.label))) err(file, `${bt} : label « Voir la solution… » en dur ; utiliser slide: N (clé d'interface block.revealSlide)`);
+        if (b.slide !== undefined && !(isInt(b.slide) && srcSet.has(b.slide))) err(file, `${bt} : slide ${JSON.stringify(b.slide)} doit être l'une des slides src du module`);
+      }
       if (b.t === 'callout' && !CALLOUTS.includes(b.kind)) err(file, `${bt} : kind "${b.kind}" inconnu (${CALLOUTS.join(', ')})`);
       if (b.t === 'table' && Array.isArray(b.rows) && Array.isArray(b.head)) b.rows.forEach((r, k) => { if (r.length !== b.head.length) err(file, `${bt} : ligne ${k + 1} a ${r.length} colonnes pour ${b.head.length} en-têtes`); });
       if (b.t === 'cmds' && Array.isArray(b.items)) b.items.forEach((c, k) => { if (!Array.isArray(c) || c.length !== 2) err(file, `${bt} : item ${k + 1} doit être [cmd, desc]`); });
