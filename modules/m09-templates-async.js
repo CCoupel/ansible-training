@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm09', num: 9, emoji: '🧾',
   title: 'Templates & async',
   tagline: 'Générer des fichiers avec les templates Jinja2 et lancer des tâches asynchrones.',
+  tagline_en: 'Generate files with Jinja2 templates and run asynchronous tasks.',
   objectives: [
-    { html: 'Définir Jinja : un moteur de templates pour Python utilisé par Ansible.', ref: [121] },
-    { html: 'Utiliser les variables <code>{{ ... }}</code>, les structures de contrôle <code>{% ... %}</code> et les filtres dans un template.', ref: [121, 122] },
-    { html: 'Écrire une boucle <code>for</code> et une condition <code>if</code> dans un template.', ref: [123, 124] },
-    { html: 'Générer un fichier de configuration à partir d\'un template avec le module <code>template</code>.', ref: [126] },
-    { html: 'Lancer une tâche en arrière-plan avec <code>async</code> et <code>poll</code>, puis suivre son état avec <code>async_status</code>.', ref: [131, 132] }
+    { html: 'Définir Jinja : un moteur de templates pour Python utilisé par Ansible.', html_en: 'Define Jinja: a template engine for Python used by Ansible.', ref: [121] },
+    { html: 'Utiliser les variables <code>{{ ... }}</code>, les structures de contrôle <code>{% ... %}</code> et les filtres dans un template.', html_en: 'Use <code>{{ ... }}</code> variables, <code>{% ... %}</code> control structures and filters in a template.', ref: [121, 122] },
+    { html: 'Écrire une boucle <code>for</code> et une condition <code>if</code> dans un template.', html_en: 'Write a <code>for</code> loop and an <code>if</code> condition in a template.', ref: [123, 124] },
+    { html: 'Générer un fichier de configuration à partir d\'un template avec le module <code>template</code>.', html_en: 'Generate a configuration file from a template with the <code>template</code> module.', ref: [126] },
+    { html: 'Lancer une tâche en arrière-plan avec <code>async</code> et <code>poll</code>, puis suivre son état avec <code>async_status</code>.', html_en: 'Run a task in the background with <code>async</code> and <code>poll</code>, then follow its status with <code>async_status</code>.', ref: [131, 132] }
   ],
   slides: [
     { title: 'Templates', src: [120],
@@ -132,28 +133,34 @@ https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_async.
         { t: 'lab', title: 'Exercice:', steps: ['Upgrade packages', 'Print “Upgrade ongoing”', '- Wait for upgrade done', '- Reboot', '- Wait for server UP', '- Print « All done »'] },
         { t: 'reveal', slide: 134, html: '<pre>---\n- hosts: all\n  become: true\n  tasks:\n    - name: Upgrade packages\n      ansible.builtin.dnf:\n        name: "*"\n        state: latest\n      register: upgrade_result\n      async: 3600\n      poll: 0\n    - name: Print completion message\n      ansible.builtin.debug:\n        msg: "Upgrade ongoing "\n    - name: Wait for upgrade to complete\n      ansible.builtin.async_status:\n        jid: "{{ upgrade_result.ansible_job_id }}"\n      register: job_result\n      until: job_result.finished\n      retries: 30\n      delay: 60\n    - name: Reboot the server\n      ansible.builtin.reboot:\n        msg: "Reboot initiated by Ansible"\n        pre_reboot_delay: 10\n        post_reboot_delay: 30\n        reboot_timeout: 600\n    - name: Wait for server to come back up\n      ansible.builtin.wait_for_connection:\n        timeout: 300\n    - name: Print completion message\n      ansible.builtin.debug:\n        msg: "All done"</pre>' }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle syntaxe Jinja permet d\'insérer une variable dans un template ?',
-        options: ['{% ... %}', '{# ... #}', '{{ ... }}'], answer: 2,
-        explain: 'Slide 121 : « Variables » avec <code>{{ ... }}</code>, « Control Structures » avec <code>{% ... %}</code> et « Comments » avec <code>{# ... #}</code>.', ref: [121] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quelle syntaxe Jinja permet d\'insérer une variable dans un template ?', q_en: 'Which Jinja syntax inserts a variable into a template?',
+        options: ['{% ... %}', '{# ... #}', '{{ ... }}'],
+        options_en: ['{% ... %}', '{# ... #}', '{{ ... }}'], answer: 2,
+        explain: 'Slide 121 : « Variables » avec <code>{{ ... }}</code>, « Control Structures » avec <code>{% ... %}</code> et « Comments » avec <code>{# ... #}</code>.',
+        explain_en: 'Slide 121: “Variables” with <code>{{ ... }}</code>, “Control Structures” with <code>{% ... %}</code> and “Comments” with <code>{# ... #}</code>.', ref: [121] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Dans l\'exemple de la slide 131, que signifient <code>async: 45</code> et <code>poll: 5</code> ?',
-        options: ['Durée limitée à 5 s avec 45 tentatives de vérification', 'Durée maximale de 45 s, vérification toutes les 5 s', 'Attente de 45 s puis cinq exécutions de la tâche'], answer: 1,
-        explain: 'Le commentaire de la slide 131 précise : « wait for up to 45 sec, poll every 5 sec ».', ref: [131] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Dans l\'exemple de la slide 131, que signifient <code>async: 45</code> et <code>poll: 5</code> ?', q_en: 'In the example on slide 131, what do <code>async: 45</code> and <code>poll: 5</code> mean?',
+        options: ['Durée limitée à 5 s avec 45 tentatives de vérification', 'Durée maximale de 45 s, vérification toutes les 5 s', 'Attente de 45 s puis cinq exécutions de la tâche'],
+        options_en: ['Time limited to 5 s with 45 checks', 'Maximum duration of 45 s, check every 5 s', 'Wait 45 s, then run the task five times'], answer: 1,
+        explain: 'Le commentaire de la slide 131 précise : « wait for up to 45 sec, poll every 5 sec ».',
+        explain_en: 'The comment on slide 131 says: “wait for up to 45 sec, poll every 5 sec”.', ref: [131] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Quelle valeur de <code>poll</code> lance une tâche sans attendre sa fin ?',
-        options: ['0', '5', '45'], answer: 0,
-        explain: 'Slide 132 : <code>async: 1000</code> avec <code>poll: 0</code>, puis une tâche <code>async_status</code> pour vérifier l\'état.', ref: [132] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Quelle valeur de <code>poll</code> lance une tâche sans attendre sa fin ?', q_en: 'Which <code>poll</code> value starts a task without waiting for it to finish?',
+        options: ['0', '5', '45'],
+        options_en: ['poll: 0', 'poll: 5', 'poll: 45'], answer: 0,
+        explain: 'Slide 132 : <code>async: 1000</code> avec <code>poll: 0</code>, puis une tâche <code>async_status</code> pour vérifier l\'état.',
+        explain_en: 'Slide 132: <code>async: 1000</code> with <code>poll: 0</code>, then an <code>async_status</code> task to check the status.', ref: [132] }
     ] }
   ],
   takeaways: [
-    { html: 'Jinja permet de créer du contenu dynamique en insérant des variables et des expressions dans des fichiers texte.', ref: [121] },
-    { html: 'Les variables s\'écrivent avec <code>{{ ... }}</code>, les structures de contrôle avec <code>{% ... %}</code> et les commentaires avec <code>{# ... #}</code>.', ref: [121] },
-    { html: 'Le module <code>template</code> génère un fichier à partir d\'une source (<code>src</code>) vers une destination (<code>dest</code>).', ref: [126] },
-    { html: 'Une tâche asynchrone s\'exécute indépendamment du flux principal : <code>async</code> fixe la durée maximale et <code>poll</code> l\'intervalle de vérification.', ref: [130, 131] },
-    { html: 'Avec <code>poll: 0</code>, la tâche est lancée sans attendre sa fin ; <code>async_status</code> permet de vérifier son état ensuite.', ref: [132] },
-    { html: 'L\'asynchronisme améliore les performances en permettant à plusieurs opérations de s\'exécuter en même temps.', ref: [130] }
+    { html: 'Jinja permet de créer du contenu dynamique en insérant des variables et des expressions dans des fichiers texte.', html_en: 'Jinja makes it possible to create dynamic content by inserting variables and expressions into text files.', ref: [121] },
+    { html: 'Les variables s\'écrivent avec <code>{{ ... }}</code>, les structures de contrôle avec <code>{% ... %}</code> et les commentaires avec <code>{# ... #}</code>.', html_en: 'Variables are written with <code>{{ ... }}</code>, control structures with <code>{% ... %}</code> and comments with <code>{# ... #}</code>.', ref: [121] },
+    { html: 'Le module <code>template</code> génère un fichier à partir d\'une source (<code>src</code>) vers une destination (<code>dest</code>).', html_en: 'The <code>template</code> module generates a file from a source (<code>src</code>) to a destination (<code>dest</code>).', ref: [126] },
+    { html: 'Une tâche asynchrone s\'exécute indépendamment du flux principal : <code>async</code> fixe la durée maximale et <code>poll</code> l\'intervalle de vérification.', html_en: 'An asynchronous task runs independently of the main flow: <code>async</code> sets the maximum duration and <code>poll</code> the check interval.', ref: [130, 131] },
+    { html: 'Avec <code>poll: 0</code>, la tâche est lancée sans attendre sa fin ; <code>async_status</code> permet de vérifier son état ensuite.', html_en: 'With <code>poll: 0</code>, the task is started without waiting for it to finish; <code>async_status</code> then lets you check its status.', ref: [132] },
+    { html: 'L\'asynchronisme améliore les performances en permettant à plusieurs opérations de s\'exécuter en même temps.', html_en: 'Asynchronous execution improves performance by letting several operations run at the same time.', ref: [130] }
   ]
 });

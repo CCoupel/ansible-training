@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm08', num: 8, emoji: '🔁',
   title: 'Loops & tags',
   tagline: 'Répéter des tâches avec les boucles et les exécuter sélectivement grâce aux tags.',
+  tagline_en: 'Repeat tasks with loops and run them selectively with tags.',
   objectives: [
-    { html: 'Définir une boucle : exécuter une tâche plusieurs fois avec des éléments différents.', ref: [100] },
-    { html: 'Écrire une boucle avec <code>loop</code> et utiliser l\'élément courant <code>item</code>.', ref: [101, 102] },
-    { html: 'Combiner des listes avec <code>zip</code> et <code>product</code>.', ref: [103, 104] },
-    { html: 'Contrôler une boucle avec <code>Loop_control</code> et la répéter avec <code>until</code>.', ref: [105, 106] },
-    { html: 'Étiqueter des tâches avec <code>tags</code> et les exécuter ou les ignorer avec <code>--tags</code> et <code>--skip-tags</code>.', ref: [114, 116] }
+    { html: 'Définir une boucle : exécuter une tâche plusieurs fois avec des éléments différents.', html_en: 'Define a loop: run a task several times with different items.', ref: [100] },
+    { html: 'Écrire une boucle avec <code>loop</code> et utiliser l\'élément courant <code>item</code>.', html_en: 'Write a loop with <code>loop</code> and use the current item <code>item</code>.', ref: [101, 102] },
+    { html: 'Combiner des listes avec <code>zip</code> et <code>product</code>.', html_en: 'Combine lists with <code>zip</code> and <code>product</code>.', ref: [103, 104] },
+    { html: 'Contrôler une boucle avec <code>Loop_control</code> et la répéter avec <code>until</code>.', html_en: 'Control a loop with <code>Loop_control</code> and repeat it with <code>until</code>.', ref: [105, 106] },
+    { html: 'Étiqueter des tâches avec <code>tags</code> et les exécuter ou les ignorer avec <code>--tags</code> et <code>--skip-tags</code>.', html_en: 'Label tasks with <code>tags</code> and run or skip them with <code>--tags</code> and <code>--skip-tags</code>.', ref: [114, 116] }
   ],
   slides: [
     { title: 'Loops', src: [99],
@@ -225,28 +226,34 @@ item=['user3', 'group3']
         { t: 'lab', title: 'Exercice:', steps: ['- Create a playbook with the following tasks:<br>Install MySQL<br>Configure MySQL<br>Start the MySQL service', 'Add appropriate tags to each task.', 'Execute only the installation tasks using the tags.'] },
         { t: 'reveal', slide: 119, html: '<pre>---\n- name: MySQL Deployment\n  hosts: databases\n  tasks:\n    - name: Install MySQL\n      apt:\n        name: mysql-server\n        state: present\n      tags:\n        - installation\n        - mysql\n    - name: Configure MySQL\n      template:\n        src: my.cnf.j2\n        dest: /etc/mysql/my.cnf\n      tags:\n        - configuration\n        - mysql\n    - name: Start MySQL service\n      service:\n        name: mysql\n        state: started\n      tags:\n        - service\n        - mysql\nSolution:\nansible-playbook playbook.yml --tags "installation"\nansible-playbook playbook.yml --skip-tags "configuration"\nExécuter uniquement les tâches d’installation :\nIgnorer les tâches de configuration :</pre>' }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel mot-clé est le principal pour créer une boucle ?',
-        options: ['loop', 'with_items', 'until'], answer: 0,
-        explain: 'Slide 100 : « loop: The primary keyword for creating loops in Ansible » ; <code>with_items</code> est une ancienne syntaxe moins recommandée et <code>until</code> sert à retenter une tâche.', ref: [100] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quel mot-clé est le principal pour créer une boucle ?', q_en: 'Which is the primary keyword for repeating a task over several items?',
+        options: ['loop', 'with_items', 'until'],
+        options_en: ['The loop keyword', 'The with_items keyword', 'The until keyword'], answer: 0,
+        explain: 'Slide 100 : « loop: The primary keyword for creating loops in Ansible » ; <code>with_items</code> est une ancienne syntaxe moins recommandée et <code>until</code> sert à retenter une tâche.',
+        explain_en: 'Slide 100: “loop: The primary keyword for creating loops in Ansible”; <code>with_items</code> is an older, less recommended syntax and <code>until</code> is used to retry a task.', ref: [100] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Que fait l\'option <code>--skip-tags</code> ?',
-        options: ['Elle n\'exécute que les tâches portant le tag indiqué', 'Elle supprime le tag des tâches', 'Elle ignore les tâches portant le tag indiqué'], answer: 2,
-        explain: 'Slide 116 : « Use the --skip-tags option to skip tasks marked with a specific tag ».', ref: [116] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Que fait l\'option <code>--skip-tags</code> ?', q_en: 'What does the <code>--skip-tags</code> option do?',
+        options: ['Elle n\'exécute que les tâches portant le tag indiqué', 'Elle supprime le tag des tâches', 'Elle ignore les tâches portant le tag indiqué'],
+        options_en: ['It restricts the run to the tasks that have the given tag', 'It removes the tag from the tasks', 'It skips the tasks that have the given tag'], answer: 2,
+        explain: 'Slide 116 : « Use the --skip-tags option to skip tasks marked with a specific tag ».',
+        explain_en: 'Slide 116: “Use the --skip-tags option to skip tasks marked with a specific tag”.', ref: [116] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel tag spécial s\'exécute même quand d\'autres tags sont demandés avec --tags ?',
-        options: ['tagged', 'always', 'never'], answer: 1,
-        explain: 'Slide 117 : les tâches taguées <code>always</code> sont exécutées même quand d\'autres tags sont demandés, sauf avec <code>--skip-tags always</code>.', ref: [117] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Quel tag spécial s\'exécute même quand d\'autres tags sont demandés avec --tags ?', q_en: 'Which special tag runs even when other tags are requested with --tags?',
+        options: ['tagged', 'always', 'never'],
+        options_en: ['The tag named tagged', 'The tag named always', 'The tag run on explicit request'], answer: 1,
+        explain: 'Slide 117 : les tâches taguées <code>always</code> sont exécutées même quand d\'autres tags sont demandés, sauf avec <code>--skip-tags always</code>.',
+        explain_en: 'Slide 117: tasks tagged <code>always</code> run even when other tags are requested, except with <code>--skip-tags always</code>.', ref: [117] }
     ] }
   ],
   takeaways: [
-    { html: '<code>loop</code> est le mot-clé principal des boucles ; <code>with_items</code> est une ancienne syntaxe encore prise en charge mais moins recommandée.', ref: [100] },
-    { html: 'Dans une boucle, l\'élément courant est lu avec <code>item</code>.', ref: [101] },
-    { html: '<code>until</code> répète une tâche jusqu\'à ce qu\'une condition soit remplie, avec <code>retries</code> et <code>delay</code>.', ref: [100, 106] },
-    { html: 'Les tags étiquettent des tâches pour les exécuter ou les ignorer de manière sélective.', ref: [114] },
-    { html: '<code>--tags</code> n\'exécute que les tâches portant le tag ; <code>--skip-tags</code> les ignore, et il l\'emporte si une tâche a les deux.', ref: [116] },
-    { html: 'Le tag spécial <code>always</code> s\'exécute même quand d\'autres tags sont demandés ; <code>never</code> ne s\'exécute que s\'il est demandé explicitement.', ref: [117] }
+    { html: '<code>loop</code> est le mot-clé principal des boucles ; <code>with_items</code> est une ancienne syntaxe encore prise en charge mais moins recommandée.', html_en: '<code>loop</code> is the primary loop keyword; <code>with_items</code> is an older syntax that is still supported but less recommended.', ref: [100] },
+    { html: 'Dans une boucle, l\'élément courant est lu avec <code>item</code>.', html_en: 'Inside a loop, the current item is read with <code>item</code>.', ref: [101] },
+    { html: '<code>until</code> répète une tâche jusqu\'à ce qu\'une condition soit remplie, avec <code>retries</code> et <code>delay</code>.', html_en: '<code>until</code> repeats a task until a condition is met, with <code>retries</code> and <code>delay</code>.', ref: [100, 106] },
+    { html: 'Les tags étiquettent des tâches pour les exécuter ou les ignorer de manière sélective.', html_en: 'Tags label tasks so they can be run or skipped selectively.', ref: [114] },
+    { html: '<code>--tags</code> n\'exécute que les tâches portant le tag ; <code>--skip-tags</code> les ignore, et il l\'emporte si une tâche a les deux.', html_en: '<code>--tags</code> runs only the tasks that have the tag; <code>--skip-tags</code> skips them, and it wins if a task has both.', ref: [116] },
+    { html: 'Le tag spécial <code>always</code> s\'exécute même quand d\'autres tags sont demandés ; <code>never</code> ne s\'exécute que s\'il est demandé explicitement.', html_en: 'The special tag <code>always</code> runs even when other tags are requested; <code>never</code> runs only when it is explicitly requested.', ref: [117] }
   ]
 });

@@ -4,12 +4,13 @@ COURSE.add({
   id: 'm07', num: 7, emoji: '🧪',
   title: 'Filters & conditions',
   tagline: 'Transformer les données avec les filtres Jinja2 et conditionner l\'exécution des tâches.',
+  tagline_en: 'Transform data with Jinja2 filters and make task execution conditional.',
   objectives: [
-    { html: 'Définir un filtre : une fonction Jinja2 qui transforme et manipule des données dans les playbooks et les templates.', ref: [83] },
-    { html: 'Utiliser des filtres de formatage, de valeur par défaut et d\'obligation (<code>to_json</code>, <code>default</code>, <code>mandatory</code>).', ref: [83, 84, 85] },
-    { html: 'Conditionner l\'exécution d\'une tâche avec <code>when</code> et <code>register</code>.', ref: [92, 93] },
-    { html: 'Utiliser <code>failed_when</code> et <code>changed_when</code> pour définir l\'échec ou le changement d\'une tâche.', ref: [92] },
-    { html: 'Déclencher un redémarrage avec un handler appelé par <code>notify</code>.', ref: [95] }
+    { html: 'Définir un filtre : une fonction Jinja2 qui transforme et manipule des données dans les playbooks et les templates.', html_en: 'Define a filter: a Jinja2 function that transforms and manipulates data in playbooks and templates.', ref: [83] },
+    { html: 'Utiliser des filtres de formatage, de valeur par défaut et d\'obligation (<code>to_json</code>, <code>default</code>, <code>mandatory</code>).', html_en: 'Use formatting, default-value and mandatory filters (<code>to_json</code>, <code>default</code>, <code>mandatory</code>).', ref: [83, 84, 85] },
+    { html: 'Conditionner l\'exécution d\'une tâche avec <code>when</code> et <code>register</code>.', html_en: 'Make a task conditional with <code>when</code> and <code>register</code>.', ref: [92, 93] },
+    { html: 'Utiliser <code>failed_when</code> et <code>changed_when</code> pour définir l\'échec ou le changement d\'une tâche.', html_en: 'Use <code>failed_when</code> and <code>changed_when</code> to define the failure or the change of a task.', ref: [92] },
+    { html: 'Déclencher un redémarrage avec un handler appelé par <code>notify</code>.', html_en: 'Trigger a restart with a handler called by <code>notify</code>.', ref: [95] }
   ],
   slides: [
     { title: 'Filtres', src: [82],
@@ -49,7 +50,7 @@ Min, max,
     { title: 'Filtres: documentation', src: [87],
       blocks: [
         { t: 'text', html: '<a href="https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_filters.html" target="_blank" rel="noopener">https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_filters.html</a>' },
-        { t: 'img', file: 'assets/img/s087-1.png', alt: 'Capture de la page de documentation « Filters » : liste des sujets (filtres de formatage, valeurs par défaut, listes, dictionnaires, réseau…)' }
+        { t: 'img', file: 'assets/img/s087-1.png', alt: 'Capture de la page de documentation « Filters » : liste des sujets (filtres de formatage, valeurs par défaut, listes, dictionnaires, réseau…)', alt_en: 'Screenshot of the “Filters” documentation page: list of topics (formatting filters, default values, lists, dictionaries, network…)' }
       ] },
     { title: 'Exercice: Filtres', src: [88, 89],
       blocks: [
@@ -61,7 +62,7 @@ ansible-playbook -i inventory set_user.yml -e "user_name='toto' user_group='titi
     { title: 'Lookup plugins', src: [90],
       blocks: [
         { t: 'text', html: '<a href="https://docs.ansible.com/projects/ansible/latest/plugins/lookup.html#plugin-list" target="_blank" rel="noopener">https://docs.ansible.com/projects/ansible/latest/plugins/lookup.html#plugin-list</a>' },
-        { t: 'img', file: 'assets/img/s090-1.png', alt: 'Capture de la page de documentation « Plugin list » des plugins lookup' }
+        { t: 'img', file: 'assets/img/s090-1.png', alt: 'Capture de la page de documentation « Plugin list » des plugins lookup', alt_en: 'Screenshot of the “Plugin list” documentation page for lookup plugins' }
       ] },
     { title: 'CONDITIONS', src: [91],
       blocks: [
@@ -164,28 +165,34 @@ Handlers:
  https_proxy= http://proxy.example.com:8080` },
         { t: 'reveal', slide: 98, html: '<pre>- name: Check internet access and set proxy if needed\n  hosts: all\n  tasks:\n    - name: Check internet access without proxy\n      uri:\n        url: http://gitlab.com\n        return_content: no\n      register: internet_check\n      ignore_errors: yes\n    - name: Set proxy variables if internet access fails\n      lineinfile:\n        dest: /etc/environment\n        regexp: "^{{ item.var }}="\n        line: "{{ item.var }}={{ item.value }}"\n        state: present\n      loop:\n        - { var: \'http_proxy\', value: \'http://proxy.example.com:8080\' }\n        - { var: \'https_proxy\', value: \'http://proxy.example.com:8080\' }\n      when: internet_check.failed\n      notify: Reboot_Required\n  handlers:\n    - name: Reboot the machine\n      Listen: Reboot_Required\n      reboot:\n        msg: "Reboot required after proxy update"</pre>' }
       ] },
-    { title: 'Quiz 1', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel filtre fournit une valeur lorsqu\'une variable n\'est pas définie ?',
-        options: ['flatten', 'default', 'mandatory'], answer: 1,
-        explain: 'Slide 83 : « Handling Undefined Variables: default, mandatory » ; la slide 85 montre <code>default(default_var)</code>, alors que <code>mandatory</code> impose la définition de la variable.', ref: [83, 85] }
+    { title: 'Quiz 1', title_en: 'Quiz 1', extra: true, blocks: [
+      { t: 'quiz', q: 'Quel filtre fournit une valeur lorsqu\'une variable n\'est pas définie ?', q_en: 'Which filter provides a value when a variable is not defined?',
+        options: ['flatten', 'default', 'mandatory'],
+        options_en: ['The flatten filter', 'The default filter', 'The mandatory filter'], answer: 1,
+        explain: 'Slide 83 : « Handling Undefined Variables: default, mandatory » ; la slide 85 montre <code>default(default_var)</code>, alors que <code>mandatory</code> impose la définition de la variable.',
+        explain_en: 'Slide 83: “Handling Undefined Variables: default, mandatory”; slide 85 shows <code>default(default_var)</code>, whereas <code>mandatory</code> requires the variable to be defined.', ref: [83, 85] }
     ] },
-    { title: 'Quiz 2', extra: true, blocks: [
-      { t: 'quiz', q: 'Dans la solution de l\'exercice sur les filtres, quel filtre rend la variable <code>user_name</code> obligatoire ?',
-        options: ['mandatory', 'default', 'upper'], answer: 0,
-        explain: 'La slide 89 utilise <code>{{ user_name | mandatory(\'user_name must be defined\') }}</code>.', ref: [89] }
+    { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
+      { t: 'quiz', q: 'Dans la solution de l\'exercice sur les filtres, quel filtre rend la variable <code>user_name</code> obligatoire ?', q_en: 'In the solution of the filters exercise, which filter makes the <code>user_name</code> variable required?',
+        options: ['mandatory', 'default', 'upper'],
+        options_en: ['The mandatory filter', 'The default filter', 'The upper filter'], answer: 0,
+        explain: 'La slide 89 utilise <code>{{ user_name | mandatory(\'user_name must be defined\') }}</code>.',
+        explain_en: 'Slide 89 uses <code>{{ user_name | mandatory(\'user_name must be defined\') }}</code>.', ref: [89] }
     ] },
-    { title: 'Quiz 3', extra: true, blocks: [
-      { t: 'quiz', q: 'Quel mot-clé conditionne l\'exécution d\'une tâche ?',
-        options: ['register', 'notify', 'when'], answer: 2,
-        explain: 'Slide 92 : « when: A keyword used to specify conditions for task execution » ; <code>register</code> stocke le résultat d\'une tâche pour l\'utiliser dans une condition.', ref: [92] }
+    { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
+      { t: 'quiz', q: 'Quel mot-clé conditionne l\'exécution d\'une tâche ?', q_en: 'Which keyword makes the execution of a task conditional?',
+        options: ['register', 'notify', 'when'],
+        options_en: ['The register keyword', 'The notify keyword', 'The when keyword'], answer: 2,
+        explain: 'Slide 92 : « when: A keyword used to specify conditions for task execution » ; <code>register</code> stocke le résultat d\'une tâche pour l\'utiliser dans une condition.',
+        explain_en: 'Slide 92: “when: A keyword used to specify conditions for task execution”; <code>register</code> stores the result of a task so it can be used in a condition.', ref: [92] }
     ] }
   ],
   takeaways: [
-    { html: 'Les filtres Jinja2 transforment et manipulent les données dans les playbooks et les templates.', ref: [83] },
-    { html: '<code>default</code> fournit une valeur par défaut ; <code>mandatory</code> impose qu\'une variable soit définie.', ref: [83, 85] },
-    { html: '<code>to_json</code> et <code>to_yaml</code> servent au formatage des données ; <code>split</code> et <code>replace</code> à la manipulation de chaînes.', ref: [83] },
-    { html: '<code>when</code> conditionne l\'exécution d\'une tâche ; <code>register</code> stocke le résultat d\'une tâche pour l\'utiliser dans une condition.', ref: [92] },
-    { html: 'Une tâche peut dépendre du résultat d\'une tâche précédente, par exemple avec <code>when: reboot_needed is failed</code>.', ref: [94] },
-    { html: 'Un handler appelé par <code>notify</code> peut redémarrer la machine ; <code>listen</code> regroupe des handlers sous un même nom.', ref: [95] }
+    { html: 'Les filtres Jinja2 transforment et manipulent les données dans les playbooks et les templates.', html_en: 'Jinja2 filters transform and manipulate data in playbooks and templates.', ref: [83] },
+    { html: '<code>default</code> fournit une valeur par défaut ; <code>mandatory</code> impose qu\'une variable soit définie.', html_en: '<code>default</code> provides a default value; <code>mandatory</code> requires a variable to be defined.', ref: [83, 85] },
+    { html: '<code>to_json</code> et <code>to_yaml</code> servent au formatage des données ; <code>split</code> et <code>replace</code> à la manipulation de chaînes.', html_en: '<code>to_json</code> and <code>to_yaml</code> format data; <code>split</code> and <code>replace</code> manipulate strings.', ref: [83] },
+    { html: '<code>when</code> conditionne l\'exécution d\'une tâche ; <code>register</code> stocke le résultat d\'une tâche pour l\'utiliser dans une condition.', html_en: '<code>when</code> makes a task conditional; <code>register</code> stores the result of a task so it can be used in a condition.', ref: [92] },
+    { html: 'Une tâche peut dépendre du résultat d\'une tâche précédente, par exemple avec <code>when: reboot_needed is failed</code>.', html_en: 'A task can depend on the result of a previous task, for example with <code>when: reboot_needed is failed</code>.', ref: [94] },
+    { html: 'Un handler appelé par <code>notify</code> peut redémarrer la machine ; <code>listen</code> regroupe des handlers sous un même nom.', html_en: 'A handler called by <code>notify</code> can restart the machine; <code>listen</code> groups handlers under a single name.', ref: [95] }
   ]
 });
