@@ -89,6 +89,7 @@ jobs:
           CI: 'true'
           PARITY_STRICT: '1'
           LOTS_STRICT: '1'
+          I18N_STRICT: '1'
           RELEASE_TAG: ${{ env.TAG }}
         run: |
           # RELEASE_TAG active les contrôles de version (slide 2 et assets/meta.js affichent X.Y.Z du tag).
@@ -97,7 +98,7 @@ jobs:
 
       - name: Valider le site et assets/meta.js
         run: |
-          node tools/validate.js
+          node tools/validate.js --strict-i18n
           # meta.js est commité (le site s'ouvre en double-clic) : il doit déjà correspondre au tag.
           # Aucune régénération en CI (le zip est construit depuis des fichiers commités uniquement).
           node tools/sync-meta.js --check --version "${TAG#v}"
