@@ -1,7 +1,7 @@
 """Libellés d'interface fr/en (#51) : `assets/i18n/fr.js` et `assets/i18n/en.js`, ordre des scripts.
 
   - mêmes clés dans fr.js et en.js, mêmes paramètres `{nom}` par clé, valeurs non vides ;
-  - nouvelles clés du sélecteur de langue dans les deux fichiers (nav.lang, nav.langAria, lang.fr, lang.en) ;
+  - nouvelles clés du sélecteur de langue dans les deux fichiers (nav.lang, nav.langAria, lang.labelFr, lang.labelEn) ;
   - aucune IP hors 127.0.0.1 / 192.0.2.x dans les libellés ;
   - index.html : meta.js, engine.js, i18n/fr.js, i18n/en.js, plan.js, puis les modules, dans cet ordre.
 Parseur de lignes `'clé': 'valeur',` (stdlib, sans exécuter le JS). Messages : clés seulement, jamais les valeurs.
@@ -21,7 +21,7 @@ import site_support as S  # noqa: E402
 I18N = S.ROOT / "assets" / "i18n"
 RE_LINE = re.compile(r"^\s*'([^']+)'\s*:\s*'((?:[^'\\]|\\.)*)'\s*,?\s*(?://.*)?$")
 RE_PARAM = re.compile(r"\{(\w+)\}")
-NEW_KEYS = ("nav.lang", "nav.langAria", "lang.fr", "lang.en")
+NEW_KEYS = ("nav.lang", "nav.langAria", "lang.labelFr", "lang.labelEn")  # lang.fr / lang.en renommées : « .fr » / « .en » seraient vus comme des domaines par l'anti-fuite (G6)
 
 
 def load(lang):
@@ -80,8 +80,8 @@ class TestLibelles(unittest.TestCase):
             self.assertEqual([k for k in NEW_KEYS if k not in d], [], "clé(s) du sélecteur absente(s) de %s.js" % name)
 
     def test_libelles_de_langue_dans_leur_propre_langue(self):
-        self.assertEqual(self.fr.get("lang.fr"), self.en.get("lang.fr"), "« Français » ne se traduit pas")
-        self.assertEqual(self.fr.get("lang.en"), self.en.get("lang.en"), "« English » ne se traduit pas")
+        self.assertEqual(self.fr.get("lang.labelFr"), self.en.get("lang.labelFr"), "« Français » ne se traduit pas")
+        self.assertEqual(self.fr.get("lang.labelEn"), self.en.get("lang.labelEn"), "« English » ne se traduit pas")
 
     def test_aucune_ip_hors_documentation(self):
         for name, d in (("fr", self.fr), ("en", self.en)):
