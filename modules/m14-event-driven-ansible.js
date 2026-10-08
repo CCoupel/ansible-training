@@ -10,7 +10,7 @@ COURSE.add({
     { html: 'Décrire l\'anatomie d\'un ruleset (<code>name</code>, <code>hosts</code>, <code>sources</code>, <code>rules</code>) et écrire un premier rulebook avec une source <code>webhook</code>.', html_en: 'Describe the anatomy of a ruleset (<code>name</code>, <code>hosts</code>, <code>sources</code>, <code>rules</code>) and write a first rulebook with a <code>webhook</code> source.', ref: [198, 199] },
     { html: 'Écrire des conditions avec les opérateurs, <code>all</code> et <code>any</code>, et limiter le déclenchement avec <code>throttle</code>.', html_en: 'Write conditions with the operators, <code>all</code> and <code>any</code>, and limit triggering with <code>throttle</code>.', ref: [205, 207, 209] },
     { html: 'Choisir une action : <code>run_playbook</code>, <code>run_module</code>, <code>run_job_template</code>, <code>debug</code> ou <code>post_event</code>.', html_en: 'Choose an action: <code>run_playbook</code>, <code>run_module</code>, <code>run_job_template</code>, <code>debug</code> or <code>post_event</code>.', ref: [210] },
-    { html: 'Lancer et déboguer un rulebook avec <code>ansible-rulebook</code> et situer le decision environment et l\'EDA controller.', html_en: 'Run and debug a rulebook with <code>ansible-rulebook</code> and place the decision environment and the EDA controller.', ref: [215, 216, 217, 218] }
+    { html: 'Lancer et déboguer un rulebook avec <code>ansible-rulebook</code> et situer le decision environment et l\'EDA controller.', html_en: 'Run and debug a rulebook with <code>ansible-rulebook</code> and identify where the decision environment and the EDA controller fit.', ref: [215, 216, 217, 218] }
   ],
   slides: [
     { title: 'Event-Driven Ansible', src: [193],

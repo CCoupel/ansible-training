@@ -575,7 +575,7 @@ host_key_checking = False` },
         options: ['loop', 'with_items', 'with_dict'],
         options_en: ['The loop keyword', 'The with_items keyword', 'The with_dict keyword'], answer: 0,
         explain: 'Slide 244 : « Prefere “loop” instead of “with_item” » (le mot-clé est with_items ; la slide écrit with_item) ; <code>with_dict</code> se remplace par <code>loop</code> et <code>dict2items</code>.',
-        explain_en: 'Slide 244: “Prefere "loop" instead of "with_item"” (the keyword is with_items; the slide writes with_item); <code>with_dict</code> is replaced by <code>loop</code> and <code>dict2items</code>.', ref: [244] }
+        explain_en: 'Slide 244: “Prefere “loop” instead of “with_item”” (the keyword is with_items; the slide writes with_item); <code>with_dict</code> is replaced by <code>loop</code> and <code>dict2items</code>.', ref: [244] }
     ] },
     { title: 'Quiz 2', title_en: 'Quiz 2', extra: true, blocks: [
       { t: 'quiz', q: 'Comment éviter la collecte des facts quand ils ne sont pas nécessaires au play ?', q_en: 'How can you avoid gathering facts when the play does not need them?',
@@ -587,7 +587,7 @@ host_key_checking = False` },
     { title: 'Quiz 3', title_en: 'Quiz 3', extra: true, blocks: [
       { t: 'quiz', q: 'Quels outils la slide 245 associe-t-elle au contrôle de la syntaxe et à celui de l\'exécution ?', q_en: 'Which tools does slide 245 associate with syntax checking and with execution testing?',
         options: ['ansible-doc pour la syntaxe, ansible-galaxy pour l\'exécution', 'yamllint et ansible-lint pour la syntaxe, Molecule pour l\'exécution', 'Molecule pour la syntaxe, yamllint pour l\'exécution'],
-        options_en: ['ansible-doc for syntax, ansible-galaxy for execution', 'yamllint and ansible-lint for syntax, Molecule for execution', 'Molecule for syntax, yamllint for execution'], answer: 1,
+        options_en: ['ansible-doc for syntax, ansible-galaxy for execution', 'yamllint and ansible-lint for syntax, Molecule for execution', 'Molecule for syntax checks, yamllint for execution checks'], answer: 1,
         explain: 'Slide 245 : la syntaxe et les prérequis sont contrôlés par Lint (yamllint et ansible-lint, lancés séparément) et l\'exécution par Molecule.',
         explain_en: 'Slide 245: syntax and prerequisites are checked by Lint (yamllint and ansible-lint, run separately) and execution by Molecule.', ref: [245] }
     ] }

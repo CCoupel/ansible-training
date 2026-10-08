@@ -6,7 +6,7 @@ COURSE.add({
   tagline: 'Étudier un cas concret : un testeur de flux réseau automatisé avec Ansible.',
   tagline_en: 'Study a real use case: a network flow tester automated with Ansible.',
   objectives: [
-    { html: 'Décrire l\'objectif de l\'exemple : vérifier que des flux réseau sont ouverts entre deux serveurs.', html_en: 'Describe the goal of the example: checking that network flows are open between two servers.', ref: [225] },
+    { html: 'Décrire l\'objectif de l\'exemple : vérifier que des flux réseau sont ouverts entre deux serveurs.', html_en: 'Describe the goal of the example: to check that network flows are open between two servers.', ref: [225] },
     { html: 'Identifier les éléments qui définissent un flux : serveur source, serveur destination, protocole réseau (TCP/UDP/HTTP) et message de connexion.', html_en: 'Identify the elements that define a flow: source server, destination server, network protocol (TCP/UDP/HTTP) and connection message.', ref: [225] },
     { html: 'Lire la matrice d\'entrée et la matrice de sortie des flux.', html_en: 'Read the input matrix and the output matrix of the flows.', ref: [228] },
     { html: 'Suivre les étapes du playbook : source joignable en SSH, test de connectivité, destination joignable en SSH, test avec le module.', html_en: 'Follow the steps of the playbook: source reachable over SSH, connectivity test, destination reachable over SSH, test with the module.', ref: [229, 230, 231, 232] },
