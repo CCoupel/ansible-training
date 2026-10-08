@@ -7,7 +7,7 @@ Source de vérité du **site** (version HTML du support) : choix techniques, sch
 - **HTML/CSS/JS vanilla, aucune dépendance** (ni npm, ni CDN, ni police distante). Le site **s'ouvre en double-clic** (`file://`) depuis un clone du dépôt.
 - **Pas d'étape de build** : les fichiers commités SONT le site. Seul `assets/meta.js` est généré (et commité), pour que la version s'affiche en double-clic.
 - Node (stdlib) pour les outils, Python (stdlib) pour les tests et le contrôle des liens.
-- Interface **en français** ; les libellés sont **tous** dans `assets/i18n/fr.js` (jamais en dur dans `engine.js` / `index.html`) afin de préparer la traduction de l'interface (#51). Le **contenu des slides** reprend le texte du PPTX tel quel (langue d'origine, majoritairement l'anglais) ; le contenu additionnel est en français.
+- Interface **bilingue fr / en** (section « Langues ») ; les libellés sont **tous** dans `assets/i18n/fr.js` et `assets/i18n/en.js` (jamais en dur dans `engine.js` / `index.html`). Le **contenu des slides** reprend le texte du PPTX tel quel (anglais, jamais traduit) ; le contenu additionnel (Bonus) est en français et en anglais (`X_en`).
 - Accent bleu Ansible, thème clair/sombre (touche `t`, préférence mémorisée, `prefers-color-scheme` par défaut), responsive.
 - Persistance : `localStorage`, clé `ansible-training-v2` (progression, scores de quiz, thème, panneau de notes, dernière slide). Tolérant à l'indisponibilité du stockage.
 
@@ -18,6 +18,7 @@ Source de vérité du **site** (version HTML du support) : choix techniques, sch
 | `index.html` | écrit à la main ; une ligne `<script>` par module livré | oui | `course` |
 | `assets/engine.js`, `assets/style.css`, `assets/plan.js` | écrits à la main | oui | `course` |
 | `assets/i18n/fr.js` | écrit à la main (libellés de l'interface) | oui | `course` |
+| `assets/i18n/en.js` | écrit à la main (libellés de l'interface, anglais) | oui | `course` |
 | `assets/meta.js` | **généré** par `node tools/sync-meta.js` depuis `.claude/project-config.json` | **oui** (seul fichier généré suivi) | outil |
 | `assets/img/*.png`, `assets/img/images.json` | extraits une fois du PPTX | oui | `dev-slides` |
 | `modules/mNN-sujet.js` | écrits à la main (conversion du PPTX + contenu additionnel) | oui | `course` |
@@ -27,7 +28,7 @@ Source de vérité du **site** (version HTML du support) : choix techniques, sch
 
 ## Fichiers du site
 
-- `index.html` : coquille (sidebar, topbar, slide, footer) + un `<script>` par module **existant**. Ordre imposé : `assets/meta.js`, `assets/engine.js`, `assets/i18n/fr.js`, `assets/plan.js`, `modules/*.js`, puis `COURSE.start()`. Ne jamais référencer un module absent (404).
+- `index.html` : coquille (sidebar, topbar, slide, footer) + un `<script>` par module **existant**. Ordre imposé : `assets/meta.js`, `assets/engine.js`, `assets/i18n/fr.js`, `assets/i18n/en.js`, `assets/plan.js`, `modules/*.js`, puis `COURSE.start()`. Ne jamais référencer un module absent (404).
 - `assets/plan.js` : manifeste des modules (`COURSE.plan`) : `id`, `num`, `emoji`, `title`, `day` (`J1` à `J4`, agenda de la slide 3 du PPTX), `range` (première et dernière slide PPTX du module, slides masquées incluses). Un module du manifeste sans `<script>` apparaît « à venir » (grisé).
 - `assets/engine.js` : moteur (navigation, rendu des blocs, notes, quiz, recherche, thème).
 - `modules/mNN-sujet.js` : un module = un appel `COURSE.add({...})`. Noms : `mNN-` + kebab-case ASCII.
@@ -124,6 +125,28 @@ Objectifs, « À retenir » et quiz n'existent que dans le HTML (jamais reporté
 - **Interdits** : nom d'organisation, nom d'hôte/domaine réel, IP hors `192.0.2.x`, avis absent du PPTX, version différente de `reference_version` (`.claude/project-config.json`).
 - Étalon de ton et de longueur : le module pilote `m02-inventory.js`.
 
+## Langues (fr / en)
+
+Le site est bilingue. Le **texte des slides** (verbatim du PPTX) est en anglais et **n'est jamais traduit** ; l'**interface** et le **Bonus HTML** existent en français et en anglais. Terminologie, style de l'anglais et règles des quiz : `docs/i18n/glossary.md`.
+
+- **Langue affichée** : `?lang=fr|en` (puis mémorisé) > choix mémorisé (`localStorage`, clé `ansible-training-v2`, champ `lang`) > langue du navigateur (français si elle commence par `fr`, sinon anglais ; français si inconnue). Bouton « FR | EN » dans la barre du haut, raccourci `l`. Le changement est immédiat (sans rechargement) ; l'ancre, la progression et les scores sont conservés. `<html lang>` suit l'interface ; quand l'interface est en français, titres, blocs et notes verbatim portent `lang="en"`.
+- **Libellés d'interface** : `assets/i18n/fr.js` et `assets/i18n/en.js`, mêmes clés, mêmes paramètres `{…}`, valeurs non vides ; une clé absente en anglais s'affiche en français (jamais de trou). Nouveau libellé : l'ajouter **dans les deux fichiers**.
+- **Contenu Bonus : champs frères `X_en`.** Le français reste dans `X`, l'anglais est à côté dans `X_en` (même fichier de module, même diff). Liste **fermée** des champs traduisibles ; tout autre champ est verbatim et ne peut pas porter de `_en` :
+
+  | Où | Champs (`X` → `X_en`) |
+  |---|---|
+  | module | `tagline` |
+  | `objectives[]`, `takeaways[]` | `html` |
+  | slide `extra: true` (Quiz N) | `title` |
+  | bloc `quiz` | `q`, `options` (liste de **même longueur**), `explain` |
+  | `img`, éléments de `gallery` | `alt`, `caption` |
+  | bloc `diagram` | `svg_en: { title, desc }`, qui remplace le `<title>` et le `<desc>` du SVG |
+
+  Légendes `caption` des blocs `code`, `flow` et `diagram` : verbatim (texte du PPTX), pas de `_en`. `answer` et `ref` sont partagés par les deux langues.
+- **Règles** : les `<code>` d'un champ et de son `_en` sont **identiques** (jamais de traduction d'un identifiant) ; mêmes balises HTML autorisées ; **toute modification de `X` modifie `X_en`** dans le même commit. Quiz en anglais : options de longueur voisine (±30 %), pas de `only` / `just` réservés aux mauvaises réponses, aucun `<code>` dans les options, énoncé sans le mot de la bonne réponse, bonnes réponses réparties.
+- **Complétude, tout ou rien** : un module est entièrement traduit ou pas du tout. Partiellement traduit : erreur. Sans aucun `_en` : avertissement de `node tools/validate.js`, **erreur avec `--strict-i18n`** (ou `I18N_STRICT=1`), mode de la release. En cas d'oubli un champ s'affiche en français (repli).
+- **Recherche** : n'indexe que les champs Bonus de la langue courante (le texte verbatim est commun).
+
 ## Anti-fuite (dépôt public)
 
 - Aucune référence à l'organisation d'origine (nom, acronymes, domaines, logos), y compris dans les `alt`, les images (pixels et métadonnées PNG) et les commentaires.
@@ -134,7 +157,7 @@ Objectifs, « À retenir » et quiz n'existent que dans le HTML (jamais reporté
 
 | Commande | Rôle |
 |---|---|
-| `node tools/validate.js [fichier.js…]` | schéma des modules, `plan.js`, `i18n`, `index.html`, images ; sans argument : contrôle global |
+| `node tools/validate.js [--strict-i18n] [fichier.js…]` | schéma des modules, `plan.js`, `i18n` (fr/en), `index.html`, images, champs `_en` ; sans argument : contrôle global ; `--strict-i18n` : un module sans traduction anglaise est une erreur |
 | `node tools/sync-meta.js [--check] [--version X.Y.Z] [--date JJ/MM/AAAA]` | génère / contrôle `assets/meta.js` depuis `project-config.json` |
 | `node tools/dump-course.js [--extras]` | `build/course.json` (entrée de la parité ; chaque module porte `range` et `day`) ; `--extras` : `build/extras-review.md` (relecture humaine) |
 | `python3 tools/renumber.py [--check\|--apply]` | renumérotation des références de slides après une insertion dans le PPTX (voir « Livraison PPTX + HTML ») ; codes retour 0 rien à faire, 2 changements en attente/appliqués, 1 erreur |
