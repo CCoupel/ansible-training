@@ -1,0 +1,28 @@
+# is match, is search, is regex, is selectattr (E14, slide 206).
+# Source of truth: the same rulebook is on the slides of the course. Keep both in sync.
+# Test: curl -X POST -H "Content-Type: application/json" -d '{"host": "web01", "message": "Timeout while connecting", "version": "2.20"}' http://127.0.0.1:5000/alert
+---
+- name: Strings and lists
+  hosts: localhost
+  sources:
+    - name: Listen for alerts
+      ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+  rules:
+    - name: Web host
+      condition: event.payload.host is match("web", ignorecase=true)
+      action:
+        debug:
+    - name: Timeout message
+      condition: event.payload.message is search("timeout", ignorecase=true)
+      action:
+        debug:
+    - name: Version 2.x
+      condition: event.payload.version is regex("^2\.[0-9]+")
+      action:
+        debug:
+    - name: A full disk
+      condition: event.payload.disks is selectattr('used', '>=', 90)
+      action:
+        debug:

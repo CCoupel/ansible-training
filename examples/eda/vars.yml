@@ -1,0 +1,3 @@
+# Variables for 08-facts-variables.yml (E16, slide 208).
+---
+target_env: prod

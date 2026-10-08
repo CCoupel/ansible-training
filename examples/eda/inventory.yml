@@ -1,0 +1,6 @@
+# Local inventory used by every example (E7, slide 199).
+---
+all:
+  hosts:
+    localhost:
+      ansible_connection: local

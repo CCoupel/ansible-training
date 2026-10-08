@@ -1,0 +1,15 @@
+# Playbook run by 10-run-playbook.yml (same as labs/eda/solution/remediate.yml): simulated restart, nothing real.
+---
+- name: Restart the simulated service
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Announce the simulated restart
+      ansible.builtin.debug:
+        msg: "Simulated restart of my_service"
+
+    - name: Leave a marker file
+      ansible.builtin.copy:
+        content: "my_service restarted\n"
+        dest: /tmp/eda-lab-my_service.txt
+        mode: "0644"

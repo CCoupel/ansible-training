@@ -1,0 +1,26 @@
+# Facts and variables (E16, slide 208). Run with: ansible-rulebook -r 08-facts-variables.yml -i inventory.yml --vars vars.yml --env-vars MY_NAME
+# Source of truth: the same rulebook is on the slides of the course. Keep both in sync.
+# Test: send {"maintenance": true} first, then {"env": "prod"} (two curl commands)
+---
+- name: Facts and variables
+  hosts: localhost
+  sources:
+    - name: Listen for alerts
+      ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+  rules:
+    - name: Start maintenance
+      condition: event.payload.maintenance == true
+      action:
+        set_fact:
+          fact:
+            maintenance: true
+    - name: Alert during maintenance
+      condition:
+        all:
+          - fact.maintenance == true
+          - event.payload.env == vars.target_env
+      action:
+        debug:
+          msg: "Reported by {{ MY_NAME }}"

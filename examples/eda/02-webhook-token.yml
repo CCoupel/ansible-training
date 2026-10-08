@@ -1,0 +1,18 @@
+# Webhook with a Bearer token (E9, slide 201). my-secret-token is a demo value.
+# Source of truth: the same rulebook is on the slides of the course. Keep both in sync.
+# Test: curl -X POST -H "Authorization: Bearer my-secret-token" -H "Content-Type: application/json" -d '{"status": "down", "service": "web"}' http://127.0.0.1:5000/alert
+---
+- name: Authenticated webhook
+  hosts: localhost
+  sources:
+    - name: Listen with a token
+      ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+        token: my-secret-token
+  rules:
+    - name: Service is down
+      condition: event.payload.status == "down"
+      action:
+        debug:
+          msg: "{{ event.payload.service }} is down"

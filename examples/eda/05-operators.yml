@@ -1,0 +1,28 @@
+# Operators in conditions (E13, slide 205).
+# Source of truth: the same rulebook is on the slides of the course. Keep both in sync.
+# Test: curl -X POST -H "Content-Type: application/json" -d '{"disk": 95, "env": "prod", "service": "web"}' http://127.0.0.1:5000/alert
+---
+- name: Operators
+  hosts: localhost
+  sources:
+    - name: Listen for alerts
+      ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+  rules:
+    - name: Disk almost full
+      condition: event.payload.disk > 90 and event.payload.env == "prod"
+      action:
+        debug:
+    - name: Known service
+      condition: event.payload.service in ["web", "db"]
+      action:
+        debug:
+    - name: Urgent tag
+      condition: event.payload.tags contains "urgent"
+      action:
+        debug:
+    - name: Has a message
+      condition: event.payload.message is defined
+      action:
+        debug:

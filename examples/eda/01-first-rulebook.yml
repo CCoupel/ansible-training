@@ -1,0 +1,17 @@
+# First rulebook (E7, slide 199): print every event received on a local webhook.
+# Source of truth: the same rulebook is on the slides of the course. Keep both in sync.
+# Test: curl -X POST -H "Content-Type: application/json" -d '{"status": "down"}' http://127.0.0.1:5000/alert
+---
+- name: First rulebook
+  hosts: localhost
+  sources:
+    - name: Listen for alerts
+      ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+  rules:
+    - name: Show every event
+      condition: event.meta is defined
+      action:
+        debug:
+          msg: "Received: {{ event.payload }}"

@@ -1,0 +1,22 @@
+# Test without any network: the generic source plays fixed events, json_filter drops a key (E10, slide 202).
+# Source of truth: the same rulebook is on the slides of the course. Keep both in sync.
+# Test: no curl needed: the source ends after its events, and so does the rulebook
+---
+- name: Test with generic events
+  hosts: localhost
+  sources:
+    - name: Fake events
+      ansible.eda.generic:
+        payload:
+          - status: down
+            service: web
+          - status: up
+            service: web
+      filters:
+        - ansible.eda.json_filter:
+            exclude_keys: [service]
+  rules:
+    - name: Show what is left
+      condition: event.status == "down"
+      action:
+        debug:

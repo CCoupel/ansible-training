@@ -1,0 +1,15 @@
+# Webhook -> run_playbook (same as the lab solution, labs/eda/solution/rulebook.yml).
+# Test: curl -H "Content-Type: application/json" -d '{"status": "down"}' http://127.0.0.1:5000/endpoint
+---
+- name: Service watchdog
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+  rules:
+    - name: Restart the simulated service
+      condition: event.payload.status == "down"
+      action:
+        run_playbook:
+          name: remediate.yml

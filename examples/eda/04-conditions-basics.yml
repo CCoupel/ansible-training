@@ -1,0 +1,17 @@
+# Conditions basics (E12, slide 204).
+# Source of truth: the same rulebook is on the slides of the course. Keep both in sync.
+# Test: curl -X POST -H "Content-Type: application/json" -d '{"status": "down", "service": "web"}' http://127.0.0.1:5000/alert
+---
+- name: Conditions basics
+  hosts: localhost
+  sources:
+    - name: Listen for alerts
+      ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+  rules:
+    - name: Service is down
+      condition: event.payload.status == "down"
+      action:
+        debug:
+          msg: "{{ event.payload.service }} is down"

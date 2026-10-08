@@ -1,0 +1,28 @@
+# all and any over several events (E15, slide 207). all needs both events within the timeout.
+# Source of truth: the same rulebook is on the slides of the course. Keep both in sync.
+# Test: send {"status": "down", "service": "web"} then {"disk": 95} (two curl commands, less than 10 seconds apart)
+---
+- name: Several events
+  hosts: localhost
+  sources:
+    - name: Listen for alerts
+      ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+  rules:
+    - name: Down and disk full
+      condition:
+        all:
+          - event.payload.status == "down"
+          - event.payload.disk > 90
+        timeout: 10 seconds
+      action:
+        debug:
+          msg: "{{ events.m_0.payload.service }} is down"
+    - name: Any alert
+      condition:
+        any:
+          - event.payload.severity == "critical"
+          - event.payload.status == "down"
+      action:
+        debug:

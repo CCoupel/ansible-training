@@ -1,0 +1,22 @@
+# Throttle: one notification per service within 5 minutes (E17, slide 209).
+# Source of truth: the same rulebook is on the slides of the course. Keep both in sync.
+# Test: send the same {"status": "down", "host": "web01", "service": "web"} twice: only the first one triggers the rule
+---
+- name: Throttle
+  hosts: localhost
+  sources:
+    - name: Listen for alerts
+      ansible.eda.webhook:
+        host: 127.0.0.1
+        port: 5000
+  rules:
+    - name: Notify once per service
+      condition: event.payload.status == "down"
+      throttle:
+        once_within: 5 minutes
+        group_by_attributes:
+          - event.payload.host
+          - event.payload.service
+      action:
+        debug:
+          msg: "{{ event.payload.service }} is down"
