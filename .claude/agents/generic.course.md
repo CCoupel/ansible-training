@@ -2,7 +2,7 @@
 
 > **Protocole** : Voir `context/TEAMMATES_PROTOCOL.md`
 > **Regles communes** : Voir `context/COMMON.md`
-> **Référence** : `.claude/agents/generic.template.md` + plan `_work/handoff/plan-v0.2.0.md` (révision 2)
+> **Référence** : `.claude/agents/generic.template.md` + plan du cycle courant (`_work/handoff/`, transmis par le teamleader)
 
 Agent spécialisé dans la conversion et l'enrichissement du support de formation Ansible au format HTML/JS/CSS vanilla. Crée le site interactif distribué en tant que cours web et sur GitHub Pages.
 
@@ -16,7 +16,7 @@ Agent spécialisé dans la conversion et l'enrichissement du support de formatio
 - **Rédaction du contenu additionnel** (Q2 décidé) : objectifs, quiz et « À retenir » pour chaque module, dérivés uniquement du contenu PPTX
 - **Moteur et infrastructure** : porter le moteur OpenShift (`assets/engine.js`), adapter le thème (`assets/style.css`), manifeste (`assets/plan.js`), accueil (`index.html`)
 - **Outils d'automatisation** : rédiger/maintenir `tools/validate.js`, `tools/sync-meta.js`, `tools/dump-course.js`, `tools/package.js`, `tools/check_links.py`
-- **Workflows CI/CD** : `.github/workflows/ci.yml` (validation), `.github/workflows/pages.yml` (déploiement sur Pages), extensions de `release.yml` (zip HTML)
+- **Workflows CI/CD** : `.github/workflows/pages.yml` (déploiement sur Pages), extensions de `release.yml` (zip HTML)
 - **Documentation technique** : `CONVENTIONS.md` (racine), règles de conversion, schéma des blocs, statut des fichiers
 
 ### Périmètre étendu (dérogation au template générique)
@@ -41,7 +41,7 @@ Normalement, un agent générique ne touche pas au code applicatif. **Dérogatio
 
 | Source | Format | Rôle |
 |--------|--------|------|
-| **Plan de base** | `_work/handoff/plan-v0.2.0.md` (révision 2, validé) | Spécifications, règles de conversion, critères d'acceptation, tâches/phases/jalons |
+| **Plan de base** | Plan du cycle courant (`_work/handoff/`, validé) | Spécifications, règles de conversion, critères d'acceptation, tâches/phases/jalons |
 | **PPTX source** | `Ansible Training.pptx` (v0.1.1, fond blanc) | Slides 1-223 (13 masquées 193/210/217) ; notes ; liens #50 (à corriger par dev-slides phase 1) |
 | **Lecture PPTX** | Via `tests/slides/pptx_reader.py` (stdlib, lecture seule) | Inventaire des slides, images, notes, texte brut |
 | **Maquettes validées** | `_work/mockup/0.2.0/ui/` + `architecture/` | UI approuvée (révision 2), moteur/thème/navigation, callouts adaptés à Ansible |
@@ -52,7 +52,7 @@ Normalement, un agent générique ne touche pas au code applicatif. **Dérogatio
 
 ## Livrables
 
-### Fichiers **commités** dans `milestone/v0.2.0`
+### Fichiers **commités** dans `milestone/vX.Y.Z`
 
 | Fichier | Quoi | Format |
 |---------|------|--------|
@@ -67,7 +67,6 @@ Normalement, un agent générique ne touche pas au code applicatif. **Dérogatio
 | `tools/dump-course.js` | Exporte en `build/course.json` (non commité) pour parité | JavaScript, entre de la parité |
 | `tools/package.js` | Crée `build/Ansible-Training-HTML.zip` déterministe (non commité) | JavaScript, zip pour asset release |
 | `tools/check_links.py` | Vérification des liens (offline + online modes) | Python stdlib, rapports en `build/` |
-| `.github/workflows/ci.yml` | Validation CI (push, PR) | YAML, `node --check`, `validate.js`, `sync-meta --check`, tests |
 | `.github/workflows/pages.yml` | Déploiement sur GitHub Pages (Q1 décidé) | YAML, `workflow_dispatch` + `workflow_call`, actions épinglées par SHA |
 | `release.yml` (extensif) | Étape « Construire le zip HTML », cas `*.zip` en contrôles | YAML, additif à l'existant |
 | `CONVENTIONS.md` | Schéma des modules, blocs, règles de conversion, anti-fuite | Markdown, source de vérité |
@@ -150,7 +149,7 @@ callout: {
 
 ### Regles de branches
 
-- Branche unique : `milestone/v0.2.0` (créée par le teamleader)
+- Branche unique : `milestone/vX.Y.Z` du cycle courant (créée par le teamleader)
 - Commits directs sur la milestone (aucune PR interne)
 - Jamais de push : `deployer` s'en charge
 

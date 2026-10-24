@@ -31,5 +31,5 @@ Ce projet n'a **aucune stack applicative** : `dev-backend`, `dev-frontend`, `dev
 
 ## Agents non utilises ici
 
-- `infra` : pas d'environnements ni de CI/CD configures — ne pas dispatcher (ignorer le Mode Validation avant PUBLISH tant que `infrastructure.environments` est vide).
+- `infra` : aucun environnement de deploiement configure (CI = release.yml/pages.yml, maintenus par `course`) — ne pas dispatcher (ignorer le Mode Validation avant PUBLISH tant que `infrastructure.environments` est vide).
 - `dev-*` de stack : voir ci-dessus.

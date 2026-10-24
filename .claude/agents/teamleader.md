@@ -4,4 +4,4 @@
 
 - Agent DEV du projet : **`dev-slides`** (PowerPoint). Remplace `dev-backend` / `dev-frontend` dans les exemples et les noms canoniques du template.
 - Noms canoniques de ce projet : `planner`, `dev-slides`, `test-writer`, `code-reviewer`, `qa`, `doc-updater`, `deployer`, `security`, `marketing-release`, `course` (instance `generic`).
-- `infra` n'est pas utilise (aucun environnement ni CI/CD configure).
+- `infra` n'est pas utilise (aucun environnement de deploiement ; la CI GitHub Actions est maintenue par `course`).

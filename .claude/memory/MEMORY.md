@@ -17,7 +17,7 @@
 | Branche `main` | `3fb524a` = `origin/main` (ajoute le workflow Pages) |
 | Branche milestone | `milestone/v1.0.0` (`1261a9b`) conservée et poussée |
 | Site | https://ccoupel.github.io/ansible-training/ |
-| Template | v3.13.1 |
+| Template | v3.26.2 (sync 2026-10-24) |
 
 ---
 
@@ -84,7 +84,7 @@ Prochain milestone à définir. Idées (non priorisées) : mise à jour des acti
 ## Règles Apprises
 
 ### 1. Git & Commit Protocol
-- **Code retour** : vérifier systématiquement chaque `git` (commit, tag, push, merge). Un push est public.
+- **Git (code retour, commit --only, pré-vol avant push/tag, commits mémoire locaux)** : voir `CLAUDE.md` « Conventions Git ».
 - **Commits d'agent** : `git commit --only <fichiers>` pour éviter les collisions (`.git/index.lock` : réessayer). Jamais de `git stash` partagé.
 - **Dépôt public** : pré-vol en lecture seule (`git ls-remote`, `gh`) et accord explicite avant tout push, tag ou changement de réglage du dépôt.
 - **Commits mémoire** : locaux, non poussés, jusqu'au prochain déploiement.

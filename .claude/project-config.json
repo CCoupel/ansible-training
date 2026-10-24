@@ -28,7 +28,7 @@
     "database": null
   },
   "infrastructure": {
-    "cicd": null,
+    "cicd": "github-actions",
     "environments": []
   },
   "testing": {

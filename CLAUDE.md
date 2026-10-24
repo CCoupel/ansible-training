@@ -22,7 +22,7 @@
 - **Usage v1** : formation en présentiel + version générique diffusable. Public mixte (débutants à confirmés). Distribution via ce dépôt git.
 - **Hors périmètre v1** : labs automatisés. Des exemples de playbooks/rôles et des labs de TP pourront être ajoutés dans le dépôt.
 - **Qualité d'automatisation hétérogène** = impact visé ; risques : fuite de références internes (y compris captures d'écran), contenu obsolète (versions Ansible/AWX), divergence entre version interne et générique.
-- **Conventions** : Conventional Commits (`docs(slides): ...`, `chore: ...`). Aucune stack applicative, pas de CI/CD ni d'environnements configurés.
+- **Conventions** : Conventional Commits (`docs(slides): ...`, `chore: ...`). Aucune stack applicative ; CI GitHub Actions (`release.yml`, `pages.yml`), aucun environnement de déploiement.
 
 ---
 
@@ -201,221 +201,26 @@ SendMessage({
 ## Conventions Git
 
 - **Branches** : `milestone/vX.Y.Z` — accueille tout le travail FEATURE/BUGFIX/HOTFIX/REFACTOR
-  du cycle (un seul milestone en développement à la fois)
+  du cycle (un seul milestone en développement à la fois) ; conservée après la release
 - **Commits** : `type(scope): message` — types : `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
-- **Tags** : `vX.Y.Z` — la CI patche et publie la release automatiquement
+- **Tags** : `vX.Y.Z` — la CI contrôle et publie la release automatiquement
 - **Jamais de travail direct sur `main`** — la branche milestone n'y est mergée qu'au déploiement PROD
+- **Commits d'agent** : `git commit --only <fichiers>` (évite les collisions entre agents) ; jamais de `git stash` partagé
+- **Dépôt public** : vérifier le code retour de chaque `git` ; pré-vol en lecture seule (`git ls-remote`, `gh`) et
+  accord explicite de l'utilisateur avant tout push, tag ou changement de réglage du dépôt
+- **Commits mémoire** (`.claude/memory/`) : locaux, non poussés jusqu'au prochain déploiement
 
 ---
 
 ## Release et CI
 
-### Workflow de Publication
+CI GitHub Actions : `.github/workflows/release.yml` (contrôles + GitHub Release sur tag `vX.Y.Z` posé sur `main`)
+et `.github/workflows/pages.yml` (site GitHub Pages, mode `workflow`, appelé par la release).
+Procédure complète — tag, secret `LEAK_PATTERNS`, slide 2, contrôles bloquants, vérifications locales avant tag,
+revues manuelles : **`docs/RELEASE.md`** (à lire par `deployer`, `qa` et `doc-updater` avant toute tâche de release).
 
-Chaque version est publiée automatiquement via GitHub Actions (`.github/workflows/release.yml`) lors d'un tag `vX.Y.Z` posé sur `main` ou d'un lancement manuel (`workflow_dispatch`).
-
-**Déclenchement** :
-
-```bash
-# 1. Merger milestone/vX.Y.Z sur main
-git checkout main
-git merge milestone/v0.2.0
-
-# 2. Poser le tag sur main et pousser
-git tag v0.2.0
-git push origin main
-git push origin v0.2.0
-
-# Ou via dispatch (pour un tag cohérent avec sa slide 2 et meta.js)
-# Exemple : relancer v0.2.0 en cas d'échec partiel du workflow
-gh workflow run release.yml -f tag=v0.2.0
-```
-
-**Règles critiques** :
-- Le tag doit être posé sur `main` (ou en ancêtre de `main`). La CI vérifie avec `git merge-base --is-ancestor` que le commit du tag est dans l'historique de `origin/main` avant de publier. Sans cela, la release échoue avec un message explicite.
-- La slide 2 du PPTX et `assets/meta.js` du site doivent tous deux afficher la même version (vX.Y.Z) et la même date de livraison (JJ/MM/AAAA). La CI contrôle la cohérence et échoue si l'une manque ou diffère.
-
-### Étapes du Workflow
-
-1. **Validation du tag** : format `vX.Y.Z` requis
-2. **Contrôles** :
-   - Validité du PPTX : archive ZIP bien formée, `[Content_Types].xml` en première position
-   - Anti-fuite : scan des métadonnées XML et images via `check_pptx.py`, utilise le secret `LEAK_PATTERNS` (regex des termes sensibles)
-   - Version slide 2 : vérification que la slide 2 affiche la version correspondant au tag
-3. **Publication** : création/mise à jour de la release GitHub avec l'asset `Ansible-Training-vX.Y.Z.pptx`
-4. **Release notes** : extraction du CHANGELOG.md si présent, sinon génération automatique
-
-### Secret `LEAK_PATTERNS` — Prérequis Utilisateur
-
-**Avant chaque tag de release**, le secret GitHub `LEAK_PATTERNS` doit être configuré sur le dépôt :
-
-```bash
-# Créer un fichier local avec une regex par ligne
-# (exemples : nom de l'organisation, acronymes, domaines sensibles)
-cat > leak_patterns.txt <<EOF
-motif1
-motif2
-...
-EOF
-
-# Ajouter au dépôt comme secret
-gh secret set LEAK_PATTERNS < leak_patterns.txt
-```
-
-**Sans ce secret**, le workflow échoue volontairement au scan et refuse de publier — c'est une protection contre la publication accidentelle.
-
-**Vérification** : `gh secret list` affiche `LEAK_PATTERNS` comme présent (jamais le contenu).
-
-### Asset Versionné
-
-Chaque release publie un PPTX nommé `Ansible-Training-vX.Y.Z.pptx`, où `X.Y.Z` correspond au tag.
-
-### Contrôle de Version Slide 2
-
-La slide 2 affiche obligatoirement :
-- **Version** : vX.Y.Z (exemple : « v0.1.1 »)
-- **Date de livraison** : JJ/MM/AAAA
-- **Versions de référence** : « Référence : ansible-core 2.20 » (lues dans `reference_version` de `.claude/project-config.json`)
-
-Le workflow valide que la version affichée sur la slide 2 correspond au tag avant publication.
-
-### Extensibilité (v0.2.0)
-
-À partir de v0.2.0, le workflow publie deux artefacts en parallèle (commit 43c826e) :
-
-- **PPTX** : `Ansible Training.pptx` → `Ansible-Training-${TAG}.pptx` (inchangé depuis v0.1.1)
-- **HTML** : `build/Ansible-Training-HTML.zip` (généré par `node tools/package.js`) → `Ansible-Training-HTML-${TAG}.zip`
-
-**Configuration du workflow** (`.github/workflows/release.yml`, adapté pour v0.2.0) :
-
-```bash
-ARTIFACTS: |
-  Ansible Training.pptx|Ansible-Training-${TAG}.pptx
-  build/Ansible-Training-HTML.zip|Ansible-Training-HTML-${TAG}.zip
-```
-
-**Contrôles réels (CI)** : bloquants, exécutés avant publication :
-
-1. **Préalables** (après checkout du tag) :
-   - Tag sur `main` (garde-fou `merge-base --is-ancestor`)
-   - Secret `LEAK_PATTERNS` configuré (publication refusée sans lui)
-
-2. **Environnement & dépendances** :
-   - Node 22 (SHA épinglé `49933ea…`)
-   - Python 3.12 (SHA épinglé `a26af69…`)
-
-3. **Tests bloquants** (échec = arrêt) :
-   - `PARITY_STRICT=1 python3 -m unittest discover -s tests/site` (284 tests, `RELEASE_TAG=$TAG` active version check slide 2)
-   - `I18N_STRICT: '1'` (`release.yml`) : traduction complète fr/en obligatoire, un module partiellement traduit bloque le tag
-   - `LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence` (46 tests, validité du PPTX et versions)
-   - `node tools/validate.js --strict-i18n` (structure HTML/SVG/quiz, parité des clés fr/en, traduction complète)
-   - `node tools/sync-meta.js --check --version "${TAG#v}"` (meta.js contient la bonne version, pas de réécriture)
-
-4. **Artefacts** (3 par release) :
-   - **PPTX** (`tests/slides/check_pptx.py`, anti-fuite avec `LEAK_PATTERNS`) :
-     - Slide 2 affiche version du tag (ex. v0.2.0)
-     - Slide 2 affiche date de livraison (JJ/MM/AAAA)
-   - **Zip HTML** (72 fichiers, dont `examples/eda/`, `labs/eda/` et `assets/i18n/en.js`) :
-     - Validité : `unzip -t` (archive OK)
-     - Contenu : présence de `index.html`, `assets/meta.js`, `Ansible Training.pptx` à la racine
-     - PPTX embarqué identique au PPTX du tag (`cmp`)
-     - `assets/meta.js` contient `"version": "X.Y.Z"` du tag (grep)
-     - **`assets/meta.js` contient `"date": "JJ/MM/AAAA"` identique à la slide 2 du PPTX** (vérifié par script Python)
-     - Anti-fuite site : `tests/site/check_site.py --dir <extraction> --require-secret`
-     - Anti-fuite PPTX embarqué : `tests/slides/check_pptx.py` sur le PPTX du zip
-   - **Zip HTML .sha256** : somme de contrôle pour vérification locale (`sha256sum -c`)
-
-**Non exécuté en CI** :
-- `check_links.py --offline` ou connecté (hors périmètre, manuel)
-
-**Génération et tests du zip (local)** :
-
-```bash
-# Générer le zip (déterministe, PPTX inclus, refuse un arbre modifié)
-node tools/package.js
-
-# Vérifier la validité (si unzip disponible)
-unzip -t build/Ansible-Training-HTML.zip > /dev/null  # valide sans décompression
-# ou (affiche le décompte en fin)
-unzip -l build/Ansible-Training-HTML.zip | tail -1
-
-# Afficher le SHA256
-sha256sum build/Ansible-Training-HTML.zip
-
-# Tests du site (avant packaging en CI)
-PARITY_STRICT=1 python3 -m unittest discover -s tests/site
-
-# Validation de structure HTML
-node tools/validate.js
-
-# Vérifier que meta.js est prêt pour le tag v0.2.0
-node tools/sync-meta.js --check --version 0.2.0
-
-# Audit des liens (manuel, hors CI)
-python3 tools/check_links.py --offline  # mode local (liens sans requête HTTP)
-# ou
-python3 tools/check_links.py  # mode connecté (requête HTTP, peut être lent/instable)
-```
-
-**Avant tag** : le CI refusera la release si les tests locaux échouent. Vérifier localement avant de pousser le tag.
-
-**Revue bilingue du site** (manuelle, hors CI) : suivre `tests/procedures/site/revue-visuelle-bilingue/` (bascule FR | EN, `?lang=`, repli, libellés) avant le tag v1.0.0.
-
-**Lab EDA « testé »** (manuel, hors CI) : exécuter `tests/procedures/labs/eda/lab-teste.md` sur un poste avec Java 17+ et `ansible-rulebook` avant la release v1.0.0. La CI ne vérifie que la structure YAML de `labs/eda/` et `examples/eda/`.
-
-### Tests et Validation (v0.2.0)
-
-Avant de tagguer une release v0.2.0 ou supérieure :
-
-```bash
-# Tests du PPTX (264 slides totales, dont 3 masquées 234/251/258 ; obsolescence)
-LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence
-
-# Tests du site HTML (parité, accessibilité, structure)
-PARITY_STRICT=1 python3 -m unittest discover -s tests/site
-
-# Validation de structure HTML + SVG + quiz
-node tools/validate.js
-
-# Scan de validité et anti-fuite (PPTX)
-python3 tests/slides/check_pptx.py "Ansible Training.pptx"
-
-# Scan du site généré (avant packaging)
-python3 tools/check_links.py --offline
-
-# Packaging et vérification du zip
-node tools/package.js
-unzip -t build/Ansible-Training-HTML.zip > /dev/null
-
-# Avec secret local (vérification complète avant push/tag)
-export LEAK_PATTERNS="$(cat leak_patterns.txt)"
-python3 tests/slides/check_pptx.py "Ansible Training.pptx"
-python3 tools/check_links.py  # mode connecté (requête HTTP aux URLs externes)
-```
-
-**Prérequis avant tag v0.2.0 et supérieur** (le CI les vérifie) :
-
-1. **Secret `LEAK_PATTERNS`** : configuré sur le dépôt (`gh secret list` doit l'afficher)
-   - Sans lui, le workflow échoue volontairement
-   - Jamais écrit dans les logs (sortie masquée)
-
-2. **Date de livraison** — **cohérence requise** :
-   - `assets/meta.js` : `"date": "07/10/2026"` (commit `6596dbf`, fixée pour v0.2.0)
-   - Slide 2 du PPTX : doit afficher `07/10/2026` (commit `0d8552a`, OK)
-   - **Le workflow contrôle que les deux dates sont identiques**
-   - Si date différente : `node tools/sync-meta.js --date JJ/MM/AAAA` + commiter, et slide 2 alignée par dev-slides
-
-3. **Version — cohérence requise** :
-   - Slide 2 du PPTX : doit afficher v0.2.0 (ou vX.Y.Z du tag) — commit `0d8552a` OK
-   - `assets/meta.js` : contient `"version": "0.2.0"` — commit `6596dbf` OK
-   - **Le workflow contrôle que les deux versions sont présentes et cohérentes**
-
-4. **`milestone/v0.2.0` mergée sur `main`** avant le tag :
-   - Le CI vérifie que le commit du tag est ancêtre de `origin/main`
-   - Sans cela, workflow échoue avec message explicite
-
-5. **Tests locaux réussis** (avant tag) :
-   - Tous les tests du CI doivent passer (QA responsable)
-   - Node 22+ Linux (wrapper `node.exe` Windows donne faux échecs)
-   - Python 3.12+
-   - Commandes : `PARITY_STRICT=1 RELEASE_TAG=v0.2.0 python3 -m unittest discover -s tests/site`, `LOTS_STRICT=1 python3 -m unittest discover -s tests/slides/obsolescence`, `validate.js`, `sync-meta --check --version`, `package.js`, `unzip -t`
+Règles à ne jamais enfreindre :
+- Le tag est posé sur `main` (ancêtre de `origin/main`), `main` poussée avant le tag.
+- Slide 2 du PPTX et `assets/meta.js` : même version (= tag) et même date de livraison.
+- Sans secret `LEAK_PATTERNS`, la CI refuse de publier (volontaire).
+- GitHub Pages jamais en mode « branche » (Jekyll casse le site).
