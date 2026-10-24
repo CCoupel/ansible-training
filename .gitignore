@@ -67,3 +67,4 @@ build/
 .~lock.*#
 .claude/worktrees/
 __pycache__/
+.claude/skills/milestone-panel/
