@@ -41,10 +41,10 @@ Normalement, un agent générique ne touche pas au code applicatif. **Dérogatio
 
 | Source | Format | Rôle |
 |--------|--------|------|
-| **Plan de base** | Plan du cycle courant (`_work/handoff/`, validé) | Spécifications, règles de conversion, critères d'acceptation, tâches/phases/jalons |
-| **PPTX source** | `Ansible Training.pptx` (v0.1.1, fond blanc) | Slides 1-223 (13 masquées 193/210/217) ; notes ; liens #50 (à corriger par dev-slides phase 1) |
+| **Plan de base** | Plan validé du cycle courant : `.claude/workflow/plan-<version>.md` (copie du GATE 2), à défaut `_work/handoff/` | Spécifications, règles de conversion, critères d'acceptation, tâches/phases/jalons |
+| **PPTX source** | `Ansible Training.pptx` courant de la branche milestone (fond blanc) | Slides (y compris masquées), notes, liens — inventaire via le lecteur ci-dessous |
 | **Lecture PPTX** | Via `tests/slides/pptx_reader.py` (stdlib, lecture seule) | Inventaire des slides, images, notes, texte brut |
-| **Maquettes validées** | `_work/mockup/0.2.0/ui/` + `architecture/` | UI approuvée (révision 2), moteur/thème/navigation, callouts adaptés à Ansible |
+| **Maquettes validées** | `docs/mockup/v0.2.0/ui/` + `docs/mockup/v0.2.0/architecture/` | UI approuvée (révision 2), moteur/thème/navigation, callouts adaptés à Ansible |
 | **Cours OpenShift** | `/mnt/c/Users/cyril/Documents/PROJETS/TRAINING/OPENSHIFT` (lecture seule) | Référence de structure, moteur `assets/engine.js`, conventions, formats de modules `modules/mNN-*.js` |
 | **Conventions OpenShift** | `CONVENTIONS.md` (dépôt source) | Schéma bloc, validation, regles de contenu (à adapter pour Ansible) |
 
