@@ -68,3 +68,4 @@ build/
 .claude/worktrees/
 __pycache__/
 .claude/skills/milestone-panel/
+.claude/workflow/
