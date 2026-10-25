@@ -17,7 +17,7 @@
 | Branche `main` | `3fb524a` = `origin/main` (ajoute le workflow Pages) |
 | Branche milestone | `milestone/v1.0.0` (`1261a9b`) conservée et poussée |
 | Site | https://ccoupel.github.io/ansible-training/ |
-| Template | v3.26.2 (sync 2026-10-24) |
+| Template | v3.27.0 (sync 2026-10-25) |
 
 ---
 
